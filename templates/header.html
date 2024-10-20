@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Association pour Animaux</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+        }
+        .logo {
+            flex: 1; 
+        }
+        nav {
+            flex: 2; 
+            display: flex;
+            justify-content: center; 
+            gap: 20px;
+        }
+        .buttons {
+            flex: 1; 
+            display: flex;
+            justify-content: flex-end; 
+            gap: 10px; 
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .account, .cart {
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <a href="/">
+            <img src="{{ url_for('static', filename='images/logo_miaouff.png') }}" alt="Logo" width="100">
+        </a>
+    </div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/animals">Animals</a>
+        <a href="/products">Products</a>
+        <a href="/blog">Blog</a>
+        <a href="/faq">FAQ</a>
+    </nav>
+    <div class="buttons">
+        <button class="account">My Account</button>
+        <button class="cart"><i class="fas fa-shopping-cart"></i></button>
+    </div>
+</header>
+
+</body>
+</html>
