@@ -22,5 +22,17 @@ def blog():
 def faq():
     return "FAQ"
 
+@app.route('/terms_and_conditions')
+def terms_and_conditions():
+    return render_template('terms_and_conditions.html')
+
+@app.route('/privacy_policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/cookies_policy')
+def cookies_policy():
+    return render_template('cookies_policy.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
