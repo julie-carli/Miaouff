@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- FAQ Section -->
+<section class="faq-section">
+    <h2 class="faq-title">Foire aux questions</h2>
+    
+    <div class="faq-item">
+        <h3 class="faq-question">Qu'est-ce que Miaouff ?</h3>
+        <p class="faq-answer">Miaouff est une association dédiée à l'aide aux animaux, principalement les chats et les chiens. Nous vendons également des produits pour soutenir notre cause.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Comment puis-je adopter un animal de Miaouff ?</h3>
+        <p class="faq-answer">Pour adopter un animal, visitez notre section <a href="{{ url_for('shelters') }}"><strong>Refuges</strong></a>, où vous trouverez plus de détails sur la manière de procéder à une adoption.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Quels types de produits vendez-vous ?</h3>
+        <p class="faq-answer">Nous vendons une variété de produits pour les animaux, y compris des aliments, des jouets et des produits d'hygiène. Consultez notre page <a href="{{ url_for('products') }}"><strong>Produits</strong></a> pour plus d'informations.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Est-ce que les produits sont disponibles en ligne ?</h3>
+        <p class="faq-answer">Oui, tous nos produits sont disponibles à la vente en ligne. Rendez-vous dans notre section <a href="{{ url_for('products') }}"><strong>Produits</strong></a> pour les découvrir.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Puis-je faire un don à l'association ?</h3>
+        <p class="faq-answer">Oui, vous pouvez faire un don pour soutenir notre mission. Visitez la page de dons pour plus d'informations sur la façon de contribuer.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Quelles sont les démarches pour adopter un chat ?</h3>
+        <p class="faq-answer">Les démarches sont simples. Vous devez remplir un formulaire d'adoption et avoir un entretien avec l'équipe. Une fois l'adoption validée, vous pouvez accueillir votre nouveau compagnon chez vous.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Puis-je adopter un animal même si je vis en appartement ?</h3>
+        <p class="faq-answer">Oui, il est possible d'adopter un animal même en appartement, à condition que l'environnement soit adapté à ses besoins et qu'il puisse se sentir à l'aise.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Vos produits sont-ils disponibles à la vente en magasin ?</h3>
+        <p class="faq-answer">Actuellement, nos produits sont uniquement disponibles en ligne via notre site web. Nous envisageons d'ouvrir un point de vente dans un futur proche.</p>
+    </div>
+
+    <div class="faq-item">
+        <h3 class="faq-question">Quels sont les frais d'adoption d'un animal ?</h3>
+        <p class="faq-answer">Les frais d'adoption couvrent les soins vétérinaires, la stérilisation, et les vaccinations de l'animal. Le montant exact varie en fonction de l'animal adopté.</p>
+    </div>
+
+</section>
+{% endblock %}

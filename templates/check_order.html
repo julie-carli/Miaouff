@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Récapitulatif de la commande{% endblock %}
+
+{% block content %}
+<h1 class="check-order-title">Récapitulatif de votre commande</h1>
+
+<div class="check-order-address">
+    <h2>Adresse de Livraison</h2>
+    <p><strong>Nom :</strong> {{ address.first_name }} {{ address.last_name }}</p>
+    <p><strong>Email :</strong> {{ address.email }}</p>
+    <p><strong>Téléphone :</strong> {{ address.phone }}</p>
+    <p><strong>Adresse :</strong> {{ address.address }}</p>
+</div>
+
+<h2>Produits dans votre panier</h2>
+<div class="check-order-cart">
+    {% for item in cart %}
+    <div class="cart-item">
+        <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" class="cart-item-image">
+        <div class="cart-item-info">
+            <h3>{{ item.name }}</h3>
+            <p>Quantité: {{ item.quantity }}</p>
+            <p>Prix unitaire: {{ item.price }} €</p>
+            <p>Total pour cet article: {{ item.total_price }} €</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="check-order-summary">
+    <p><strong>Total HT :</strong> {{ total_excl_tax }} €</p>
+    <p><strong>Total TTC :</strong> {{ total_incl_tax }} €</p>
+    <p><strong>Frais de livraison :</strong> {{ shipping_fee }} €</p>
+    <p><strong>Total à payer :</strong> {{ total_incl_tax + shipping_fee }} €</p>
+</div>
+
+<a href="{{ url_for('check_order') }}" id="pay-button" class="check-order-pay-btn">
+   Payer
+</a>
+
+{% endblock %}

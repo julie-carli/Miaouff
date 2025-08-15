@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="glossary-container">
+
+    <h1>Glossaire des animaux</h1>
+
+    <div class="glossary-filter">
+        <span>Trier par :</span>
+        <a href="{{ url_for('glossary', species=selected_species) }}" 
+           class="glossary-letter {% if not selected_letter %}active{% endif %}">
+            Tous
+        </a>
+        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <a href="{{ url_for('glossary', letter=letter, species=selected_species) }}" 
+               class="glossary-letter {% if selected_letter == letter %}active{% endif %}">
+                {{ letter }}
+            </a>
+        {% endfor %}
+    </div>    
+
+    <div class="glossary-filter">
+        <span>Filtrer par :</span>
+        
+        <a href="{{ url_for('glossary', letter=selected_letter) }}" 
+           class="glossary-letter {% if not selected_species %}active{% endif %}">
+            Tous
+        </a>
+        
+        <a href="{{ url_for('glossary', species='Chat', letter=selected_letter) }}" 
+           class="glossary-letter {% if selected_species == 'Chat' %}active{% endif %}">
+            Chat
+        </a>
+        
+        <a href="{{ url_for('glossary', species='Chien', letter=selected_letter) }}" 
+           class="glossary-letter {% if selected_species == 'Chien' %}active{% endif %}">
+            Chien
+        </a>
+    </div>    
+    
+    <section class="glossary-list">
+        {% if animals %}
+            {% for animal in animals %}
+                <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
+                    <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}" class="glossary-image">
+                    <h2 class="glossary-title">{{ animal.breed }}</h2>
+                </a>
+            {% endfor %}
+        {% else %}
+            <p class="glossary-no-results">Aucun animal trouvé pour cette lettre ou espèce.</p>
+        {% endif %}
+    </section>
+
+</main>
+
+{% endblock %}

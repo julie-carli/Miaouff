@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header>
+    <h2 class="games-title">Jeu de Mots Mêlés - Animaux</h2>
+</header>
+
+<main class="wordsearch-container">
+    <div class="wordsearch-game">
+        <div class="wordsearch-colors"></div>
+        <div class="wordsearch-grid"></div>
+        <ul class="wordsearch-wordlist"></ul>
+    </div>
+    <div id="win-message" class="win-message"></div>
+    <button class="wordsearch-restart">Recommencer</button>
+</main>
+
+<script src="{{ url_for('static', filename='js/wordsearch.js') }}"></script>
+{% endblock %}

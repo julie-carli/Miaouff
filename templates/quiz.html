@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h2 class="games-title">Quiz : Testez vos connaissances sur les animaux !</h2>
+</header>
+
+<main class="quiz-container">
+    <div class="quiz-progress">
+        <div class="quiz-progress-bar"></div>
+    </div>
+    
+    <div class="quiz-box">
+        <h2 class="quiz-question">Chargement des questions...</h2>
+        <div class="quiz-options">
+        </div>
+    </div>
+    
+    <div class="quiz-buttons">
+        <button class="quiz-check">Vérifier</button>
+        <button class="quiz-next" style="display: none;">Suivant</button>
+        <button class="quiz-submit" style="display: none;">Envoyer</button>
+    </div>    
+    <div class="quiz-score" style="display: none;">
+        <span class="score-value"></span>
+    </div>
+    
+</main>
+
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+
+{% endblock %}

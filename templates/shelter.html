@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="shelter-container">
+
+    <div class="shelter-image">
+        <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}">
+    </div>
+    
+
+    <div class="shelter-info">
+        <h1>{{ shelter.name }}</h1>
+        <p><strong>Adresse :</strong> {{ shelter.address }}</p>
+        <p><strong>Email :</strong> <a href="mailto:{{ shelter.email }}">{{ shelter.email }}</a></p>
+        <p><strong>Téléphone :</strong> <a href="tel:{{ shelter.phone }}">{{ shelter.phone }}</a></p>
+    </div>
+</section>
+<section class="shelter-animals">
+    <h2>Animaux à adopter</h2>
+    <div class="shelter-animals-container">
+        {% for animal in animals %}
+        <a href="{{ url_for('adopt_animal', pet_id=animal.pet_id) }}" class="animal-card">
+            <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.name }}">
+            <p>{{ animal.name }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

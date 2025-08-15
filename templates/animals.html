@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="animals-container">
+
+    <section class="animals-left">
+        <a href="{{ url_for('glossary') }}">
+            <div class="animals-image-container">
+                <img src="static/images/glossaire.png" alt="Glossaire des animaux" class="animals-image">
+                <h2 class="animals-title">Glossaire des Animaux</h2>
+            </div>
+        </a>
+    </section>
+
+    <section class="animals-right">
+        <a href="{{ url_for('adopt_animals') }}">
+            <div class="animals-image-container">
+                <img src="static/images/adoption.png" alt="Animaux à adopter" class="animals-image">
+                <h2 class="animals-title">Découvrez nos animaux à adopter</h2>
+            </div>
+        </a>
+    </section>
+
+</main>
+
+{% endblock %}

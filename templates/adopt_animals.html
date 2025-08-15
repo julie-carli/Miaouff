@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Animaux à adopter{% endblock %}
+
+{% block content %}
+<h1 class="pet-title">Animaux à adopter</h1>
+
+<div class="glossary-filter">
+    <span>Filtrer par refuge :</span>
+
+    <a href="{{ url_for('adopt_animals', species=selected_species) }}" 
+       class="glossary-letter {% if not selected_shelter %}active{% endif %}">
+        Tous
+    </a>
+
+    {% for shelter in shelters %}
+        <a href="{{ url_for('adopt_animals', shelter_id=shelter.shelter_id, species=selected_species) }}" 
+           class="glossary-letter {% if selected_shelter and selected_shelter.shelter_id == shelter.shelter_id %}active{% endif %}">
+            {{ shelter.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<div class="glossary-filter">
+    <span>Filtrer par espèce :</span>
+
+    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None) }}" 
+       class="glossary-letter {% if not selected_species %}active{% endif %}">
+        Toutes
+    </a>
+
+    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chien') }}" 
+       class="glossary-letter {% if selected_species and selected_species.lower() == 'chien' %}active{% endif %}">
+        Chiens
+    </a>
+
+    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chat') }}" 
+       class="glossary-letter {% if selected_species and selected_species.lower() == 'chat' %}active{% endif %}">
+        Chats
+    </a>
+</div>
+
+
+<div class="pet-container">
+    {% for pet in pets %}
+        <div class="pet-card">
+            <a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}">
+                <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}" class="pet-image">
+            </a>
+            <div class="pet-info">
+                <h2><a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}">{{ pet.name }}</a></h2>
+                <p class="pet-description">{{ pet.description }}</p>
+                <p><strong>Âge :</strong> {{ pet.age }} ans</p>
+                <p><strong>Genre :</strong> {{ pet.gender }}</p>
+                <p><strong>Race :</strong> 
+                    {% if pet.animal %}
+                        {{ pet.animal.breed }}
+                    {% else %}
+                        Inconnue
+                    {% endif %}
+                </p>                   
+                <p><strong>Refuge :</strong> 
+                    <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}" class="pet-shelter-link">
+                        {{ pet.shelter.name }}
+                    </a>
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

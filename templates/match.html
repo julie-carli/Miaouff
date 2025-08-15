@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h2 class="games-title">Jeu - Associer les mots</h2>
+</header>
+
+<main class="match-container">
+    <div class="match-container">
+        <div class="match-words-container"></div>
+        <div class="match-definitions-container"></div>
+    </div>
+    <p id="match-score" class="match-score"></p>
+    <button class="match-restart">Recommencer</button>    
+</main>
+
+<script src="{{ url_for('static', filename='js/match.js') }}"></script>
+
+{% endblock %}

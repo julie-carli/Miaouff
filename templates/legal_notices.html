@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Legal Notices Section -->
+<section class="legal-notices-section">
+    <h2 class="legal-notices-title">Mentions Légales</h2>
+
+    <h3 class="legal-notices-subtitle">Informations générales</h3>
+    <p class="legal-notices-text"><strong>Nom de l'association :</strong> Miaouff</p>
+    <p class="legal-notices-text"><strong>Statut :</strong> Association à but non lucratif</p>
+    <p class="legal-notices-text"><strong>Numéro d'immatriculation (RNA) :</strong> W123456789</p>
+    <p class="legal-notices-text"><strong>Adresse :</strong> 123 Rue de l'Association, 75000 Paris, France</p>
+    <p class="legal-notices-text"><strong>Email de contact :</strong> contact@miaouff.fr</p>
+    <p class="legal-notices-text"><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
+    <p class="legal-notices-text"><strong>Responsable de la publication :</strong> Julie Carli, Présidente de l'association</p>
+
+    <h3 class="legal-notices-subtitle">Hébergement</h3>
+    <p class="legal-notices-text"><strong>Hébergeur du site :</strong> HBG</p>
+    <p class="legal-notices-text"><strong>Adresse :</strong> 456 rue de l'Hébergeur, 59100 Roubaix, France</p>
+
+    <h3 class="legal-notices-subtitle">Propriété intellectuelle</h3>
+    <p class="legal-notices-text">Le contenu du site (textes, images, vidéos, logos, etc.) est la propriété exclusive de l'association <strong>Miaouff</strong> ou de ses partenaires, sauf indication contraire. Toute reproduction, distribution ou utilisation non autorisée est interdite.</p>
+
+    <h3 class="legal-notices-subtitle">Protection des données personnelles</h3>
+    <p class="legal-notices-text">Les données personnelles collectées sur ce site sont exclusivement destinées à l'association <strong>Miaouff</strong> pour le traitement des demandes des utilisateurs.</p>
+    <p class="legal-notices-text">Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à <strong>contact@miaouff.fr</strong>.</p>
+    <p class="legal-notices-text">Pour plus d'informations, consultez notre <a href="{{ url_for('privacy_policy') }}"><strong>politique de confidentialité</strong></a>.</p>
+
+    <h3 class="legal-notices-subtitle">Responsabilité</h3>
+    <p class="legal-notices-text">L'association <strong>Miaouff</strong> met tout en œuvre pour assurer l'exactitude des informations publiées sur ce site. Cependant, elle ne peut être tenue responsable des erreurs, omissions ou imprécisions.</p>
+    <p class="legal-notices-text">L'utilisateur est seul responsable de l'utilisation qu'il fait des informations fournies sur ce site.</p>
+
+    <h3 class="legal-notices-subtitle">Conditions d'utilisation</h3>
+    <p class="legal-notices-text">En accédant à ce site, vous acceptez de respecter les lois en vigueur et les présentes mentions légales. Toute utilisation frauduleuse du site est interdite.</p>
+
+    <h3 class="legal-notices-subtitle">Cookies</h3>
+    <p class="legal-notices-text">Ce site utilise des cookies pour améliorer l'expérience de navigation. En poursuivant votre navigation, vous acceptez leur utilisation.</p>
+    <p class="legal-notices-text">Pour plus d'informations, consultez notre <a href="{{ url_for('cookie_policy') }}"><strong>politique de cookies</strong></a>.</p>
+
+    <h3 class="legal-notices-subtitle">Droit applicable et juridiction compétente</h3>
+    <p class="legal-notices-text">Les présentes mentions légales sont régies par le droit français. En cas de litige, et après tentative de résolution amiable, les tribunaux compétents seront ceux du siège de l'association.</p>
+</section>
+{% endblock %}

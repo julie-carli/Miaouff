@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1 class="blog-title">Conseils pour le bien-être de nos compagnons</h1>
+</header>
+<main class="blog-container">
+    <div class="blog-article">
+        <div class="blog-content">
+                <h2 class="article-title">Santé et Hygiène</h2>
+                <p class="article-text">
+                    La santé de votre animal est primordiale pour qu'il mène une vie longue et heureuse. Voici quelques recommandations :
+                </p>
+                <ul>
+                    <li class="article-text">Veillez à un entretien régulier de son pelage (brossage, lavage).</li>
+                    <li class="article-text">Assurez-vous qu'il reçoive une alimentation adaptée à son âge et à ses besoins.</li>
+                    <li class="article-text">Vérifiez régulièrement l'état de ses griffes et de ses dents.</li>
+                    <li class="article-text">Protégez-le des parasites (puces, tiques) avec des traitements réguliers.</li>
+                </ul>
+                <p class="article-text">N'oubliez jamais que chaque animal est unique et qu'un vétérinaire pourra vous donner des conseils personnalisés.</p>
+                <p class="article-text"><strong>Il est essentiel de consulter un vétérinaire en cas de doute sur sa santé.</strong>
+                </p>
+            </div>
+            <div class="blog-image">
+                <img src="static/images/health.png" alt="Santé et hygiène des animaux">
+            </div>
+        </div>
+
+    <div class="blog-article reverse">
+        <div class="blog-content">
+                <h2 class="article-title">Bien-être Animal</h2>
+                <p class="article-text">
+                    Le bien-être de votre animal passe également par son environnement. Voici quelques conseils :</p>
+                <ul>
+                    <li class="article-text">Offrez-lui un espace de repos calme et confortable.</li>
+                    <li class="article-text">Assurez-vous qu'il fasse suffisamment d'exercice pour éviter l'ennui et maintenir sa forme.</li>
+                    <li class="article-text">Veillez à lui accorder de l'attention et des moments de jeu.</li>
+                    <li class="article-text">Respectez ses besoins sociaux : certains animaux aiment la compagnie, d'autres préfèrent la tranquillité.</li>
+                </ul>
+                <p class="article-text">
+                    Chaque animal a des besoins spécifiques, alors soyez à l'écoute de son comportement pour ajuster son environnement.
+                </p>
+            </div>
+            <div class="blog-image">
+                <img src="static/images/wellbeing.png" alt="Bien-être animal">
+            </div>
+        </div>
+
+    <div class="blog-article">
+        <div class="blog-content">
+                <h2 class="article-title">L'abandon des animaux : une triste réalité</h2>
+                <p class="article-text">
+                    L'abandon des animaux reste un problème majeur dans le monde entier. Selon des études récentes, des millions d'animaux sont abandonnés chaque année. Il est important de prendre conscience de cette situation et de sensibiliser le public.
+                    Voici quelques chiffres qui montrent l'ampleur du problème :
+                <ul>
+                    <li class="article-text">Chaque année, plus de 100 000 animaux sont abandonnés en France.</li>
+                    <li class="article-text">40% des abandons ont lieu pendant l'été.</li>
+                    <li class="article-text">Les chiens représentent 60% des animaux abandonnés, suivis des chats.</li>
+                </ul>
+            </p>
+        </div>
+                <div class="blog-image">
+                <img src="/static/images/abandon.png" alt="Abandon">
+                </div>
+        </div>
+            <div class="chart-container">
+                <div id="abandon-chart" class="chart"></div>
+                <div id="abandon-bar-chart" class="chart"></div>
+                <div id="abandon-line-chart" class="chart line-chart"></div>
+            </div>
+        
+        <div class="advices-source">
+            <p>Source : <a href="https://www.santevet.com" target="_blank"><strong>SantéVet</strong></a></p>
+        </div>
+        
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var pieData = [{
+                    values: [60, 35, 5],
+                    labels: ['Chiens', 'Chats', 'Autres animaux'],
+                    type: 'pie',
+                    marker: { colors: ['#ff9999', '#66b3ff', '#99ff99'] },
+                    textinfo: 'label+percent',
+                    hoverinfo: 'label+percent'
+                }];
+        
+                var pieLayout = {
+                    title: 'Répartition des abandons d\'animaux',
+                    showlegend: true,
+                    staticPlot: true,
+                    displayModeBar: false
+                };
+                Plotly.newPlot('abandon-chart', pieData, pieLayout, { displayModeBar: false });
+        
+                var barData = [{
+                    x: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+                    y: [8000, 7000, 6000, 7500, 8200, 9500, 12000, 11000, 9500, 8700, 7200, 6800],
+                    type: 'bar',
+                    marker: { color: '#ff6666' }
+                }];
+        
+                var barLayout = {
+                    title: 'Abandons par mois',
+                    xaxis: { title: 'Mois' },
+                    yaxis: { title: 'Nombre d\'abandons' },
+                    staticPlot: true,
+                    displayModeBar: false
+                };
+                Plotly.newPlot('abandon-bar-chart', barData, barLayout, { displayModeBar: false });
+        
+                var lineData = [{
+                    x: ['2019', '2020', '2021', '2022', '2023'],
+                    y: [95000, 98000, 105000, 110000, 100000],
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#66b3ff' }
+                }];
+        
+                var lineLayout = {
+                    title: 'Abandons annuels',
+                    xaxis: { title: 'Année' },
+                    yaxis: { title: 'Nombre d\'abandons' },
+                    staticPlot: true,
+                    displayModeBar: false,
+                    dragmode: false
+                };
+                Plotly.newPlot('abandon-line-chart', lineData, lineLayout, { displayModeBar: false });
+        
+                document.querySelectorAll('.chart').forEach(chart => {
+                    chart.addEventListener('click', function(event) {
+                        document.querySelectorAll('.chart').forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                        event.stopPropagation();
+                    });
+                });
+        
+                document.addEventListener('click', function() {
+                    document.querySelectorAll('.chart').forEach(chart => chart.classList.remove('active'));
+                });
+            });
+        </script>
+</main>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="glossary-animal-container">
+
+    <section class="glossary-animal-card">
+        <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}" class="glossary-animal-image">
+        <div class="glossary-animal-info">
+            <h2 class="glossary-animal-title">{{ animal.breed }}</h2>
+            <p><strong>Espèce :</strong> {{ animal.species }}</p>
+            <p><strong>Espérance de vie :</strong> {{ animal.lifespan }}</p>
+            <p><strong>Alimentation :</strong> {{ animal.diet }}</p>
+            <p><strong>Particularités :</strong> {{ animal.specifics }}</p>
+            <a href="{{ url_for('glossary') }}" class="glossary-back-button">Retour au glossaire</a> 
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

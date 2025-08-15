@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Introduction to the association -->
+<section class="home-intro">
+    <div class="video-wrapper">
+        <video autoplay loop muted playsinline class="background-video">
+            <source src="{{ url_for('static', filename='videos/website-home.mp4') }}" type="video/mp4">
+            Votre navigateur ne supporte pas les vidéos HTML5.
+        </video>
+        <div class="video-overlay"></div>
+        <div class="home-intro-content">
+            <h1>Bienvenue sur Miaouff</h1>
+            <p>Aidons les animaux</p>
+        </div>
+    </div>
+</section>
+
+<!-- Shelters section -->
+<section class="home-shelters">
+    <h2>Nos Refuges</h2>
+    <div class="home-shelters-container">
+        <a href="{{ url_for('shelter', shelter_id=1) }}" class="home-shelter-link">
+            <img src="{{ url_for('static', filename='images/the_haven_of_purrs.png') }}" alt="Le Havre des Ronronnements" class="home-shelter-img">
+            <div class="shelter-hover-content">
+                <h3>Le Havre des Ronronnements</h3>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('shelter', shelter_id=2) }}" class="home-shelter-link">
+            <img src="{{ url_for('static', filename='images/the_canine_cuddle_shelter.png') }}" alt="Le Refuge des Câlins Canins" class="home-shelter-img">
+            <div class="shelter-hover-content">
+                <h3>Le Refuge des Câlins Canins</h3>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Products section -->
+<section class="home-products">
+    <h2>Nos Produits</h2>
+    <div class="home-products-container">
+        <a href="{{ url_for('products', category='Alimentation') }}" class="home-products-link">
+            <div class="home-products-item">
+                <img src="{{ url_for('static', filename='images/food.png') }}" alt="Alimentation" class="home-products-img">
+                <div class="home-products-title">
+                    <h3>Alimentation</h3>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('products', category='Jouets') }}" class="home-products-link">
+            <div class="home-products-item">
+                <img src="{{ url_for('static', filename='images/toys.png') }}" alt="Jouets" class="home-products-img">
+                <div class="home-products-title">
+                    <h3>Jouets</h3>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('products', category='Hygiène') }}" class="home-products-link">
+            <div class="home-products-item">
+                <img src="{{ url_for('static', filename='images/hygiene.png') }}" alt="Hygiène" class="home-products-img">
+                <div class="home-products-title">
+                    <h3>Hygiène</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Reviews section -->
+<section class="home-reviews">
+    <h2>Nos avis clients</h2>
+    <div class="home-reviews-container">
+        <div class="home-reviews-item">
+            <p>"Des produits de qualité, mon chat adore ses nouveaux jouets ! Je recommande vivement."</p>
+            <p>- Claire, cliente</p>
+        </div>
+        <div class="home-reviews-item">
+            <p>"Une équipe à l'écoute et de très bons produits pour nos animaux. Merci pour tout !"</p>
+            <p>- Marc, client</p>
+        </div>
+        <div class="home-reviews-item">
+            <p>"L'association fait un travail formidable. J'ai adopté un chien qui est désormais heureux et en bonne santé."</p>
+            <p>- Sophie, adoptante</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

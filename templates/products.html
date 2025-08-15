@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="products-title">Nos Produits</h1>
+<br>
+<div class="filters">
+    <ul>
+        <li><a href="{{ url_for('products') }}" {% if not selected_category %}class="active"{% endif %}>Tous</a></li>
+        {% for category in categories %}
+            <li>
+                <a href="{{ url_for('products', category=category.name) }}" 
+                   {% if selected_category == category.name %}class="active"{% endif %}>
+                    {{ category.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<br>
+<div class="products-container">
+    {% for product in products %}
+    <div class="products-card">
+        <a href="{{ url_for('product', product_id=product.product_id) }}">
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="products-image">
+        </a>
+        <a href="{{ url_for('product', product_id=product.product_id) }}" class="products-name">{{ product.name }}</a>
+        <p class="products-price">{{ product.price_incl_tax }}€</p>
+
+        <div class="quantity-container">
+            <button type="button" class="quantity-btn decrease" data-product="{{ product.product_id }}">-</button>
+            <input type="number" class="quantity-input" id="quantity-{{ product.product_id }}" value="1" min="1" max="{{ product.stock }}">
+            <button type="button" class="quantity-btn increase" data-product="{{ product.product_id }}">+</button>
+        </div>
+
+        <button class="product-buy add-to-cart" data-product="{{ product.product_id }}" 
+                data-name="{{ product.name }}" data-price="{{ product.price_incl_tax }}" 
+                data-stock="{{ product.stock }}">
+            Ajouter au panier
+        </button>
+
+        <p id="cart-message-{{ product.product_id }}" style="display: none; color: green; font-weight: bold;">Ajouté !</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".quantity-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                let productId = this.dataset.product;
+                let quantityInput = document.getElementById("quantity-" + productId);
+                let stock = parseInt(this.closest(".products-card").querySelector(".add-to-cart").dataset.stock);
+
+                if (this.classList.contains("increase") && quantityInput.value < stock) {
+                    quantityInput.value = parseInt(quantityInput.value) + 1;
+                }
+                if (this.classList.contains("decrease") && quantityInput.value > 1) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                }
+            });
+        });
+        document.querySelectorAll(".quantity-input").forEach(input => {
+    input.addEventListener("input", function() {
+        let stock = parseInt(this.closest(".products-card").querySelector(".add-to-cart").dataset.stock);
+
+        if (this.value < 1) {
+            this.value = 1;
+        }
+        if (this.value > stock) {
+            this.value = stock;
+        }
+    });
+});
+
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", function() {
+                let productId = this.dataset.product;
+                let name = this.dataset.name;
+                let price = parseFloat(this.dataset.price);
+                let quantity = parseInt(document.getElementById("quantity-" + productId).value);
+                let message = document.getElementById("cart-message-" + productId);
+
+                fetch(`/add_to_cart/${productId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: name, price: price, quantity: quantity })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        message.style.display = "block";
+                        setTimeout(() => { message.style.display = "none"; }, 2000);
+                    }
+                })
+                .catch(error => console.error("Erreur :", error));
+            });
+        });
+    });
+
+</script>
+
+{% endblock %}

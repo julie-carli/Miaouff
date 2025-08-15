@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Privacy Policy Section -->
+<section class="privacy-policy-section">
+    <H1 class="privacy-policy-title">Politique de confidentialité</H1>
+
+    <h3 class="privacy-policy-subtitle">Informations générales</h3>
+    <p class="privacy-policy-text">Nous, l'association <strong>Miaouff</strong>, attachons une grande importance à la protection de vos données personnelles. Cette politique de confidentialité a pour objectif de vous informer de la manière dont nous collectons, utilisons, protégeons et traitons vos données personnelles lorsque vous utilisez notre site.</p>
+
+    <h3 class="privacy-policy-subtitle">Collecte des données personnelles</h3>
+    <p class="privacy-policy-text">Lors de votre utilisation de notre site, nous collectons certaines informations personnelles lorsque vous vous inscrivez, effectuez un achat ou nous contactez via nos formulaires de contact. Les données collectées peuvent inclure : nom, prénom, adresse e-mail, numéro de téléphone, adresse postale et informations de paiement.</p>
+
+    <h3 class="privacy-policy-subtitle">Utilisation des données personnelles</h3>
+    <p class="privacy-policy-text">Les informations collectées sont utilisées pour :
+        <ul>
+            <li>Le traitement de vos commandes et livraisons de produits.</li>
+            <li>La gestion de votre compte utilisateur.</li>
+            <li>La communication avec vous concernant vos achats, vos demandes et la gestion de votre relation avec l'association.</li>
+            <li>Les newsletters, si vous y êtes abonné, et les offres promotionnelles de l'association.</li>
+            <li>Améliorer nos services et personnaliser l'expérience utilisateur.</li>
+        </ul>
+    </p>
+
+    <h3 class="privacy-policy-subtitle">Partage des données personnelles</h3>
+    <p class="privacy-policy-text">Nous ne vendons, ne louons ni ne partageons vos informations personnelles avec des tiers à des fins commerciales sans votre consentement explicite. Cependant, nous pouvons être amenés à partager certaines données avec des prestataires de services dans le cadre de la gestion de votre commande (par exemple, les prestataires de paiement et de livraison).</p>
+
+    <h3 class="privacy-policy-subtitle">Sécurité des données</h3>
+    <p class="privacy-policy-text">Nous mettons en œuvre des mesures de sécurité physiques, administratives et techniques pour protéger vos données personnelles contre toute utilisation non autorisée, modification, divulgation ou destruction. Toutefois, aucune méthode de transmission sur Internet ou de stockage électronique n'est totalement sûre. Bien que nous nous efforcions de protéger vos informations personnelles, nous ne pouvons garantir une sécurité absolue.</p>
+
+    <h3 class="privacy-policy-subtitle">Vos droits</h3>
+    <p class="privacy-policy-text">Conformément à la réglementation en vigueur, vous disposez des droits suivants concernant vos données personnelles :
+        <ul>
+            <li>Le droit d'accès à vos données personnelles.</li>
+            <li>Le droit de rectification de vos données personnelles si elles sont inexactes ou incomplètes.</li>
+            <li>Le droit à l'effacement de vos données personnelles sous certaines conditions.</li>
+            <li>Le droit de vous opposer au traitement de vos données personnelles pour des motifs légitimes.</li>
+            <li>Le droit à la portabilité de vos données personnelles, c'est-à-dire le droit de recevoir les données que vous nous avez fournies dans un format structuré, couramment utilisé et lisible par machine.</li>
+        </ul>
+    </p>
+
+    <h3 class="privacy-policy-subtitle">Cookies</h3>
+    <p class="privacy-policy-text">Notre site utilise des cookies pour améliorer votre expérience de navigation et pour vous offrir un contenu personnalisé. Vous avez la possibilité de gérer ou de désactiver les cookies dans les paramètres de votre navigateur. Pour plus d'informations, consultez notre <a href="{{ url_for('cookie_policy') }}"><strong>politique de cookies</strong></a>.</p>
+
+    <h3 class="privacy-policy-subtitle">Modifications de la politique de confidentialité</h3>
+    <p class="privacy-policy-text">Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment. Toute modification sera publiée sur cette page, avec la date de la dernière mise à jour. Nous vous encourageons à consulter régulièrement cette page pour vous tenir informé des éventuelles modifications.</p>
+    <p class="privacy-policy-text"><strong>Dernière mise à jour : 07 février 2025</strong></p>
+
+    <h3 class="privacy-policy-subtitle">Contact</h3>
+    <p class="privacy-policy-text">Si vous avez des questions concernant cette politique de confidentialité ou si vous souhaitez exercer vos droits, vous pouvez nous contacter par email à <strong>contact@miaouff.fr</strong>.</p>
+</section>
+{% endblock %}

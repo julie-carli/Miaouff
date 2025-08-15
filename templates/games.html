@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1 class="games-title">Choisissez un jeu</h1>
+</header>
+
+<main class="games-container">
+    <div class="games-grid">
+        <div>
+        <a href="{{ url_for('quiz') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/quiz.png') }}" alt="Quiz">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Quiz</a>
+        </div>
+        <div>
+        <a href="{{ url_for('wordsearch') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/wordsearch.png') }}" alt="Mots mêlés">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Mots mêlés</a>
+        </div>
+        <div>
+        <a href="{{ url_for('match') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/match.png') }}" alt="Associer les mots">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Associer les mots</a>
+        </div>
+        <div>
+        <a href="{{ url_for('hangman') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/hangman.png') }}" alt="Pendu">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Pendu</a>
+        </div>
+        <div>
+        <a href="{{ url_for('memory') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/memory.png') }}" alt="Memory">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Memory</a>
+        </div>
+        <div>
+        <a href="{{ url_for('rapido') }}" class="games-card">
+            <img src="{{ url_for('static', filename='images/rapido.png') }}" alt="Rapido">
+        </a>
+        <a href="{{ url_for('rapido') }}" class="games-name">Rapido</a>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Gérer les Animaux de Compagnie{% endblock %}
+
+{% block content %}
+<h1 class="edit-pets-title">Gestion des Animaux de Compagnie</h1>
+
+<div class="edit-pets-container">
+    {% for pet in pets %}
+    <div class="edit-pets-item">
+        <img src="{{ url_for('static', filename= pet.image) }}" alt="{{ pet.name }}" class="edit-pets-image">
+        <div class="edit-pets-info">
+            <h2 class="edit-pets-name">{{ pet.name }} ({{ pet.age }} ans)</h2>
+            <p class="edit-pets-gender">Genre : {{ pet.gender }}</p>
+            <p class="edit-pets-description">{{ pet.description }}</p>
+            <p class="edit-pets-adoption-date">Adopté le : {{ pet.adoption_date or "Non adopté" }}</p>
+            <p class="edit-pets-shelter">Refuge : {{ pet.shelter.name }}</p>
+            <p class="edit-pets-animal">Espèce/Race : {{ pet.animal.species }} - {{ pet.animal.breed }}</p>
+        </div>
+        <a href="{{ url_for('edit_pet', pet_id=pet.pet_id) }}" class="edit-pets-edit-btn">✏️</a>
+        <form action="{{ url_for('delete_pet', pet_id=pet.pet_id) }}" method="POST" class="edit-pets-delete-form">
+            <button type="submit" class="edit-pets-delete-btn">❌</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 class="edit-pets-subtitle">Ajouter un animal de compagnie</h2>
+<form method="POST" action="{{ url_for('edit_pet') }}" class="edit-pets-form">
+    <input type="text" name="name" placeholder="Nom" required class="edit-pets-input">
+    <input type="number" name="age" placeholder="Âge" required class="edit-pets-input">
+    <select name="gender" required class="edit-pets-input">
+        <option value="Male">Mâle</option>
+        <option value="Female">Femelle</option>
+    </select>
+    <textarea name="description" placeholder="Description" class="edit-pets-textarea"></textarea>
+    <input type="date" name="adoption_date" class="edit-pets-input">
+    <input type="text" name="image" placeholder="URL de l'image" class="edit-pets-input">
+    
+    <select name="shelter_id" required class="edit-pets-input">
+        <option value="" disabled selected>Choisir un refuge</option>
+        {% for shelter in shelters %}
+        <option value="{{ shelter.shelter_id }}">{{ shelter.name }}</option>
+        {% endfor %}
+    </select>
+    
+    <select name="animal_id" required class="edit-pets-input">
+        <option value="" disabled selected>Choisir une espèce et une race</option>
+        {% for animal in animals %}
+        <option value="{{ animal.animal_id }}">{{ animal.species }} - {{ animal.breed }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="edit-pets-btn">Ajouter</button>
+</form>
+{% endblock %}

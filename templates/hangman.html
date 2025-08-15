@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h2 class="games-title">Jeu - Le Pendu</h2>
+</header>
+
+<main class="hangman-container">
+    <div class="hangman-game">
+        <div class="hangman-word">
+
+        </div>
+        <div class="hangman-hangman">
+        </div>
+        <div class="hangman-guesses">
+
+        </div>
+        <div class="hangman-actions">
+            <input type="text" class="hangman-letter" maxlength="1"/>
+            <button class="hangman-guess">Deviner</button>
+        </div>
+        <button class="hangman-restart">Recommencer</button>
+    </div>
+    <img src="/static/images/0-hangman.png" alt="Hangman">
+</main>
+
+<script src="{{ url_for('static', filename='js/hangman.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier l'Animal{% endblock %}
+
+{% block content %}
+<h1 class="edit-animal-title">Modifier l'Animal</h1>
+
+<form method="POST" class="edit-animal-form">
+    <label for="species">Espèce</label>
+    <input type="text" name="species" id="species" value="{{ animal.species }}" required class="edit-animal-input">
+
+    <label for="breed">Race</label>
+    <input type="text" name="breed" id="breed" value="{{ animal.breed }}" required class="edit-animal-input">
+
+    <label for="lifespan">Espérance de vie</label>
+    <input type="text" name="lifespan" id="lifespan" value="{{ animal.lifespan }}" class="edit-animal-input">
+
+    <label for="diet">Régime alimentaire</label>
+    <input type="text" name="diet" id="diet" value="{{ animal.diet }}" class="edit-animal-input">
+
+    <label for="specifics">Détails</label>
+    <textarea name="specifics" id="specifics" class="edit-animal-textarea">{{ animal.specifics }}</textarea>
+
+    <label for="image">URL de l'image</label>
+    <input type="text" name="image" id="image" value="{{ animal.image }}" class="edit-animal-input">
+
+    <button type="submit" class="edit-animal-btn">Sauvegarder</button>
+</form>
+
+<a href="{{ url_for('edit_animals') }}" class="edit-animal-back">← Retour à la gestion des animaux</a>
+{% endblock %}

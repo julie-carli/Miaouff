@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="login-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="login-forms">
+        <form id="loginForm" class="login-form" method="POST" action="{{ url_for('login') }}">
+            <h2 class="login-title">Connexion</h2>
+            <label for="login-email">Adresse e-mail</label>
+            <input type="email" id="login-email" name="email" class="login-input" required>
+
+            <label for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" name="password" class="login-input" required>
+
+            <button type="submit" class="login-button">Se connecter</button>
+            <p class="login-switch">Vous n'avez pas de compte ? <a href="javascript:void(0)" id="showRegister">Inscrivez-vous ici</a></p>
+        </form>
+
+        <form id="registerForm" class="login-form hidden" method="POST" action="{{ url_for('login') }}">
+            <h2 class="login-title">Inscription</h2>
+            <label for="register-email">Adresse e-mail</label>
+            <input type="email" id="register-email" name="email" class="login-input" required>
+        
+            <label for="register-password">Mot de passe</label>
+            <input type="password" id="register-password" name="password" class="login-input" required>
+            <p class="login-password-info">
+                Le mot de passe doit contenir :
+                <span id="length-criteria" class="criteria">Au moins 12 caractères</span>
+                <span id="uppercase-criteria" class="criteria">Une majuscule</span>
+                <span id="lowercase-criteria" class="criteria">Une minuscule</span>
+                <span id="number-criteria" class="criteria">Un chiffre</span>
+                <span id="symbol-criteria" class="criteria">
+                    Un symbole parmi <strong>@ $ ! % * ? & , . ; : - _ + = ( ) [ ] { } / \ | ^ ~ #</strong>
+                </span>
+            </p>                
+        
+            <label for="confirm-password">Confirmez le mot de passe</label>
+            <input type="password" id="confirm-password" name="confirm_password" class="login-input" required>
+        
+            <button type="submit" class="login-button">S'inscrire</button>
+            <p class="login-switch">Vous avez déjà un compte ? <a href="javascript:void(0)" id="showLogin">Connectez-vous ici</a></p>
+        </form>        
+    </div>
+</div>
+
+<script src="/static/js/login.js" defer></script>
+{% endblock %}
