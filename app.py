@@ -226,7 +226,7 @@ def delete_user(user_id):
     flash("Utilisateur supprimé avec succès.", "success")
     return redirect(url_for("edit_users"))
 
-
+# Login and register
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -282,13 +282,13 @@ def login():
 
     return render_template("login.html")
 
-
+# To log to the account
 @app.route("/account")
 @login_required
 def account():
     return render_template("account.html", user_name=current_user.email)
 
-
+# To logout
 @app.route("/logout")
 @login_required
 def logout():
