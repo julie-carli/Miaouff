@@ -35,7 +35,12 @@
     </select>
     <textarea name="description" placeholder="Description" class="edit-pets-textarea"></textarea>
     <input type="date" name="adoption_date" class="edit-pets-input">
-    <input type="text" name="image" placeholder="URL de l'image" class="edit-pets-input">
+    <input type="file" id="image" name="image" accept=".png,.jpg,.jpeg,.gif" required class="edit-pets-input" onchange="previewImage(event)">
+<div id="image-preview-container" style="display:none;">
+    <img id="image-preview" src="#" alt="Prévisualisation" class="edit-pets-image-preview">
+    <button type="button" onclick="removeImage()" class="edit-pets-remove-btn">Retirer l'image</button>
+</div>
+
     
     <select name="shelter_id" required class="edit-pets-input">
         <option value="" disabled selected>Choisir un refuge</option>
@@ -53,4 +58,27 @@
 
     <button type="submit" class="edit-pets-btn">Ajouter</button>
 </form>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.getElementById('image-preview-container');
+                const previewImg = document.getElementById('image-preview');
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    function removeImage() {
+        const fileInput = document.getElementById('image');
+        fileInput.value = "";
+        document.getElementById('image-preview-container').style.display = 'none';
+    }
+    </script>
+    
 {% endblock %}
