@@ -38,6 +38,7 @@ from flask_mail import Mail, Message
 import secrets
 from bson import ObjectId
 from datetime import datetime
+import re
 
 app = Flask(__name__)
 
@@ -248,23 +249,20 @@ def login():
                 return redirect(url_for("login"))
 
             if (
-                len(password) < 12
-                or not any(c.isupper() for c in password)
-                or not any(c.islower() for c in password)
-                or not any(c.isdigit() for c in password)
-                or not any(c in "@$!%*?&" for c in password)
-            ):
-                flash(
-                    "Le mot de passe ne respecte pas les critères de sécurité.",
-                    "danger",
-                )
+            len(password) < 12
+            or not any(c.isupper() for c in password)
+            or not any(c.islower() for c in password)
+            or not any(c.isdigit() for c in password)
+            or not re.search(r'[@$!%*?&,.;:\-_+=()\[\]{}\/\\|^~#]', password)
+        ):
+                flash("Le mot de passe ne respecte pas les critères de sécurité.", "danger")
                 return redirect(url_for("login"))
+
 
             hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
             new_user = User(email=email, password=hashed_password, role="user")
             db.session.add(new_user)
             db.session.commit()
-            session.pop("_flashes", None)
             flash(
                 "Inscription réussie ! Vous pouvez maintenant vous connecter.",
                 "success",
@@ -306,35 +304,55 @@ def edit_shelters():
         flash("Accès refusé.", "danger")
         return redirect(url_for("index"))
 
-    if request.method == "POST":
-        print("✅ Requête POST reçue")
-
-        file = request.files.get("image")
-
-        if not file:
-            print("❌ Aucun fichier reçu !")
-        elif file.filename == "":
-            print("❌ Fichier reçu mais vide !")
-        else:
-            print(f"📂 Fichier reçu: {file.filename}")
-
-            if allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                save_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-                print(f"📂 Chemin de sauvegarde: {save_path}")
-
-                try:
-                    file.save(save_path)
-                    print("✅ Image enregistrée avec succès!")
-                except Exception as e:
-                    print(f"❌ ERREUR lors de l'enregistrement: {e}")
-            else:
-                print("❌ Format d'image non autorisé !")
-                flash("Format d'image non autorisé.", "danger")
-                return redirect(request.url)
-
     shelters = Shelter.query.all()
+
+    if request.method == "POST":
+
+        shelter_id_to_delete = request.form.get("shelter_id")
+        if shelter_id_to_delete:
+            shelter = Shelter.query.get(int(shelter_id_to_delete))
+            if shelter:
+                if shelter.image:
+                    image_path = os.path.join(app.config["UPLOAD_FOLDER"], shelter.image)
+                    if os.path.exists(image_path):
+                        os.remove(image_path)
+                db.session.delete(shelter)
+                db.session.commit()
+                flash("Refuge supprimé avec succès", "success")
+            return redirect(url_for("edit_shelters"))
+
+
+        name = request.form.get("name")
+        address = request.form.get("address")
+        phone = request.form.get("phone")
+        email = request.form.get("email")
+        description = request.form.get("description")
+        image_file = request.files.get("image")  
+
+        if not image_file:
+            flash("Veuillez sélectionner une image", "danger")
+            return redirect(url_for("edit_shelters"))
+
+
+        filename = secure_filename(image_file.filename)
+        image_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        image_file.save(image_path)
+
+        new_shelter = Shelter(
+            name=name,
+            address=address,
+            phone=phone,
+            email=email,
+            description=description,
+            image=filename
+        )
+        db.session.add(new_shelter)
+        db.session.commit()
+        flash("Refuge ajouté avec succès", "success")
+        return redirect(url_for("edit_shelters"))
+
     return render_template("edit_shelters.html", shelters=shelters)
+
 
 
 @app.route("/edit-shelter", methods=["GET", "POST"])
@@ -346,6 +364,8 @@ def edit_shelter(shelter_id=None):
         return redirect(url_for("home"))
 
     shelter = Shelter.query.get(shelter_id) if shelter_id else None
+    all_shelters = Shelter.query.all()  # Pour un select si nécessaire
+    all_species = [s[0] for s in db.session.query(Animal.species).distinct().all()]  # Toutes espèces
 
     if request.method == "POST":
         name = request.form["name"]
@@ -354,27 +374,25 @@ def edit_shelter(shelter_id=None):
         email = request.form["email"]
         description = request.form.get("description", "")
 
-        if "image" in request.files:
-            file = request.files["image"]
+        file = request.files.get("image")
+        image_filename = shelter.image if shelter else None
 
-            if file and allowed_file(file.filename):
+        if file and file.filename != "":
+            if allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
 
+                # Supprime ancienne image si existante
                 if shelter and shelter.image:
-                    old_image_path = os.path.join(
-                        app.config["UPLOAD_FOLDER"], shelter.image
-                    )
+                    old_image_path = os.path.join(app.config["UPLOAD_FOLDER"], shelter.image)
                     if os.path.exists(old_image_path):
                         os.remove(old_image_path)
 
                 file.save(filepath)
-
                 image_filename = filename
             else:
-                image_filename = shelter.image if shelter else None
-        else:
-            image_filename = shelter.image if shelter else None
+                flash("Format d'image non autorisé.", "danger")
+                return redirect(request.url)
 
         if shelter:
             shelter.name = name
@@ -399,7 +417,12 @@ def edit_shelter(shelter_id=None):
         db.session.commit()
         return redirect(url_for("edit_shelters"))
 
-    return render_template("edit_shelter.html", shelter=shelter)
+    return render_template(
+        "edit_shelter.html",
+        shelter=shelter,
+        all_shelters=all_shelters,
+        all_species=all_species
+    )
 
 
 @app.route("/delete_shelter/<int:shelter_id>", methods=["POST"])

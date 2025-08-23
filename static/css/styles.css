@@ -3982,3 +3982,173 @@ a {
 .edit-category-delete-btn:hover {
     transform: scale(1.2);  
 }
+
+/* EDIT PETS SECTION */
+
+.edit-pets-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #ff7e5f;
+    margin-bottom: 20px;
+}
+
+.edit-pets-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.edit-pets-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.edit-pets-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.edit-pets-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.edit-pets-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.edit-pets-gender,
+.edit-pets-description,
+.edit-pets-adoption-date,
+.edit-pets-shelter,
+.edit-pets-animal {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+}
+
+.edit-pets-edit-btn,
+.edit-pets-delete-btn {
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+    background-color: #ff7e5f;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+}
+
+.edit-pets-edit-btn {
+    right: 45px;
+}
+
+.edit-pets-delete-btn {
+    right: 10px;
+    background-color: #ff4c4c;
+}
+
+.edit-pets-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+    margin: 30px auto 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.edit-pets-subtitle {
+    text-align: center;
+    font-size: 22px;
+    color: #ff7e5f;
+    margin-bottom: 15px;
+}
+
+.edit-pets-input,
+.edit-pets-textarea,
+.edit-pets-select {
+    width: calc(100% - 19px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.edit-pets-textarea {
+    height: 60px;
+    resize: none;
+}
+
+.edit-pets-btn {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: fit-content;
+    align-self: center;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    font-size: 16px;
+}
+
+
+
+.edit-pets-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.edit-pets-edit-btn,
+.edit-pets-delete-btn {
+    font-size: 18px;
+    background: transparent;
+    color: #ff7e5f;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.2s, color 0.2s;
+}
+
+.edit-pets-edit-btn {
+    right: 45px;
+}
+
+.edit-pets-delete-btn {
+    right: 10px;
+    color: #ff4c4c;
+}
+
+.edit-pets-edit-btn:hover {
+    transform: translateY(-50%) scale(1.2);
+}
+
+.edit-pets-delete-btn:hover {
+    transform: translateY(-50%) scale(1.2);
+}
