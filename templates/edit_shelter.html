@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier le Refuge{% endblock %}
+
+{% block content %}
+<h1 class="edit-shelter-title">Modifier le Refuge</h1>
+
+<form method="POST" enctype="multipart/form-data" class="edit-shelter-form">
+    <label for="name">Nom du refuge</label>
+    <input type="text" name="name" id="name" value="{{ shelter.name }}" required class="edit-shelter-input">
+
+    <label for="address">Adresse</label>
+    <input type="text" name="address" id="address" value="{{ shelter.address }}" required class="edit-shelter-input">
+
+    <label for="phone">Téléphone</label>
+    <input type="text" name="phone" id="phone" value="{{ shelter.phone }}" required class="edit-shelter-input">
+
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" value="{{ shelter.email }}" required class="edit-shelter-input">
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" required class="edit-shelter-textarea">{{ shelter.description }}</textarea>
+
+    <label for="current-image">Image actuelle</label>
+    {% if shelter.image %}
+        <div class="edit-shelter-image-container">
+            <img id="current-image" src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="Image du refuge" class="edit-shelter-image">
+        </div>
+    {% else %}
+        <p>Aucune image disponible.</p>
+    {% endif %}
+
+    <label for="image">Nouvelle image</label>
+    <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg, .gif" class="edit-shelter-input" onchange="previewImage(event)">
+
+    <div id="image-preview-container" style="display: none;">
+        <img id="image-preview" src="#" alt="Prévisualisation" class="edit-shelter-image">
+        <button type="button" onclick="removeImage()" class="edit-shelter-remove-btn">Retirer l'image</button>
+    </div>
+
+    <button type="submit" class="edit-shelter-btn">Sauvegarder</button>
+</form>
+
+<a href="{{ url_for('edit_shelters') }}" class="edit-shelter-back">Retour à la gestion des refuges</a>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('image-preview-container').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeImage() {
+    document.getElementById('image').value = "";
+    document.getElementById('image-preview-container').style.display = 'none';
+}
+</script>
+
+{% endblock %}

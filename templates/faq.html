@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="faq-section">
+
+    <div class="faq-header">
+        <h1 class="faq-title">Foire aux questions</h1>
+        <p class="faq-intro">Une question ? La réponse est probablement ici 🐾</p>
+    </div>
+
+    <div class="faq-list">
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Qu'est-ce que Miaouff ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Miaouff est une association dédiée à l'aide aux animaux, principalement les chats et les chiens. Nous vendons également des produits pour soutenir notre cause.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Comment puis-je adopter un animal de Miaouff ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Pour adopter un animal, visitez notre section <a href="{{ url_for('shelters') }}" class="faq-link">Refuges</a>, où vous trouverez plus de détails sur la manière de procéder à une adoption.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Quels types de produits vendez-vous ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Nous vendons une variété de produits pour les animaux : aliments, jouets et produits d'hygiène. Consultez notre page <a href="{{ url_for('products') }}" class="faq-link">Produits</a> pour plus d'informations.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Est-ce que les produits sont disponibles en ligne ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Oui, tous nos produits sont disponibles à la vente en ligne. Rendez-vous dans notre section <a href="{{ url_for('products') }}" class="faq-link">Produits</a> pour les découvrir.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Puis-je faire un don à l'association ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Oui, vous pouvez faire un don pour soutenir notre mission. Visitez la page de dons pour plus d'informations sur la façon de contribuer.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Quelles sont les démarches pour adopter un chat ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Les démarches sont simples : remplissez un formulaire d'adoption et passez un entretien avec notre équipe. Une fois l'adoption validée, vous pouvez accueillir votre nouveau compagnon chez vous.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Puis-je adopter un animal même si je vis en appartement ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Oui, il est possible d'adopter un animal en appartement, à condition que l'environnement soit adapté à ses besoins et qu'il puisse s'y sentir à l'aise.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Vos produits sont-ils disponibles en magasin ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Actuellement, nos produits sont uniquement disponibles en ligne via notre site web. Nous envisageons d'ouvrir un point de vente dans un futur proche.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+                <span>Quels sont les frais d'adoption d'un animal ?</span>
+                <span class="faq-icon">＋</span>
+            </button>
+            <div class="faq-answer">
+                <p>Les frais d'adoption couvrent les soins vétérinaires, la stérilisation et les vaccinations. Le montant exact varie en fonction de l'animal adopté.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    // --- FAQ accordion: toggle open/close on click ---
+    document.querySelectorAll('.faq-question').forEach(button => {
+        button.addEventListener('click', () => {
+            const item    = button.parentElement;
+            const isOpen  = item.classList.contains('open');
+
+            // Close all items before opening the clicked one
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('open');
+                i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            });
+
+            // If it was closed, open it
+            if (!isOpen) {
+                item.classList.add('open');
+                button.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

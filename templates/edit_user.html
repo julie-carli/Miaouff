@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Utilisateur{% endblock %}
+
+{% block content %}
+
+<h1 class="edit-user-title">Modifier l'utilisateur</h1>
+
+<div class="form-container">
+
+    <form method="POST" action="{{ url_for('edit_user', user_id=user.user_id) }}">
+
+        <div class="section-title">
+            <h3>Informations personnelles</h3>
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">Prénom :</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name or '' }}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Nom :</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name or '' }}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="birth_date">Date de naissance :</label>
+            <input type="date" id="birth_date" name="birth_date" 
+                   value="{{ user.birth_date.strftime('%Y-%m-%d') if user.birth_date else '' }}" 
+                   class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Téléphone :</label>
+            <input type="text" id="phone" name="phone" value="{{ user.phone or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" value="{{ user.email or '' }}" class="form-control" required>
+        </div>
+<br>
+        <div class="form-group">
+            <label for="password">Mot de passe :</label>
+            <a href="{{ url_for('send_reset_code', user_id=user.user_id) }}" class="btn btn-warning mt-3">Envoyer un code de réinitialisation</a>
+        </div>
+<br><br>
+        <div class="section-title">
+            <h3>Adresse</h3>
+        </div>
+
+        <div class="form-group">
+            <label for="address_number">Numéro :</label>
+            <input type="text" id="address_number" name="address_number" value="{{ user.address_number or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="street_name">Rue :</label>
+            <input type="text" id="street_name" name="street_name" value="{{ user.street_name or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="address_complement">Complément d'adresse :</label>
+            <input type="text" id="address_complement" name="address_complement" value="{{ user.address_complement or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="postal_code">Code Postal :</label>
+            <input type="text" id="postal_code" name="postal_code" value="{{ user.postal_code or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="city">Ville :</label>
+            <input type="text" id="city" name="city" value="{{ user.city or '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="country">Pays :</label>
+            <input type="text" id="country" name="country" value="{{ user.country or '' }}" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+</div>
+
+{% endblock %}

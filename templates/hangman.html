@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ============================================================
+   Hangman game page
+   JS logic handled in static/js/hangman.js — do not modify
+   ============================================================ -->
+<main class="hangman-page">
+
+    <h1 class="game-page-title">Jeu — Le Pendu</h1>
+
+    <div class="hangman-container">
+        <div class="hangman-game">
+            <div class="hangman-word"></div>
+            <div class="hangman-hangman"></div>
+            <div class="hangman-guesses"></div>
+            <div class="hangman-actions">
+                <input type="text" class="hangman-letter" maxlength="1"/>
+                <button class="hangman-guess">Deviner</button>
+            </div>
+            <button class="hangman-restart">Recommencer</button>
+        </div>
+        <img src="/static/images/0-hangman.png" alt="Hangman">
+    </div>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/hangman.js') }}"></script>
+
+{% endblock %}

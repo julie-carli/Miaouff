@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="legal-section">
+
+    <div class="legal-header">
+        <h1 class="legal-title">Mentions Légales</h1>
+        <p class="legal-intro">Dernière mise à jour : 16 mars 2026 — Association Miaouff</p>
+    </div>
+
+    <div class="legal-grid">
+
+        <!-- Info card with key-value pairs -->
+        <article class="legal-card legal-card--wide">
+            <h2 class="legal-subtitle">Informations générales</h2>
+            <dl class="legal-dl">
+                <div class="legal-dl-row">
+                    <dt>Nom de l'association</dt>
+                    <dd>Miaouff</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Statut</dt>
+                    <dd>Association à but non lucratif</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Numéro RNA</dt>
+                    <dd>W123456789</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Adresse</dt>
+                    <dd>123 Rue de l'Association, 75000 Paris, France</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Email</dt>
+                    <dd><a href="mailto:contact@miaouff.fr" class="legal-link">contact@miaouff.fr</a></dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Téléphone</dt>
+                    <dd>+33 1 23 45 67 89</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Responsable de publication</dt>
+                    <dd>Julie Carli, Présidente</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Hébergement</h2>
+            <dl class="legal-dl">
+                <div class="legal-dl-row">
+                    <dt>Hébergeur</dt>
+                    <dd>HBG</dd>
+                </div>
+                <div class="legal-dl-row">
+                    <dt>Adresse</dt>
+                    <dd>456 rue de l'Hébergeur, 59100 Roubaix, France</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Propriété intellectuelle</h2>
+            <p class="legal-text">Le contenu du site (textes, images, vidéos, logos, etc.) est la propriété exclusive de l'association <strong>Miaouff</strong> ou de ses partenaires. Toute reproduction non autorisée est interdite.</p>
+        </article>
+
+        <article class="legal-card legal-card--wide">
+            <h2 class="legal-subtitle">Protection des données personnelles</h2>
+            <p class="legal-text">Les données collectées sont exclusivement destinées à <strong>Miaouff</strong> pour le traitement des demandes utilisateurs. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression — contactez-nous à <a href="mailto:contact@miaouff.fr" class="legal-link">contact@miaouff.fr</a>.</p>
+            <p class="legal-text">Pour plus d'informations, consultez notre <a href="{{ url_for('privacy_policy') }}" class="legal-link">politique de confidentialité</a>.</p>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Responsabilité</h2>
+            <p class="legal-text">L'association <strong>Miaouff</strong> met tout en œuvre pour assurer l'exactitude des informations publiées, mais ne peut être tenue responsable des erreurs ou omissions. L'utilisateur est seul responsable de l'utilisation des informations fournies.</p>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Conditions d'utilisation</h2>
+            <p class="legal-text">En accédant à ce site, vous acceptez de respecter les lois en vigueur et les présentes mentions légales. Toute utilisation frauduleuse est interdite.</p>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Cookies</h2>
+            <p class="legal-text">Ce site utilise des cookies pour améliorer l'expérience de navigation. En poursuivant votre navigation, vous acceptez leur utilisation. Consultez notre <a href="{{ url_for('cookie_policy') }}" class="legal-link">politique de cookies</a>.</p>
+        </article>
+
+        <article class="legal-card">
+            <h2 class="legal-subtitle">Droit applicable</h2>
+            <p class="legal-text">Les présentes mentions légales sont régies par le droit français. En cas de litige, après tentative de résolution amiable, les tribunaux compétents seront ceux du siège de l'association.</p>
+        </article>
+
+    </div>
+</section>
+{% endblock %}

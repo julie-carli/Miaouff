@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header>
+    <h2 class="game-page-title">Jeu de Mémoire - Animaux</h2>
+</header>
+
+<div class="memory-grid"></div>
+<button class="memory-restart">Recommencer</button>
+
+<script src="{{ url_for('static', filename='js/memory.js') }}"></script>
+{% endblock %}

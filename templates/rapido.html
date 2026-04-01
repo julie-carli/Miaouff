@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ============================================================
+   Rapido game page
+   JS logic handled in static/js/rapido.js — do not modify
+   ============================================================ -->
+<main class="rapido-page">
+
+    <h1 class="game-page-title">Jeu — Rapido</h1>
+
+    <div class="rapido-container">
+        <div class="rapido-game">
+
+            <div class="rapido-timer">
+                <p>Temps restant : <span id="timer">60</span> secondes</p>
+            </div>
+
+            <div class="rapido-question">
+                <p id="question">Chargement...</p>
+            </div>
+
+            <div class="rapido-options">
+                <button class="rapido-option" onclick="checkAnswer('blanc')">Blanc</button>
+                <button class="rapido-option" onclick="checkAnswer('noir')">Noir</button>
+                <button class="rapido-option" onclick="checkAnswer('roux')">Roux</button>
+                <button class="rapido-option" onclick="checkAnswer('gris')">Gris</button>
+            </div>
+
+            <div class="rapido-score">
+                <p>Score : <span id="score">0</span></p>
+            </div>
+
+            <div class="rapido-end">
+                <button id="restart" onclick="startGame()">Recommencer</button>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/rapido.js') }}"></script>
+
+{% endblock %}

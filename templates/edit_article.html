@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="edit-article-page">
+    <h1>Modifier l'article</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="title" value="{{ article['title'] }}" required>
+        <textarea name="content" required>{{ article['content'] }}</textarea>
+        <input type="file" name="image" accept="image/*">
+        <select name="shelter_id">
+            <option value="">Aucun refuge associé</option>
+            {% for shelter in shelters %}
+                <option value="{{ shelter.shelter_id }}" {% if shelter.shelter_id == article['shelter_id'] %}selected{% endif %}>{{ shelter.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-submit">Mettre à jour</button>
+    </form>
+</div>
+{% endblock %}

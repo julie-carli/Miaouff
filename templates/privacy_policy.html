@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="privacy-section">
+
+    <div class="privacy-header">
+        <h1 class="privacy-title">Politique de confidentialité</h1>
+        <p class="privacy-intro">Dernière mise à jour : 16 mars 2026 — Association Miaouff</p>
+    </div>
+
+    <div class="privacy-grid">
+
+        <article class="privacy-card privacy-card--wide">
+            <h2 class="privacy-subtitle">Informations générales</h2>
+            <p class="privacy-text">Nous, l'association <strong>Miaouff</strong>, attachons une grande importance à la protection de vos données personnelles. Cette politique a pour objectif de vous informer de la manière dont nous collectons, utilisons, protégeons et traitons vos données lorsque vous utilisez notre site.</p>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Collecte des données</h2>
+            <p class="privacy-text">Lors de votre inscription, d'un achat ou d'un contact via nos formulaires, nous pouvons collecter :</p>
+            <ul class="privacy-list">
+                <li>Nom et prénom</li>
+                <li>Adresse e-mail</li>
+                <li>Numéro de téléphone</li>
+                <li>Adresse postale</li>
+                <li>Informations de paiement</li>
+            </ul>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Utilisation des données</h2>
+            <p class="privacy-text">Les informations collectées sont utilisées pour :</p>
+            <ul class="privacy-list">
+                <li>Le traitement de vos commandes et livraisons</li>
+                <li>La gestion de votre compte utilisateur</li>
+                <li>La communication liée à vos achats et demandes</li>
+                <li>Les newsletters et offres promotionnelles</li>
+                <li>L'amélioration de nos services</li>
+            </ul>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Partage des données</h2>
+            <p class="privacy-text">Nous ne vendons, ne louons ni ne partageons vos données à des fins commerciales sans votre consentement. Certaines données peuvent être partagées avec des prestataires (paiement, livraison) dans le cadre de la gestion de votre commande.</p>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Sécurité des données</h2>
+            <p class="privacy-text">Nous mettons en œuvre des mesures de sécurité physiques, administratives et techniques pour protéger vos données. Aucune transmission sur Internet n'étant totalement sûre, nous ne pouvons garantir une sécurité absolue malgré nos efforts.</p>
+        </article>
+
+        <article class="privacy-card privacy-card--wide">
+            <h2 class="privacy-subtitle">Vos droits</h2>
+            <p class="privacy-text">Conformément au RGPD, vous disposez des droits suivants :</p>
+            <ul class="privacy-list privacy-list--grid">
+                <li>Droit d'accès à vos données</li>
+                <li>Droit de rectification</li>
+                <li>Droit à l'effacement</li>
+                <li>Droit d'opposition au traitement</li>
+                <li>Droit à la portabilité</li>
+            </ul>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Cookies</h2>
+            <p class="privacy-text">Notre site utilise des cookies pour améliorer votre navigation et personnaliser le contenu. Vous pouvez les gérer dans les paramètres de votre navigateur. Consultez notre <a href="{{ url_for('cookie_policy') }}" class="privacy-link">politique de cookies</a> pour plus d'informations.</p>
+        </article>
+
+        <article class="privacy-card">
+            <h2 class="privacy-subtitle">Modifications</h2>
+            <p class="privacy-text">Nous nous réservons le droit de modifier cette politique à tout moment. Les modifications seront publiées sur cette page. Nous vous encourageons à la consulter régulièrement.</p>
+        </article>
+
+        <article class="privacy-card privacy-card--wide">
+            <h2 class="privacy-subtitle">Contact</h2>
+            <p class="privacy-text">Pour toute question ou pour exercer vos droits, contactez-nous à <a href="mailto:contact@miaouff.fr" class="privacy-link">contact@miaouff.fr</a>.</p>
+        </article>
+
+    </div>
+</section>
+{% endblock %}

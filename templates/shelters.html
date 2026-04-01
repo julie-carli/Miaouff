@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Page hero -->
+<section class="shelters-hero">
+    <div class="shelters-hero-content">
+        <p class="shelters-hero-eyebrow">Nos refuges 🐾</p>
+        <h1 class="shelters-hero-title">Deux refuges,<br>une seule mission</h1>
+        <p class="shelters-hero-sub">Chaque animal mérite un foyer aimant. Découvrez nos refuges partenaires et les pensionnaires qui attendent votre visite.</p>
+    </div>
+</section>
+
+<!-- Interactive map with Leaflet -->
+<section class="shelters-map-section">
+    <div class="shelters-map-header">
+        <h2 class="shelters-map-title">Où nous trouver</h2>
+        <p class="shelters-map-sub">Cliquez sur un marqueur pour accéder au refuge.</p>
+    </div>
+    <div id="shelters-map"></div>
+</section>
+
+<!-- Shelter cards -->
+<section class="shelters-list">
+    {% for shelter in shelters %}
+    <article class="shelter-full-card {% if loop.index is even %}shelter-full-card--reverse{% endif %}">
+
+        <!-- Image side -->
+        <a href="{{ url_for('shelter', shelter_id=shelter.shelter_id) }}" class="shelter-full-img-wrapper">
+            <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}">
+            <div class="shelter-full-img-overlay">
+                <span>Voir les animaux →</span>
+            </div>
+        </a>
+
+        <!-- Info side -->
+        <div class="shelter-full-info">
+            <p class="shelter-full-number">0{{ loop.index }}</p>
+            <h2 class="shelter-full-name">{{ shelter.name }}</h2>
+            <p class="shelter-full-desc">{{ shelter.description }}</p>
+
+            <ul class="shelter-full-meta">
+                <li>
+                    <span class="shelter-meta-icon">📍</span>
+                    <span>{{ shelter.address }}</span>
+                </li>
+                <li>
+                    <span class="shelter-meta-icon">📞</span>
+                    <a href="tel:{{ shelter.phone }}" class="shelter-meta-link">{{ shelter.phone }}</a>
+                </li>
+                <li>
+                    <span class="shelter-meta-icon">✉️</span>
+                    <a href="mailto:{{ shelter.email }}" class="shelter-meta-link">{{ shelter.email }}</a>
+                </li>
+            </ul>
+
+            <div class="shelter-full-actions">
+                <a href="{{ url_for('shelter', shelter_id=shelter.shelter_id) }}" class="btn-shelter-primary">
+                    Voir les animaux
+                </a>
+                <a href="https://www.google.com/maps/search/?api=1&query={{ shelter.address | urlencode }}"
+                   target="_blank" rel="noopener" class="btn-shelter-secondary">
+                    Voir sur Maps
+                </a>
+            </div>
+        </div>
+
+    </article>
+    {% endfor %}
+</section>
+
+<!-- Leaflet map script -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+    // Initialize the map centered on the Eure-et-Loir area
+    const map = L.map('shelters-map').setView([48.35, 1.55], 9);
+
+    // OpenStreetMap tile layer — free and open source
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 18,
+    }).addTo(map);
+
+    // Custom coral marker icon
+    const coralIcon = L.divIcon({
+        className: '',
+        html: `<div class="map-marker"><span>🐾</span></div>`,
+        iconSize: [44, 44],
+        iconAnchor: [22, 44],
+        popupAnchor: [0, -48],
+    });
+
+    // Shelter coordinates (Chartres and Dreux)
+    const shelters = [
+        {
+            name: "Le Havre des Ronronnements",
+            lat: 48.4469,
+            lng: 1.4880,
+            address: "12 Rue des Chats Heureux, 28000 Chartres",
+            url: "{{ url_for('shelter', shelter_id=1) }}"
+        },
+        {
+            name: "Le Refuge des Câlins Canins",
+            lat: 48.7363,
+            lng: 1.3664,
+            address: "25 Avenue des Amis Fidèles, 28100 Dreux",
+            url: "{{ url_for('shelter', shelter_id=2) }}"
+        }
+    ];
+
+    // Add a marker and popup for each shelter
+    shelters.forEach(s => {
+        const popup = `
+            <div class="map-popup">
+                <p class="map-popup-name">${s.name}</p>
+                <p class="map-popup-address">${s.address}</p>
+                <a href="${s.url}" class="map-popup-btn">Voir les animaux →</a>
+            </div>
+        `;
+        L.marker([s.lat, s.lng], { icon: coralIcon })
+            .addTo(map)
+            .bindPopup(popup, { maxWidth: 220 });
+    });
+</script>
+
+{% endblock %}

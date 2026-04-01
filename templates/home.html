@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ========== HERO — fullscreen video with CTA ========== -->
+<section class="hero">
+    <div class="hero-video-wrapper">
+        <video autoplay loop muted playsinline preload="auto" class="hero-video">
+            <source src="{{ url_for('static', filename='videos/website-home.mp4') }}" type="video/mp4">
+        </video>
+        <!-- Gradient overlay: dark at bottom so text stays readable -->
+        <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+        <p class="hero-eyebrow">Association Miaouff 🐾</p>
+        <h1 class="hero-title">Chaque animal<br>mérite un foyer</h1>
+        <p class="hero-subtitle">Adoptez, soutenez, agissez. Ensemble, faisons la différence.</p>
+        <div class="hero-cta">
+            <a href="{{ url_for('adopt_animals') }}" class="btn-hero-primary">Adopter un animal</a>
+            <a href="{{ url_for('shelters') }}" class="btn-hero-secondary">Nos refuges</a>
+        </div>
+    </div>
+
+    <!-- Scroll hint arrow — links to the stats section below -->
+<a href="#stats" class="hero-scroll-hint" aria-label="Défiler vers les statistiques">
+    <span></span>
+</a>
+</section>
+
+<!-- ========== STATS STRIP ========== -->
+<section class="stats-strip" id="stats">
+    <div class="stat-item">
+        <span class="stat-number">2</span>
+        <span class="stat-label">Refuges partenaires</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-number">150+</span>
+        <span class="stat-label">Animaux adoptés</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-number">3</span>
+        <span class="stat-label">Catégories de produits</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Bénévoles passionnés</span>
+    </div>
+</section>
+
+<!-- ========== SHELTERS ========== -->
+<section class="home-shelters">
+    <div class="section-header">
+        <h2 class="section-title">Nos Refuges</h2>
+        <p class="section-sub">Deux lieux de vie, une seule mission : trouver un foyer à chaque animal.</p>
+    </div>
+
+    <div class="shelters-grid">
+        <a href="{{ url_for('shelter', shelter_id=1) }}" class="shelter-card">
+            <div class="shelter-card-img-wrapper">
+                <img src="{{ url_for('static', filename='images/the_haven_of_purrs.png') }}" alt="Le Havre des Ronronnements">
+                <div class="shelter-card-overlay">
+                    <span>Découvrir →</span>
+                </div>
+            </div>
+            <div class="shelter-card-body">
+                <h3>Le Havre des Ronronnements</h3>
+                <p>Refuge spécialisé dans l'accueil et l'adoption des chats.</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('shelter', shelter_id=2) }}" class="shelter-card">
+            <div class="shelter-card-img-wrapper">
+                <img src="{{ url_for('static', filename='images/the_canine_cuddle_shelter.png') }}" alt="Le Refuge des Câlins Canins">
+                <div class="shelter-card-overlay">
+                    <span>Découvrir →</span>
+                </div>
+            </div>
+            <div class="shelter-card-body">
+                <h3>Le Refuge des Câlins Canins</h3>
+                <p>Un espace chaleureux dédié aux chiens en attente d'adoption.</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ========== PRODUCTS ========== -->
+<section class="home-products">
+    <div class="section-header">
+        <h2 class="section-title">Nos Produits</h2>
+        <p class="section-sub">Chaque achat soutient directement nos refuges.</p>
+    </div>
+
+    <div class="products-grid">
+        <a href="{{ url_for('products', category='Alimentation') }}" class="product-card">
+            <div class="product-card-img-wrapper">
+                <img src="{{ url_for('static', filename='images/food.png') }}" alt="Alimentation">
+            </div>
+            <div class="product-card-body">
+                <h3>Alimentation</h3>
+                <span class="product-card-arrow">→</span>
+            </div>
+        </a>
+
+        <a href="{{ url_for('products', category='Jouets') }}" class="product-card">
+            <div class="product-card-img-wrapper">
+                <img src="{{ url_for('static', filename='images/toys.png') }}" alt="Jouets">
+            </div>
+            <div class="product-card-body">
+                <h3>Jouets</h3>
+                <span class="product-card-arrow">→</span>
+            </div>
+        </a>
+
+        <a href="{{ url_for('products', category='Hygiène') }}" class="product-card">
+            <div class="product-card-img-wrapper">
+                <img src="{{ url_for('static', filename='images/hygiene.png') }}" alt="Hygiène">
+            </div>
+            <div class="product-card-body">
+                <h3>Hygiène</h3>
+                <span class="product-card-arrow">→</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ========== REVIEWS CAROUSEL ========== -->
+<section class="home-reviews">
+    <div class="section-header">
+        <h2 class="section-title">Ils nous font confiance</h2>
+        <p class="section-sub">Des centaines de familles ont déjà adopté et commandé chez nous.</p>
+    </div>
+
+    <div class="reviews-carousel-wrapper">
+        <button class="reviews-arrow reviews-arrow--prev" aria-label="Avis précédent">&#8592;</button>
+
+        <div class="reviews-track-outer">
+            <div class="reviews-track" id="reviews-track">
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">« Des produits de qualité, mon chat adore ses nouveaux jouets ! Je recommande vivement. »</p>
+                    <p class="review-author">— Claire, cliente</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">« Une équipe à l'écoute et de très bons produits pour nos animaux. Merci pour tout ! »</p>
+                    <p class="review-author">— Marc, client</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">« L'association fait un travail formidable. J'ai adopté un chien heureux et en bonne santé. »</p>
+                    <p class="review-author">— Sophie, adoptante</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★☆</div>
+                    <p class="review-text">« Livraison rapide et emballage soigné. Mon lapin est fan des nouvelles friandises ! »</p>
+                    <p class="review-author">— Julie, cliente</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">« Processus d'adoption très bien accompagné. L'équipe répond à toutes les questions avec patience. »</p>
+                    <p class="review-author">— Thomas, adoptant</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">« Miaouff m'a aidé à trouver le chat parfait pour ma famille. Une expérience inoubliable ! »</p>
+                    <p class="review-author">— Léa, adoptante</p>
+                </div>
+
+            </div>
+        </div>
+
+        <button class="reviews-arrow reviews-arrow--next" aria-label="Avis suivant">&#8594;</button>
+    </div>
+
+    <!-- Dot indicators -->
+    <div class="reviews-dots" id="reviews-dots"></div>
+</section>
+
+<!-- ========== CAROUSEL SCRIPT ========== -->
+<script>
+    const track     = document.getElementById('reviews-track');
+    const dotsWrap  = document.getElementById('reviews-dots');
+    const cards     = Array.from(track.querySelectorAll('.review-card'));
+
+    let current     = 0;
+    let visibleCount = 3; // number of cards visible at once — updated on resize
+
+    // Build dot indicators dynamically
+    function buildDots() {
+        dotsWrap.innerHTML = '';
+        const total = Math.ceil(cards.length / visibleCount);
+        for (let i = 0; i < total; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'reviews-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', 'Aller à la page ' + (i + 1));
+            dot.addEventListener('click', () => goTo(i));
+            dotsWrap.appendChild(dot);
+        }
+    }
+
+    function updateVisibleCount() {
+        if (window.innerWidth < 640)       visibleCount = 1;
+        else if (window.innerWidth < 1024) visibleCount = 2;
+        else                                visibleCount = 3;
+    }
+
+    function goTo(index) {
+        const total = Math.ceil(cards.length / visibleCount);
+        current = Math.max(0, Math.min(index, total - 1));
+
+        // Slide the track by card width × visibleCount × current page
+        const cardWidth = cards[0].offsetWidth;
+        const gap       = 20; // matches CSS gap
+        track.style.transform = `translateX(-${current * (cardWidth + gap) * visibleCount}px)`;
+
+        // Update dots
+        document.querySelectorAll('.reviews-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === current);
+        });
+    }
+
+    document.querySelector('.reviews-arrow--prev').addEventListener('click', () => {
+    const total = Math.ceil(cards.length / visibleCount);
+    goTo(current - 1 < 0 ? total - 1 : current - 1);
+});
+    document.querySelector('.reviews-arrow--next').addEventListener('click', () => {
+        const total = Math.ceil(cards.length / visibleCount);
+        goTo(current + 1 >= total ? 0 : current + 1);
+    });
+
+    // Auto-advance every 5 seconds
+    let autoplay = setInterval(() => {
+        const total = Math.ceil(cards.length / visibleCount);
+        goTo(current + 1 >= total ? 0 : current + 1);
+    }, 5000);
+
+    // Pause autoplay on hover
+    track.addEventListener('mouseenter', () => clearInterval(autoplay));
+    track.addEventListener('mouseleave', () => {
+        autoplay = setInterval(() => {
+            const total = Math.ceil(cards.length / visibleCount);
+            goTo(current + 1 >= total ? 0 : current + 1);
+        }, 5000);
+    });
+
+    // Recalculate on resize
+    window.addEventListener('resize', () => {
+        updateVisibleCount();
+        buildDots();
+        goTo(0);
+    });
+
+    // Init
+    updateVisibleCount();
+    buildDots();
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const video = document.querySelector('.hero-video');
+    video.muted = true;
+    setTimeout(() => {
+        video.play().catch(() => {});
+    }, 300);
+});
+</script>
+
+{% endblock %}

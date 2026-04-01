@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Panier{% endblock %}
+
+{% block content %}
+<h1 class="cart-title">Votre Panier</h1>
+ 
+{% if cart %}
+<div class="cart-container">
+    {% for item in cart %}
+    <div class="cart-item">
+        <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" class="cart-item-image">
+        <div class="cart-item-info">
+            <h2 class="cart-item-name">{{ item.name }}</h2>
+            <p class="cart-item-price">{{ item.price }} €</p>
+        </div>
+        <div class="cart-item-quantity">
+            <button class="quantity-btn decrease" data-id="{{ item.product_id }}">-</button>
+            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" data-stock="{{ item.stock }}" data-id="{{ item.product_id }}">
+            <button class="quantity-btn increase" data-id="{{ item.product_id }}">+</button>
+        </div>
+        <p class="cart-item-total">{{ item.total_price }} €</p>
+        <form action="{{ url_for('remove_from_cart', product_id=item.product_id) }}" method="POST">
+            <button type="submit" class="cart-remove-btn">🗑️</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<a href="{{ url_for('check_order') }}" class="cart-checkout-btn">Passer commande</a>
+
+{% else %}
+<p class="cart-empty">Votre panier est vide.</p>
+{% endif %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".quantity-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let cartItem = this.closest(".cart-item");
+            let input = cartItem.querySelector(".quantity-input");
+            let price = parseFloat(cartItem.querySelector(".cart-item-price").textContent);
+            let totalPriceElement = cartItem.querySelector(".cart-item-total");
+            let productId = this.getAttribute("data-id");
+            let stock = parseInt(input.getAttribute("data-stock")); // Stock max du produit
+            let newQuantity = parseInt(input.value);
+
+            if (this.classList.contains("increase")) {
+                if (newQuantity < stock) {
+                    newQuantity++;
+                }
+            } else if (this.classList.contains("decrease")) {
+                if (newQuantity > 1) {
+                    newQuantity--;
+                }
+            }
+
+            input.value = newQuantity;
+            totalPriceElement.textContent = (newQuantity * price).toFixed(2) + " €";
+
+            updateCart(productId, newQuantity, input, totalPriceElement, price);
+        });
+    });
+
+    // Bloque la saisie de quantités invalides (ex. > stock ou < 1)
+    document.querySelectorAll(".quantity-input").forEach(input => {
+        let stock = parseInt(input.getAttribute("data-stock")); // Récupère le stock
+
+        input.addEventListener("input", function() {
+            let value = parseInt(this.value);
+
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            } else if (value > stock) {
+                this.value = stock;
+            }
+
+            let cartItem = this.closest(".cart-item");
+            let price = parseFloat(cartItem.querySelector(".cart-item-price").textContent);
+            let totalPriceElement = cartItem.querySelector(".cart-item-total");
+            let productId = this.getAttribute("data-id");
+
+            totalPriceElement.textContent = (this.value * price).toFixed(2) + " €";
+
+            updateCart(productId, this.value, this, totalPriceElement, price);
+        });
+    });
+
+    function updateCart(productId, quantity, input, totalPriceElement, price) {
+        fetch(`/update_cart/${productId}`, {
+            method: "POST",
+            body: JSON.stringify({ quantity: quantity }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message);
+                input.value = data.corrected_quantity;
+                totalPriceElement.textContent = (data.corrected_quantity * price).toFixed(2) + " €";
+            }
+        });
+    }
+});
+
+    </script>    
+
+{% endblock %}

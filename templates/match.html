@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ============================================================
+   Match game page — drag & drop words to definitions
+   JS logic handled in static/js/match.js — do not modify
+   ============================================================ -->
+<main class="match-page">
+
+    <h1 class="game-page-title">Jeu — Associer les mots</h1>
+
+    <div class="match-container">
+        <div class="match-words-container"></div>
+        <div class="match-definitions-container"></div>
+    </div>
+
+    <p id="match-score" class="match-score"></p>
+    <button class="match-restart">Recommencer</button>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/match.js') }}"></script>
+
+{% endblock %}

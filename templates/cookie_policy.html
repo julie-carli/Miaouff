@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="cookie-section">
+
+    <div class="cookie-header">
+        <h1 class="cookie-title">Politique de cookies</h1>
+        <!-- A little professional cookie joke -->
+        <p class="cookie-joke">🍪 Promis, nos cookies ne sont pas caloriques.</p>
+        <p class="cookie-intro">Dernière mise à jour : 07 février 2025 — Association Miaouff</p>
+    </div>
+
+    <div class="cookie-grid">
+
+        <article class="cookie-card cookie-card--wide">
+            <h2 class="cookie-subtitle">Informations générales</h2>
+            <p class="cookie-text">Cette politique explique comment nous utilisons les cookies sur notre site et comment vous pouvez gérer vos préférences.</p>
+        </article>
+
+        <article class="cookie-card cookie-card--wide">
+            <h2 class="cookie-subtitle">Qu'est-ce qu'un cookie ?</h2>
+            <p class="cookie-text">Un cookie est un petit fichier texte stocké sur votre appareil lors de votre visite. Il permet au site de se souvenir de vos actions ou préférences pour ne pas avoir à les saisir à nouveau lors de votre prochaine visite.</p>
+        </article>
+
+        <!-- Cookie toggles card -->
+        <article class="cookie-card cookie-card--wide">
+            <h2 class="cookie-subtitle">Gérer mes préférences</h2>
+            <p class="cookie-text">Activez ou désactivez chaque catégorie de cookies selon vos préférences. Les cookies nécessaires ne peuvent pas être désactivés car ils garantissent le bon fonctionnement du site.</p>
+
+            <ul class="cookie-toggle-list">
+
+                <li class="cookie-toggle-item">
+                    <div class="cookie-toggle-info">
+                        <span class="cookie-badge cookie-badge--necessary">Nécessaires</span>
+                        <p>Essentiels à la navigation : accès au compte, panier, session utilisateur.</p>
+                    </div>
+                    <!-- Necessary cookies are always on and cannot be toggled -->
+                    <div class="cookie-toggle-wrapper">
+                        <span class="cookie-toggle-label">Toujours actif</span>
+                        <label class="cookie-toggle cookie-toggle--disabled" aria-label="Cookies nécessaires — toujours actifs">
+                            <input type="checkbox" id="toggle-necessary" checked disabled>
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                </li>
+
+                <li class="cookie-toggle-item">
+                    <div class="cookie-toggle-info">
+                        <span class="cookie-badge cookie-badge--performance">Performance</span>
+                        <p>Collecte anonyme pour analyser les performances et améliorer le site.</p>
+                    </div>
+                    <div class="cookie-toggle-wrapper">
+                        <span class="cookie-toggle-label" id="label-performance">Désactivé</span>
+                        <label class="cookie-toggle" aria-label="Cookies de performance">
+                            <input type="checkbox" id="toggle-performance">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                </li>
+
+                <li class="cookie-toggle-item">
+                    <div class="cookie-toggle-info">
+                        <span class="cookie-badge cookie-badge--functional">Fonctionnels</span>
+                        <p>Mémorisent vos préférences (langue, région) pour personnaliser votre expérience.</p>
+                    </div>
+                    <div class="cookie-toggle-wrapper">
+                        <span class="cookie-toggle-label" id="label-functional">Désactivé</span>
+                        <label class="cookie-toggle" aria-label="Cookies fonctionnels">
+                            <input type="checkbox" id="toggle-functional">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                </li>
+
+                <li class="cookie-toggle-item">
+                    <div class="cookie-toggle-info">
+                        <span class="cookie-badge cookie-badge--targeting">Publicité</span>
+                        <p>Diffusent des annonces pertinentes selon vos centres d'intérêt.</p>
+                    </div>
+                    <div class="cookie-toggle-wrapper">
+                        <span class="cookie-toggle-label" id="label-targeting">Désactivé</span>
+                        <label class="cookie-toggle" aria-label="Cookies publicitaires">
+                            <input type="checkbox" id="toggle-targeting">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                </li>
+
+            </ul>
+
+            <!-- Save preferences button -->
+            <button class="cookie-save-btn" id="cookie-save-btn">Enregistrer mes préférences</button>
+            <p class="cookie-save-confirm" id="cookie-save-confirm">✔ Préférences enregistrées !</p>
+
+        </article>
+
+        <article class="cookie-card cookie-card--wide">
+            <h2 class="cookie-subtitle">Gestion via le navigateur</h2>
+            <p class="cookie-text">Vous pouvez également gérer vos cookies directement dans les paramètres de votre navigateur :</p>
+            <ul class="cookie-browser-list">
+                <li><strong>Google Chrome</strong><span>Paramètres → Confidentialité et sécurité → Cookies et autres données de site</span></li>
+                <li><strong>Mozilla Firefox</strong><span>Paramètres → Vie privée et sécurité → Cookies et données de sites</span></li>
+                <li><strong>Safari</strong><span>Préférences → Confidentialité → Cookies et données de sites web</span></li>
+                <li><strong>Microsoft Edge</strong><span>Paramètres → Cookies et autorisations de site</span></li>
+            </ul>
+        </article>
+
+        <article class="cookie-card">
+            <h2 class="cookie-subtitle">Consentement</h2>
+            <p class="cookie-text">En naviguant sur notre site, vous acceptez l'utilisation de cookies conformément à cette politique. Vous pouvez modifier vos préférences à tout moment via le panneau ci-dessus.</p>
+        </article>
+
+        <article class="cookie-card">
+            <h2 class="cookie-subtitle">Modifications</h2>
+            <p class="cookie-text">Nous nous réservons le droit de modifier cette politique à tout moment. Les changements seront publiés sur cette page. Nous vous encourageons à la consulter régulièrement.</p>
+        </article>
+
+        <article class="cookie-card cookie-card--wide">
+            <h2 class="cookie-subtitle">Contact</h2>
+            <p class="cookie-text">Pour toute question concernant notre politique de cookies, contactez-nous à <a href="mailto:contact@miaouff.fr" class="cookie-link">contact@miaouff.fr</a>.</p>
+        </article>
+
+    </div>
+</section>
+
+<script>
+    // --- Cookie preference keys stored in localStorage ---
+    const PREFS_KEY = 'miaouff_cookie_prefs';
+
+    const toggles = [
+        { id: 'toggle-performance', labelId: 'label-performance', key: 'performance' },
+        { id: 'toggle-functional',  labelId: 'label-functional',  key: 'functional'  },
+        { id: 'toggle-targeting',   labelId: 'label-targeting',   key: 'targeting'   },
+    ];
+
+    // Load saved preferences from localStorage on page load
+    function loadPrefs() {
+        const saved = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
+        toggles.forEach(({ id, labelId, key }) => {
+            const checkbox = document.getElementById(id);
+            const label    = document.getElementById(labelId);
+            const isActive = saved[key] ?? false;
+            checkbox.checked  = isActive;
+            label.textContent = isActive ? 'Activé' : 'Désactivé';
+        });
+    }
+
+    // Update label text when a toggle changes
+    toggles.forEach(({ id, labelId }) => {
+        document.getElementById(id).addEventListener('change', function () {
+            document.getElementById(labelId).textContent = this.checked ? 'Activé' : 'Désactivé';
+        });
+    });
+
+    // Save preferences to localStorage on button click
+    document.getElementById('cookie-save-btn').addEventListener('click', () => {
+        const prefs = {};
+        toggles.forEach(({ id, key }) => {
+            prefs[key] = document.getElementById(id).checked;
+        });
+        localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+
+        // Show confirmation message then hide after 3 seconds
+        const confirm = document.getElementById('cookie-save-confirm');
+        confirm.classList.add('visible');
+        setTimeout(() => confirm.classList.remove('visible'), 3000);
+    });
+
+    loadPrefs();
+</script>
+{% endblock %}

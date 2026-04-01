@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ pet.name }}{% endblock %}
+
+{% block content %}
+<div class="pet-detail-container">
+    <div class="pet-detail-card">
+        <div class="pet-detail-image-container">
+            <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}" class="pet-detail-image">
+        </div>
+        
+        <div class="pet-detail-info">
+            <h1 class="pet-detail-title">{{ pet.name }}</h1>
+            <p class="pet-detail-description">{{ pet.description }}</p>
+            <p><strong>Âge :</strong> {{ pet.age }} ans</p>
+            <p><strong>Genre :</strong> {{ pet.gender }}</p>
+            <p><strong>Race :</strong> 
+                <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="pet-detail-shelter-link">
+                    {{ animal.breed }}
+                </a>
+            </p>
+            <p><strong>Refuge :</strong> 
+                <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}" class="pet-detail-shelter-link">
+                    {{ pet.shelter.name }}
+                </a>
+            </p>
+            <a href="{{ url_for('adopt_animals') }}" class="pet-back-button">Retour à la liste</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

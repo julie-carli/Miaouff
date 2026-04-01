@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Hero: full-width shelter image with name overlay -->
+<section class="shelter-hero">
+    <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}" class="shelter-hero-img">
+    <div class="shelter-hero-overlay">
+        <div class="shelter-hero-content">
+            <p class="shelter-hero-eyebrow">Refuge Miaouff</p>
+            <h1 class="shelter-hero-title">{{ shelter.name }}</h1>
+            <p class="shelter-hero-desc">{{ shelter.description }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Info strip -->
+<div class="shelter-info-strip">
+    <div class="shelter-info-strip-inner">
+        <div class="shelter-info-item">
+            <span class="shelter-info-icon">📍</span>
+            <span>{{ shelter.address }}</span>
+        </div>
+        <div class="shelter-info-divider"></div>
+        <div class="shelter-info-item">
+            <span class="shelter-info-icon">📞</span>
+            <a href="tel:{{ shelter.phone }}" class="shelter-info-link">{{ shelter.phone }}</a>
+        </div>
+        <div class="shelter-info-divider"></div>
+        <div class="shelter-info-item">
+            <span class="shelter-info-icon">✉️</span>
+            <a href="mailto:{{ shelter.email }}" class="shelter-info-link">{{ shelter.email }}</a>
+        </div>
+        <div class="shelter-info-divider"></div>
+        <a href="https://www.google.com/maps/search/?api=1&query={{ shelter.address | urlencode }}"
+           target="_blank" rel="noopener" class="btn-maps">
+            Voir sur Maps →
+        </a>
+    </div>
+</div>
+
+<!-- Animals section -->
+<section class="shelter-animals-section">
+    <div class="shelter-animals-header">
+        <h2 class="shelter-animals-title">Animaux à adopter</h2>
+        <p class="shelter-animals-sub">
+            {% if animals %}
+                <!-- Fix: animaux is irregular, handle separately -->
+                {% if animals | length > 1 %}
+                    {{ animals | length }} animaux en attente d'un foyer ❤️
+                {% else %}
+                    1 animal en attente d'un foyer ❤️
+                {% endif %}
+            {% else %}
+                Aucun animal disponible pour le moment
+            {% endif %}
+        </p>
+    </div>
+
+    {% if animals %}
+    <div class="shelter-animals-grid">
+        {% for animal in animals %}
+        <a href="{{ url_for('adopt_animal', pet_id=animal.pet_id) }}" class="animal-card">
+            <div class="animal-card-img-wrapper">
+                <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.name }}">
+                <div class="animal-card-overlay">
+                    <span>Adopter →</span>
+                </div>
+            </div>
+            <div class="animal-card-body">
+                <p class="animal-card-name">{{ animal.name }}</p>
+                {% if animal.age %}
+                <p class="animal-card-age">{{ animal.age }} an{% if animal.age > 1 %}s{% endif %}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="shelter-empty">
+        <p>🐾 Tous nos pensionnaires ont trouvé un foyer ! Revenez bientôt.</p>
+        <a href="{{ url_for('shelters') }}" class="btn-shelter-primary" style="margin-top:1rem; display:inline-block;">
+            Voir nos autres refuges
+        </a>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

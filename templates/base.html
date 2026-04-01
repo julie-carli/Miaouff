@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Miaouff est une association dédiée à l'aide et l'adoption des animaux. Découvrez nos refuges et les animaux disponibles à l'adoption.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Brand fonts: Quicksand for headings, Inter for body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="static/images/logo.png">
+    <title>Miaouff</title>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <div class="header-logo">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Miaouff">
+        </a>
+    </div>
+
+    <!-- Hamburger button — visible on mobile only -->
+    <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="header-navbar" id="main-nav" aria-label="Navigation principale">
+        <ul>
+            <li><a href="{{ url_for('home') }}">Accueil</a></li>
+            <li><a href="{{ url_for('shelters') }}">Refuges</a></li>
+            <li><a href="{{ url_for('animals') }}">Animaux</a></li>
+            <li><a href="{{ url_for('products') }}">Produits</a></li>
+            <li><a href="{{ url_for('blog') }}">Blog</a></li>
+            <li><a href="{{ url_for('games') }}">Jeux</a></li>
+        </ul>
+    </nav>
+
+    <div class="header-buttons">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('account') }}" class="btn-account">
+                {% if current_user.first_name %}
+                    Coucou {{ current_user.first_name }} 👋
+                {% else %}
+                    Mon compte
+                {% endif %}
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn-account">Se connecter</a>
+        {% endif %}
+        <a href="{{ url_for('cart') }}" class="btn-cart" aria-label="Panier">
+            <i class="fa fa-shopping-cart"></i>
+        </a>
+    </div>
+</header>
+
+<!-- ========== FLASH MESSAGES ========== -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+    <div class="flash-container" role="alert" aria-live="polite">
+        {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {% if category == 'success' %}
+                    <span class="flash-icon">✔</span>
+                {% elif category == 'danger' %}
+                    <span class="flash-icon">✖</span>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <!-- Footer top: logo + tagline -->
+    <div class="footer-brand">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Miaouff">
+        </a>
+        <p class="footer-tagline">Ensemble pour eux 🐾</p>
+    </div>
+
+    <!-- Footer center: navigation links -->
+    <nav class="footer-links" aria-label="Liens légaux">
+        <a href="{{ url_for('terms_conditions') }}">CGV</a>
+        <a href="{{ url_for('legal_notices') }}">Mentions légales</a>
+        <a href="{{ url_for('privacy_policy') }}">Confidentialité</a>
+        <a href="{{ url_for('cookie_policy') }}">Cookies</a>
+        <a href="{{ url_for('faq') }}">FAQ</a>
+        <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+
+    <!-- Footer right: social networks -->
+    <div class="footer-socials">
+        <a href="https://www.instagram.com/miaouff_association/" target="_blank" rel="noopener" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.facebook.com/miaouff_association/" target="_blank" rel="noopener" aria-label="Facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://www.tiktok.com/@miaouff_association/" target="_blank" rel="noopener" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+        </a>
+    </div>
+</footer>
+
+<!-- ================================================
+     CHATBOT WIDGET
+     ================================================ -->
+<div id="chatbot-widget">
+
+    <!-- Chat window -->
+    <div id="chat-window" role="dialog" aria-label="Assistant Miaouff" aria-modal="true">
+        <div id="chat-header">
+            🐾 Miaouff — Assistant
+            <button id="chat-close" aria-label="Fermer le chat">✕</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-bubble bot">Miaou ! 🐱 Je suis là pour t'aider. Pose-moi ta question !</div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Écris ton message..." maxlength="500" />
+            <button id="chat-send" aria-label="Envoyer">➤</button>
+        </div>
+    </div>
+
+    <!-- Mascot toggle button -->
+    <div id="cat-container" role="button" aria-label="Ouvrir le chat" tabindex="0">
+        <img src="{{ url_for('static', filename='images/mascotte.png') }}" id="cat-img" alt="Mascotte Miaouff">
+        <div class="eye left"><div class="pupil"></div></div>
+        <div class="eye right"><div class="pupil"></div></div>
+    </div>
+
+</div>
+
+<!-- ================================================
+     SCRIPTS
+     ================================================ -->
+<script>
+    // --- Flash messages: auto-dismiss after 5 seconds ---
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-8px)';
+                setTimeout(() => msg.remove(), 400);
+            });
+        }, 5000);
+    });
+
+    // --- Mobile nav toggle ---
+    const navToggle = document.getElementById("nav-toggle");
+    const mainNav   = document.getElementById("main-nav");
+
+    navToggle.addEventListener("click", () => {
+        const isOpen = mainNav.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", isOpen);
+    });
+
+    // --- Chatbot ---
+    const chatWindow   = document.getElementById("chat-window");
+    const chatInput    = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chat-messages");
+    const catContainer = document.getElementById("cat-container");
+
+    // Conversation history sent to the backend for context
+    let history = [];
+
+    // Toggle chat window on mascot click or keyboard Enter/Space
+    catContainer.addEventListener("click", toggleChat);
+    catContainer.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") toggleChat();
+    });
+
+    function toggleChat() {
+        chatWindow.classList.toggle("open");
+        if (chatWindow.classList.contains("open")) chatInput.focus();
+    }
+
+    document.getElementById("chat-close").addEventListener("click", () => {
+        chatWindow.classList.remove("open");
+    });
+
+    // Send on button click or Enter key
+    document.getElementById("chat-send").addEventListener("click", sendMessage);
+    chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        appendBubble(text, "user");
+        chatInput.value = "";
+
+        // Show typing indicator while waiting for the bot response
+        const typingBubble = appendBubble("...", "typing");
+
+        history.push({ role: "user", content: text });
+
+        fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text, history }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                typingBubble.remove();
+                const botText = data.response || "Je n'ai pas compris, peux-tu reformuler ?";
+                appendBubble(botText, "bot");
+                history.push({ role: "assistant", content: botText });
+            })
+            .catch(() => {
+                typingBubble.remove();
+                appendBubble("Oups, une erreur s'est produite. Réessaie !", "bot");
+            });
+    }
+
+    function appendBubble(text, type) {
+        const bubble = document.createElement("div");
+        bubble.className = `chat-bubble ${type}`;
+        bubble.textContent = text;
+        chatMessages.appendChild(bubble);
+        // Scroll to the latest message automatically
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return bubble;
+    }
+
+    // --- Pupil tracking: pupils follow the mouse cursor ---
+    document.addEventListener("mousemove", (e) => {
+        document.querySelectorAll(".eye").forEach((eye) => {
+            const pupil = eye.querySelector(".pupil");
+            const rect  = eye.getBoundingClientRect();
+
+            const eyeX = rect.left + rect.width  / 2;
+            const eyeY = rect.top  + rect.height / 2;
+
+            const dx = e.clientX - eyeX;
+            const dy = e.clientY - eyeY;
+
+            const factor  = 0.4;
+            const maxMove = 2;
+
+            const angle = Math.atan2(dy, dx);
+            const dist  = Math.min(Math.hypot(dx, dy) * factor, maxMove);
+
+            const x = Math.cos(angle) * dist;
+            const y = Math.sin(angle) * dist;
+
+            // Offset pupil position relative to eye center
+            pupil.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        });
+    });
+</script>
+
+</body>
+</html>

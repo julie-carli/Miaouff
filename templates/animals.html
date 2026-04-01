@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{# ============================================================
+   Animals hub — two cards on a neutral background
+   Links to /glossary and /adopt_animals
+   ============================================================ #}
+<main class="animals-page">
+
+    <div class="animals-intro">
+        <h1 class="animals-intro-title">Nos univers animaliers</h1>
+        <p class="animals-intro-sub">
+            Découvrez nos espèces et races, ou trouvez votre futur compagnon
+            parmi les animaux qui attendent une famille.
+        </p>
+    </div>
+
+    <div class="animals-grid">
+
+        {# --- Adoption card --- #}
+        <a class="animals-card card-adoption"
+           href="{{ url_for('adopt_animals') }}"
+           aria-label="Découvrir les animaux à adopter">
+            <div class="card-bg"></div>
+            <div class="card-deco" aria-hidden="true">🐶</div>
+            <div class="card-body">
+                <p class="card-tag">Adoption responsable</p>
+                <div class="card-bottom">
+                    <h2 class="card-title">Trouvez votre<br>compagnon idéal</h2>
+                    <p class="card-desc">
+                        Des animaux vous attendent dans nos refuges partenaires.
+                        Chaque adoption change une vie.
+                    </p>
+                    <span class="card-cta">
+                        Adopter
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="white"
+                                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </a>
+
+        {# --- Glossary card --- #}
+        <a class="animals-card card-glossary"
+           href="{{ url_for('glossary') }}"
+           aria-label="Accéder au glossaire des animaux">
+            <div class="card-bg"></div>
+            <div class="card-deco" aria-hidden="true">🐾</div>
+            <div class="card-body">
+                <p class="card-tag">Encyclopédie animale</p>
+                <div class="card-bottom">
+                    <h2 class="card-title">Glossaire<br>des Animaux</h2>
+                    <p class="card-desc">
+                        Explorez les fiches espèces, races et caractéristiques
+                        propres à chaque animal.
+                    </p>
+                    <span class="card-cta">
+                        Explorer
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="white"
+                                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+</main>
+
+{% endblock %}

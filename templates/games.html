@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ============================================================
+   Games hub — 3-column grid of game cards
+   Each card links to its dedicated game route
+   ============================================================ -->
+<main class="games-page">
+
+    <!-- Intro block -->
+    <div class="games-intro">
+        <h1 class="games-intro-title">Choisissez un jeu</h1>
+        <p class="games-intro-sub">
+            Des mini-jeux éducatifs et ludiques autour du monde animal.
+        </p>
+    </div>
+
+    <div class="games-grid">
+
+        <!-- Quiz -->
+        <a href="{{ url_for('quiz') }}"
+           class="games-card accent-coral"
+           aria-label="Jouer au Quiz">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/quiz.png') }}" alt="Quiz">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Quiz</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        <!-- Mots mêlés -->
+        <a href="{{ url_for('wordsearch') }}"
+           class="games-card accent-green"
+           aria-label="Jouer aux Mots mêlés">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/wordsearch.png') }}" alt="Mots mêlés">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Mots mêlés</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        <!-- Associer les mots -->
+        <a href="{{ url_for('match') }}"
+           class="games-card accent-peach"
+           aria-label="Jouer à Associer les mots">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/match.png') }}" alt="Associer les mots">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Associer les mots</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        <!-- Pendu -->
+        <a href="{{ url_for('hangman') }}"
+           class="games-card accent-coral"
+           aria-label="Jouer au Pendu">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/hangman.png') }}" alt="Pendu">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Pendu</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        <!-- Memory -->
+        <a href="{{ url_for('memory') }}"
+           class="games-card accent-mint"
+           aria-label="Jouer au Memory">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/memory.png') }}" alt="Memory">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Memory</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+        <!-- Rapido -->
+        <a href="{{ url_for('rapido') }}"
+           class="games-card accent-peach"
+           aria-label="Jouer à Rapido">
+            <div class="games-card-img">
+                <img src="{{ url_for('static', filename='images/rapido.png') }}" alt="Rapido">
+            </div>
+            <div class="games-card-body">
+                <span class="games-card-name">Rapido</span>
+                <span class="games-card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="#7a7068"
+                              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+
+    </div>
+
+</main>
+
+{% endblock %}

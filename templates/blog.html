@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <h1 class="blog-title">Blog</h1>
+    <h2 class="news-title">Nos actualités</h2>
+</header>
+
+<main class="blog-container">
+    {% for article in articles %}
+    <div class="blog-article {% if loop.index % 2 == 0 %} reverse {% endif %}">
+        <div class="blog-content">
+            <h2 class="article-title">{{ article['title'] }} 
+                {% for shelter in article['shelters'] %}
+                    <a href="{{ url_for('shelter', shelter_id=shelter['shelter_id']) }}">
+                        <strong>{{ shelter['shelter_name'] }}</strong>
+                    </a>
+                    {% if not loop.last %} et {% endif %}
+                {% endfor %}
+            </h2>
+            <p class="article-text">
+                {{ article['content'] }}
+            </p>
+        </div>
+        <div class="blog-image">
+            <img src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
+        </div>
+    </div>
+    {% endfor %}
+</main>
+
+{% endblock %}

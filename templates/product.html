@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-container">
+    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-image">
+    
+    <div class="product-details">
+        <h1 class="product-name">{{ product.name }}</h1>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="product-price">Prix : {{ product.price_incl_tax }}€</p>
+        <p class="product-weight">Poids : {{ product.weight }} kg</p>
+        <p class="product-stock">Stock disponible : <span id="stock">{{ product.stock }}</span></p>
+
+        <div class="quantity-container">
+            <button type="button" class="quantity-btn" id="decrease">-</button>
+            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="{{ product.stock }}">
+            <button type="button" class="quantity-btn" id="increase">+</button>
+        </div>
+
+        <button id="add-to-cart" class="product-buy">Ajouter au panier</button>
+        <p id="cart-message" style="display: none; color: green; font-weight: bold;">Produit ajouté au panier !</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let quantityInput = document.getElementById("quantity");
+        let decreaseBtn = document.getElementById("decrease");
+        let increaseBtn = document.getElementById("increase");
+        let stock = parseInt(document.getElementById("stock").textContent);
+        let addToCartBtn = document.getElementById("add-to-cart");
+        let cartMessage = document.getElementById("cart-message");
+
+        decreaseBtn.addEventListener("click", function() {
+            if (quantityInput.value > 1) {
+                quantityInput.value--;
+            }
+        });
+
+        increaseBtn.addEventListener("click", function() {
+            if (quantityInput.value < stock) {
+                quantityInput.value++;
+            }
+        });
+
+        quantityInput.addEventListener("input", function() {
+            if (quantityInput.value < 1) {
+                quantityInput.value = 1;
+            }
+            if (quantityInput.value > stock) {
+                quantityInput.value = stock;
+            }
+        });
+
+        addToCartBtn.addEventListener("click", function() {
+            let quantity = quantityInput.value;
+
+            fetch("{{ url_for('add_to_cart', product_id=product.product_id) }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: "{{ product.name }}",
+                    price: "{{ product.price_incl_tax }}",
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    cartMessage.style.display = "block";
+                    setTimeout(() => { cartMessage.style.display = "none"; }, 2000);
+                }
+            })
+            .catch(error => console.error("Erreur :", error));
+        });
+    });
+</script>
+
+{% endblock %}
