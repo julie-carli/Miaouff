@@ -16,6 +16,8 @@ jobs:
     env:
       # Database URL injected from GitHub Secrets (never hardcode credentials)
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # Added: MongoDB URI now injected into the CI environment
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     steps:
       # Step 1: Checkout the repository code
