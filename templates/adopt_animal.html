@@ -1,31 +1,63 @@
 {% extends "base.html" %}
 
-{% block title %}{{ pet.name }}{% endblock %}
+{% block title %}{{ pet.name }} — Miaouff{% endblock %}
 
 {% block content %}
-<div class="pet-detail-container">
+
+<!-- ============================================================
+   Individual pet detail page
+   ============================================================ -->
+<main class="pet-detail-page">
+
     <div class="pet-detail-card">
-        <div class="pet-detail-image-container">
-            <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}" class="pet-detail-image">
+
+        <!-- Image -->
+        <div class="pet-detail-img-wrapper">
+            <img src="{{ url_for('static', filename=pet.image) }}"
+                 alt="{{ pet.name }}" class="pet-detail-img">
         </div>
-        
+
+        <!-- Info -->
         <div class="pet-detail-info">
-            <h1 class="pet-detail-title">{{ pet.name }}</h1>
-            <p class="pet-detail-description">{{ pet.description }}</p>
-            <p><strong>Âge :</strong> {{ pet.age }} ans</p>
-            <p><strong>Genre :</strong> {{ pet.gender }}</p>
-            <p><strong>Race :</strong> 
-                <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="pet-detail-shelter-link">
-                    {{ animal.breed }}
-                </a>
-            </p>
-            <p><strong>Refuge :</strong> 
-                <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}" class="pet-detail-shelter-link">
-                    {{ pet.shelter.name }}
-                </a>
-            </p>
-            <a href="{{ url_for('adopt_animals') }}" class="pet-back-button">Retour à la liste</a>
+            <p class="pet-detail-eyebrow">À adopter</p>
+            <h1 class="pet-detail-name">{{ pet.name }}</h1>
+
+            {% if pet.description %}
+            <p class="pet-detail-desc">{{ pet.description }}</p>
+            {% endif %}
+
+            <ul class="pet-detail-meta">
+                <li>
+                    <span class="pet-meta-icon">🎂</span>
+                    <span><strong>Âge</strong> — {{ pet.age }} ans</span>
+                </li>
+                <li>
+                    <span class="pet-meta-icon">⚥</span>
+                    <span><strong>Genre</strong> — {{ pet.gender }}</span>
+                </li>
+                <li>
+                    <span class="pet-meta-icon">🐾</span>
+                    <span>
+                        <strong>Race</strong> —
+                        <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}"
+                           class="pet-detail-link">{{ animal.breed }}</a>
+                    </span>
+                </li>
+                <li>
+                    <span class="pet-meta-icon">🏠</span>
+                    <span>
+                        <strong>Refuge</strong> —
+                        <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}"
+                           class="pet-detail-link">{{ pet.shelter.name }}</a>
+                    </span>
+                </li>
+            </ul>
+
+            <a href="{{ url_for('adopt_animals') }}" class="pet-detail-back">← Retour à la liste</a>
         </div>
+
     </div>
-</div>
+
+</main>
+
 {% endblock %}

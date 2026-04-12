@@ -1,1 +1,136 @@
 {% extends "base.html" %}
+
+{% block title %}Paiement — Miaouff{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+   Stripe payment page (test mode)
+   Stripe.js handles card input securely — no card data touches our server
+   ============================================================ -->
+<main class="checkout-page">
+
+    <h1 class="checkout-title">Paiement sécurisé</h1>
+
+    <div class="checkout-layout">
+
+        <!-- Payment form -->
+        <div class="checkout-left">
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">💳 Informations de paiement</h2>
+                <p class="checkout-stripe-note">
+                    Paiement sécurisé par Stripe. Vos données bancaires ne transitent jamais par nos serveurs.
+                </p>
+
+                <!-- Stripe card element is injected here -->
+                <div id="card-element" class="stripe-card-element"></div>
+                <p id="card-errors" class="stripe-card-error" role="alert"></p>
+
+                <button id="pay-btn" class="cart-checkout-btn" style="margin-top:1.5rem;">
+                    Payer {{ totals.grand_total }} €
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="checkout-summary">
+            <h2 class="cart-summary-title">Total</h2>
+            <ul class="cart-summary-lines">
+                <li>
+                    <span>Sous-total HT</span>
+                    <span>{{ totals.total_excl_tax }} €</span>
+                </li>
+                <li>
+                    <span>TVA (20%)</span>
+                    <span>{{ "%.2f"|format(totals.total_incl_tax - totals.total_excl_tax) }} €</span>
+                </li>
+                <li>
+                    <span>Livraison</span>
+                    <span>
+                        {% if totals.shipping_fee == 0 %}Offerte 🎉
+                        {% else %}{{ totals.shipping_fee }} €{% endif %}
+                    </span>
+                </li>
+            </ul>
+            <div class="cart-summary-total">
+                <span>Total TTC</span>
+                <span>{{ totals.grand_total }} €</span>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- Stripe.js loaded from Stripe's CDN — required for PCI compliance -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const stripe = Stripe("{{ stripe_public_key }}");
+const elements = stripe.elements();
+
+const cardElement = elements.create("card", {
+    style: {
+        base: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "16px",
+            color: "#2d2a27",
+            "::placeholder": { color: "#7a7068" }
+        },
+        invalid: { color: "#e55" }
+    }
+});
+cardElement.mount("#card-element");
+
+cardElement.on("change", function (event) {
+    const errorEl = document.getElementById("card-errors");
+    errorEl.textContent = event.error ? event.error.message : "";
+});
+
+document.getElementById("pay-btn").addEventListener("click", async function () {
+    this.disabled = true;
+    this.textContent = "Traitement en cours...";
+
+    // Ask our server to create a PaymentIntent
+    const intentRes = await fetch("/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+    });
+    const intentData = await intentRes.json();
+
+    if (intentData.error) {
+        document.getElementById("card-errors").textContent = intentData.error;
+        this.disabled = false;
+        this.textContent = "Réessayer";
+        return;
+    }
+
+    // Confirm the payment with Stripe
+    const { paymentIntent, error } = await stripe.confirmCardPayment(
+        intentData.client_secret,
+        { payment_method: { card: cardElement } }
+    );
+
+    if (error) {
+        document.getElementById("card-errors").textContent = error.message;
+        this.disabled = false;
+        this.textContent = "Réessayer";
+        return;
+    }
+
+    if (paymentIntent.status === "succeeded") {
+        // Notify our server to create the order
+        const res = await fetch("/payment_success", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ payment_intent_id: paymentIntent.id })
+        });
+        const data = await res.json();
+        if (data.success) {
+            window.location.href = "/order_confirmation/" + data.order_id;
+        }
+    }
+});
+</script>
+
+{% endblock %}

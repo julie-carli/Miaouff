@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Commande confirmée — Miaouff{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+   Order confirmation page shown after successful Stripe payment
+   ============================================================ -->
+<main class="confirmation-page">
+
+    <div class="confirmation-card">
+        <div class="confirmation-icon">🐾</div>
+        <h1 class="confirmation-title">Merci pour votre commande !</h1>
+        <p class="confirmation-sub">
+            Votre commande <strong>#{{ order.order_id }}</strong> a bien été enregistrée.
+            Vous recevrez un e-mail de confirmation prochainement.
+        </p>
+
+        <ul class="cart-summary-lines confirmation-lines">
+            <li>
+                <span>Total TTC</span>
+                <span>{{ order.total_price_incl_tax }} €</span>
+            </li>
+            <li>
+                <span>Livraison</span>
+                <span>{{ order.shipping_fee }} €</span>
+            </li>
+            <li>
+                <span>Statut</span>
+                <span class="confirmation-status">{{ order.status }}</span>
+            </li>
+        </ul>
+
+        <div class="confirmation-actions">
+            <a href="{{ url_for('products') }}" class="cart-checkout-btn">
+                Continuer mes achats
+            </a>
+            <a href="{{ url_for('home') }}" class="product-detail-back">
+                ← Retour à l'accueil
+            </a>
+        </div>
+    </div>
+
+</main>
+
+{% endblock %}

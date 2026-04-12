@@ -8,6 +8,16 @@ from flask import (
     session,
     jsonify,
 )
+
+from services.cart_service import (
+    get_cart,
+    add_to_cart,
+    update_cart,
+    remove_from_cart,
+    is_address_complete,
+    get_cart_totals,
+)
+
 from flask_login import (
     LoginManager,
     login_user,
@@ -216,11 +226,49 @@ def product(product_id):
     return render_template("product.html", product=product_item)
 
 
+# ============================
+# Routes - Blog
+# ============================
 @app.route("/blog")
 def blog():
     collection = mongo_db.miaouff_collection
-    articles = collection.find()
-    return render_template("blog.html", articles=articles)
+    page     = request.args.get("page", 1, type=int)
+    per_page = 9
+
+    total_articles = collection.count_documents({})
+    total_pages    = (total_articles + per_page - 1) // per_page
+
+    # Fetch articles for the current page, newest first
+    articles = list(
+        collection.find()
+        .sort("created_at", -1)
+        .skip((page - 1) * per_page)
+        .limit(per_page)
+    )
+
+    return render_template(
+        "blog.html",
+        articles=articles,
+        current_page=page,
+        total_pages=total_pages,
+    )
+
+
+@app.route("/blog/<article_id>")
+def blog_article(article_id):
+    collection = mongo_db.miaouff_collection
+    article    = collection.find_one({"_id": ObjectId(article_id)})
+
+    # Return 404 if article doesn't exist
+    if not article:
+        return render_template(
+            "error.html",
+            error_code=404,
+            error_title="Article introuvable",
+            error_message="Cet article n'existe pas ou a été supprimé.",
+        ), 404
+
+    return render_template("blog_article.html", article=article)
 
 
 @app.route("/contact")
@@ -391,7 +439,9 @@ def reset_password():
 # ============================
 @app.route("/cart")
 def cart():
-    return render_template("cart.html", cart=get_cart(session))
+    cart_items = get_cart(session)
+    totals = get_cart_totals(cart_items)
+    return render_template("cart.html", cart=cart_items, totals=totals)
 
 
 @app.route("/add_to_cart/<int:product_id>", methods=["POST"])
@@ -420,25 +470,160 @@ def remove_from_cart_route(product_id):
     return redirect(url_for("cart"))
 
 
-@app.route("/check_order", methods=["GET", "POST"])
+@app.route("/check_order")
 @login_required
 def check_order():
+    """
+    Entry point for the checkout flow.
+    Redirects to address edit if address is incomplete, otherwise shows the order summary.
+    """
     user = User.query.get(current_user.user_id)
-    if not get_cart(session):
+    cart_items = get_cart(session)
+
+    if not cart_items:
+        flash("Votre panier est vide.", "danger")
         return redirect(url_for("cart"))
-    if is_address_complete(user):
-        return redirect(url_for("payment"))
-    return redirect(url_for("edit_address"))
+
+    if not is_address_complete(user):
+        flash("Veuillez compléter votre adresse de livraison.", "danger")
+        return redirect(url_for("edit_address"))
+
+    totals = get_cart_totals(cart_items)
+    return render_template("check_order.html", cart=cart_items, user=user, totals=totals)
 
 
-@app.route("/payment")
+@app.route("/payment", methods=["GET", "POST"])
+@login_required
 def payment():
-    return render_template("payment.html")
+    """
+    Show the Stripe payment page.
+    On POST: create a Stripe PaymentIntent and return the client secret.
+    """
+    import stripe
+    stripe.api_key = app.config["STRIPE_SECRET_KEY"]
+
+    cart_items = get_cart(session)
+    if not cart_items:
+        return redirect(url_for("cart"))
+
+    totals = get_cart_totals(cart_items)
+
+    if request.method == "POST":
+        # Amount in cents for Stripe
+        amount_cents = int(totals["grand_total"] * 100)
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=amount_cents,
+                currency="eur",
+                metadata={"user_id": current_user.user_id},
+            )
+            return jsonify({"client_secret": intent.client_secret})
+        except stripe.error.StripeError as e:
+            return jsonify({"error": str(e)}), 400
+
+    return render_template(
+        "payment.html",
+        totals=totals,
+        stripe_public_key=app.config["STRIPE_PUBLIC_KEY"],
+    )
 
 
-@app.route("/edit_address")
+@app.route("/payment_success", methods=["POST"])
+@login_required
+def payment_success():
+    """
+    Called by the frontend after Stripe confirms payment.
+    Creates the Order and OrderProduct records, clears the cart.
+    """
+    from models.models import Order, OrderProduct, Payment as PaymentModel
+    from datetime import datetime
+
+    cart_items = get_cart(session)
+    if not cart_items:
+        return jsonify({"success": False}), 400
+
+    totals = get_cart_totals(cart_items)
+    user = User.query.get(current_user.user_id)
+
+    # Create the order
+    order = Order(
+        user_id=user.user_id,
+        order_date=datetime.now(),
+        status="paid",
+        total_price_excl_tax=totals["total_excl_tax"],
+        total_price_incl_tax=totals["total_incl_tax"],
+        shipping_fee=totals["shipping_fee"],
+    )
+    db.session.add(order)
+    db.session.flush()  # Get order_id before committing
+
+    # Create order lines and update stock
+    for item in cart_items:
+        product = Product.query.get(item["product_id"])
+        if product:
+            op = OrderProduct(
+                order_id=order.order_id,
+                product_id=item["product_id"],
+                quantity=item["quantity"],
+                unit_price_excl_tax=round(item["price"] / 1.20, 2),
+                unit_price_incl_tax=item["price"],
+            )
+            db.session.add(op)
+            # Decrement stock
+            product.stock = max(0, product.stock - item["quantity"])
+
+    # Create payment record
+    data = request.get_json()
+    payment = PaymentModel(
+        payment_method="card",
+        payment_status="paid",
+        payment_date=datetime.now(),
+        payment_total=totals["grand_total"],
+        order_id=order.order_id,
+    )
+    db.session.add(payment)
+    db.session.commit()
+
+    # Clear the cart
+    session["cart"] = []
+    session.modified = True
+
+    return jsonify({"success": True, "order_id": order.order_id})
+
+
+@app.route("/order_confirmation/<int:order_id>")
+@login_required
+def order_confirmation(order_id):
+    """Show the order confirmation page after successful payment."""
+    from models.models import Order
+    order = Order.query.get_or_404(order_id)
+    # Security: only the order owner can see their confirmation
+    if order.user_id != current_user.user_id:
+        return redirect(url_for("home"))
+    return render_template("order_confirmation.html", order=order)
+
+
+@app.route("/edit_address", methods=["GET", "POST"])
+@login_required
 def edit_address():
-    return render_template("edit_address.html")
+    """Let the user fill in their delivery address."""
+    user = User.query.get(current_user.user_id)
+
+    if request.method == "POST":
+        user.first_name = request.form.get("first_name")
+        user.last_name = request.form.get("last_name")
+        user.address_number = request.form.get("address_number")
+        user.street_name = request.form.get("street_name")
+        user.address_complement = request.form.get("address_complement")
+        user.postal_code = request.form.get("postal_code")
+        user.city = request.form.get("city")
+        user.country = request.form.get("country")
+        user.phone = request.form.get("phone")
+        db.session.commit()
+        flash("Adresse mise à jour.", "success")
+        return redirect(url_for("check_order"))
+
+    return render_template("edit_address.html", user=user)
 
 
 # ============================
@@ -829,9 +1014,77 @@ def delete_article(article_id):
 # ============================
 # Error handlers
 # ============================
+# One unified template handles all HTTP errors.
+# Each handler passes a code, a short title and a human-friendly message.
+
+def render_error(code, title, message):
+    """Helper to render the shared error template with the right HTTP status."""
+    return render_template(
+        "error.html",
+        error_code=code,
+        error_title=title,
+        error_message=message,
+    ), code
+
+
+@app.errorhandler(401)
+def error_401(_):
+    # Triggered when authentication is required but not provided
+    return render_error(
+        401,
+        "Accès refusé",
+        "Vous devez être connecté pour accéder à cette page. 🔐",
+    )
+
+
+@app.errorhandler(403)
+def error_403(_):
+    # Triggered when the user is authenticated but not authorised
+    return render_error(
+        403,
+        "Permission refusée",
+        "Vous n'avez pas les droits nécessaires pour accéder à cette ressource.",
+    )
+
+
 @app.errorhandler(404)
 def error_404(_):
-    return render_template("404.html"), 404
+    # Page not found — the most common error
+    return render_error(
+        404,
+        "Page introuvable",
+        "Oups ! On a cherché partout... même sous le canapé 🐾\nCette page n'existe pas (ou plus).",
+    )
+
+
+@app.errorhandler(429)
+def error_429(_):
+    # Too many requests — rate limiting
+    return render_error(
+        429,
+        "Trop de requêtes",
+        "Vous avez effectué trop de tentatives en peu de temps. Patientez un instant avant de réessayer.",
+    )
+
+
+@app.errorhandler(500)
+def error_500(_):
+    # Internal server error — unexpected crash
+    return render_error(
+        500,
+        "Erreur serveur",
+        "Une erreur inattendue s'est produite de notre côté. Notre équipe a été notifiée. 🛠️",
+    )
+
+
+@app.errorhandler(503)
+def error_503(_):
+    # Service unavailable — maintenance or overload
+    return render_error(
+        503,
+        "Service indisponible",
+        "Le site est temporairement indisponible pour maintenance. Revenez dans quelques minutes.",
+    )
 
 
 # ============================

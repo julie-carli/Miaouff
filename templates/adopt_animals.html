@@ -3,69 +3,86 @@
 {% block title %}Animaux à adopter{% endblock %}
 
 {% block content %}
-<h1 class="pet-title">Animaux à adopter</h1>
 
-<div class="glossary-filter">
-    <span>Filtrer par refuge :</span>
+<!-- ============================================================
+   Adopt animals listing page
+   Filters by shelter and species, links to individual pet pages
+   ============================================================ -->
+<main class="adopt-page">
 
-    <a href="{{ url_for('adopt_animals', species=selected_species) }}" 
-       class="glossary-letter {% if not selected_shelter %}active{% endif %}">
-        Tous
-    </a>
+    <!-- Page header -->
+    <div class="adopt-hero">
+        <h1 class="adopt-hero-title">Animaux à adopter</h1>
+        <p class="adopt-hero-sub">Trouvez votre futur compagnon parmi nos pensionnaires.</p>
+    </div>
 
-    {% for shelter in shelters %}
-        <a href="{{ url_for('adopt_animals', shelter_id=shelter.shelter_id, species=selected_species) }}" 
-           class="glossary-letter {% if selected_shelter and selected_shelter.shelter_id == shelter.shelter_id %}active{% endif %}">
-            {{ shelter.name }}
-        </a>
-    {% endfor %}
-</div>
+    <!-- Filters -->
+    <div class="adopt-filters">
 
-<div class="glossary-filter">
-    <span>Filtrer par espèce :</span>
-
-    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None) }}" 
-       class="glossary-letter {% if not selected_species %}active{% endif %}">
-        Toutes
-    </a>
-
-    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chien') }}" 
-       class="glossary-letter {% if selected_species and selected_species.lower() == 'chien' %}active{% endif %}">
-        Chiens
-    </a>
-
-    <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chat') }}" 
-       class="glossary-letter {% if selected_species and selected_species.lower() == 'chat' %}active{% endif %}">
-        Chats
-    </a>
-</div>
-
-
-<div class="pet-container">
-    {% for pet in pets %}
-        <div class="pet-card">
-            <a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}">
-                <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}" class="pet-image">
-            </a>
-            <div class="pet-info">
-                <h2><a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}">{{ pet.name }}</a></h2>
-                <p class="pet-description">{{ pet.description }}</p>
-                <p><strong>Âge :</strong> {{ pet.age }} ans</p>
-                <p><strong>Genre :</strong> {{ pet.gender }}</p>
-                <p><strong>Race :</strong> 
-                    {% if pet.animal %}
-                        {{ pet.animal.breed }}
-                    {% else %}
-                        Inconnue
-                    {% endif %}
-                </p>                   
-                <p><strong>Refuge :</strong> 
-                    <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}" class="pet-shelter-link">
-                        {{ pet.shelter.name }}
-                    </a>
-                </p>
+        <!-- Shelter filter -->
+        <div class="adopt-filter-group">
+            <span class="adopt-filter-label">Refuge</span>
+            <div class="adopt-filter-pills">
+                <a href="{{ url_for('adopt_animals', species=selected_species) }}"
+                   class="adopt-pill {% if not selected_shelter %}adopt-pill--active{% endif %}">
+                    Tous
+                </a>
+                {% for shelter in shelters %}
+                <a href="{{ url_for('adopt_animals', shelter_id=shelter.shelter_id, species=selected_species) }}"
+                   class="adopt-pill {% if selected_shelter and selected_shelter.shelter_id == shelter.shelter_id %}adopt-pill--active{% endif %}">
+                    {{ shelter.name }}
+                </a>
+                {% endfor %}
             </div>
         </div>
-    {% endfor %}
-</div>
+
+        <!-- Species filter -->
+        <div class="adopt-filter-group">
+            <span class="adopt-filter-label">Espèce</span>
+            <div class="adopt-filter-pills">
+                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None) }}"
+                   class="adopt-pill {% if not selected_species %}adopt-pill--active{% endif %}">
+                    Toutes
+                </a>
+                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chien') }}"
+                   class="adopt-pill {% if selected_species and selected_species.lower() == 'chien' %}adopt-pill--active{% endif %}">
+                    🐶 Chiens
+                </a>
+                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chat') }}"
+                   class="adopt-pill {% if selected_species and selected_species.lower() == 'chat' %}adopt-pill--active{% endif %}">
+                    🐱 Chats
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pet grid -->
+    {% if pets %}
+    <div class="adopt-grid">
+        {% for pet in pets %}
+        <a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}" class="adopt-card">
+            <div class="adopt-card-img-wrapper">
+                <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}">
+                <div class="adopt-card-overlay">
+                    <span>Voir la fiche →</span>
+                </div>
+            </div>
+            <div class="adopt-card-body">
+                <h2 class="adopt-card-name">{{ pet.name }}</h2>
+                <p class="adopt-card-meta">
+                    {{ pet.age }} ans · {{ pet.gender }} ·
+                    {% if pet.animal %}{{ pet.animal.breed }}{% else %}Race inconnue{% endif %}
+                </p>
+                <p class="adopt-card-shelter">📍 {{ pet.shelter.name }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="adopt-empty">Aucun animal disponible avec ces filtres pour le moment.</p>
+    {% endif %}
+
+</main>
+
 {% endblock %}

@@ -6,7 +6,7 @@ def get_products_by_category(category_name=None):
     Return all products, or filter by category name if provided.
     Returns a tuple (products_list, categories).
     """
-    categories = Category.query.all()
+    categories = Category.query.order_by(Category.name.asc()).all()
 
     if category_name:
         selected_category = Category.query.filter_by(name=category_name).first()

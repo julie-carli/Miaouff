@@ -1,42 +1,92 @@
 {% extends "base.html" %}
 
-{% block title %}Récapitulatif de la commande{% endblock %}
+{% block title %}Récapitulatif — Miaouff{% endblock %}
 
 {% block content %}
-<h1 class="check-order-title">Récapitulatif de votre commande</h1>
 
-<div class="check-order-address">
-    <h2>Adresse de Livraison</h2>
-    <p><strong>Nom :</strong> {{ address.first_name }} {{ address.last_name }}</p>
-    <p><strong>Email :</strong> {{ address.email }}</p>
-    <p><strong>Téléphone :</strong> {{ address.phone }}</p>
-    <p><strong>Adresse :</strong> {{ address.address }}</p>
-</div>
+<!-- ============================================================
+   Order summary page before payment
+   Shows delivery address and cart contents
+   ============================================================ -->
+<main class="checkout-page">
 
-<h2>Produits dans votre panier</h2>
-<div class="check-order-cart">
-    {% for item in cart %}
-    <div class="cart-item">
-        <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" class="cart-item-image">
-        <div class="cart-item-info">
-            <h3>{{ item.name }}</h3>
-            <p>Quantité: {{ item.quantity }}</p>
-            <p>Prix unitaire: {{ item.price }} €</p>
-            <p>Total pour cet article: {{ item.total_price }} €</p>
+    <h1 class="checkout-title">Récapitulatif de votre commande</h1>
+
+    <div class="checkout-layout">
+
+        <!-- Left: address + cart items -->
+        <div class="checkout-left">
+
+            <!-- Delivery address -->
+            <div class="checkout-section">
+                <div class="checkout-section-header">
+                    <h2 class="checkout-section-title">📍 Adresse de livraison</h2>
+                    <a href="{{ url_for('edit_address') }}" class="checkout-edit-link">Modifier</a>
+                </div>
+                <p class="checkout-address-line">
+                    {{ user.first_name }} {{ user.last_name }}
+                </p>
+                <p class="checkout-address-line">
+                    {{ user.address_number }} {{ user.street_name }}
+                    {% if user.address_complement %}, {{ user.address_complement }}{% endif %}
+                </p>
+                <p class="checkout-address-line">
+                    {{ user.postal_code }} {{ user.city }}, {{ user.country }}
+                </p>
+                {% if user.phone %}
+                <p class="checkout-address-line">📞 {{ user.phone }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Cart items -->
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">🛒 Articles</h2>
+                {% for item in cart %}
+                <div class="checkout-item">
+                    <img src="{{ url_for('static', filename=item.image) }}"
+                         alt="{{ item.name }}" class="checkout-item-img">
+                    <div class="checkout-item-info">
+                        <p class="checkout-item-name">{{ item.name }}</p>
+                        <p class="checkout-item-qty">Quantité : {{ item.quantity }}</p>
+                    </div>
+                    <p class="checkout-item-total">{{ item.total_price }} €</p>
+                </div>
+                {% endfor %}
+            </div>
+
         </div>
+
+        <!-- Right: price summary + CTA -->
+        <div class="checkout-summary">
+            <h2 class="cart-summary-title">Total</h2>
+            <ul class="cart-summary-lines">
+                <li>
+                    <span>Sous-total HT</span>
+                    <span>{{ totals.total_excl_tax }} €</span>
+                </li>
+                <li>
+                    <span>TVA (20%)</span>
+                    <span>{{ "%.2f"|format(totals.total_incl_tax - totals.total_excl_tax) }} €</span>
+                </li>
+                <li>
+                    <span>Livraison</span>
+                    <span>
+                        {% if totals.shipping_fee == 0 %}Offerte 🎉
+                        {% else %}{{ totals.shipping_fee }} €{% endif %}
+                    </span>
+                </li>
+            </ul>
+            <div class="cart-summary-total">
+                <span>Total TTC</span>
+                <span>{{ totals.grand_total }} €</span>
+            </div>
+            <a href="{{ url_for('payment') }}" class="cart-checkout-btn">
+                Procéder au paiement →
+            </a>
+        </div>
+
     </div>
-    {% endfor %}
-</div>
 
-<div class="check-order-summary">
-    <p><strong>Total HT :</strong> {{ total_excl_tax }} €</p>
-    <p><strong>Total TTC :</strong> {{ total_incl_tax }} €</p>
-    <p><strong>Frais de livraison :</strong> {{ shipping_fee }} €</p>
-    <p><strong>Total à payer :</strong> {{ total_incl_tax + shipping_fee }} €</p>
-</div>
-
-<a href="{{ url_for('check_order') }}" id="pay-button" class="check-order-pay-btn">
-   Payer
-</a>
+</main>
 
 {% endblock %}

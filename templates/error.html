@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_code }} — {{ error_title }}{% endblock %}
+
+{% block content %}
+<div class="error-container">
+
+    <!-- Left column: image with tilt animation -->
+    <img src="{{ url_for('static', filename='images/404.png') }}" alt="Erreur {{ error_code }}" class="error-image">
+
+    <!-- Right column: error info -->
+    <div class="error-text">
+        <p class="error-big">{{ error_code }}</p>
+        <h1 class="error-title">{{ error_title }}</h1>
+        <p class="error-message">{{ error_message }}</p>
+
+        {% if error_code == 429 %}
+        <!-- Rate limit: show a countdown hint -->
+        <p class="error-hint">⏳ Patientez quelques instants avant de réessayer.</p>
+        {% elif error_code == 503 %}
+        <p class="error-hint">🔧 Nos équipes sont sur le coup, revenez dans quelques minutes.</p>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="error-button">Retour à l'accueil</a>
+    </div>
+
+</div>
+{% endblock %}

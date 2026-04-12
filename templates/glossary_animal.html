@@ -1,20 +1,52 @@
 {% extends "base.html" %}
 
+{% block title %}{{ animal.breed }} — Miaouff{% endblock %}
+
 {% block content %}
 
-<main class="glossary-animal-container">
+<!-- ============================================================
+   Individual animal detail page (glossary)
+   ============================================================ -->
+<main class="glossary-animal-page">
 
-    <section class="glossary-animal-card">
-        <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}" class="glossary-animal-image">
-        <div class="glossary-animal-info">
-            <h2 class="glossary-animal-title">{{ animal.breed }}</h2>
-            <p><strong>Espèce :</strong> {{ animal.species }}</p>
-            <p><strong>Espérance de vie :</strong> {{ animal.lifespan }}</p>
-            <p><strong>Alimentation :</strong> {{ animal.diet }}</p>
-            <p><strong>Particularités :</strong> {{ animal.specifics }}</p>
-            <a href="{{ url_for('glossary') }}" class="glossary-back-button">Retour au glossaire</a> 
+    <div class="glossary-animal-card">
+
+        <!-- Image -->
+        <div class="glossary-animal-img-wrapper">
+            <img src="{{ url_for('static', filename=animal.image) }}"
+                 alt="{{ animal.breed }}" class="glossary-animal-img">
         </div>
-    </section>
+
+        <!-- Info -->
+        <div class="glossary-animal-info">
+            <p class="glossary-animal-eyebrow">{{ animal.species }}</p>
+            <h1 class="glossary-animal-name">{{ animal.breed }}</h1>
+
+            <ul class="glossary-animal-meta">
+                {% if animal.lifespan %}
+                <li>
+                    <span class="glossary-meta-icon">⏳</span>
+                    <span><strong>Espérance de vie</strong> — {{ animal.lifespan }}</span>
+                </li>
+                {% endif %}
+                {% if animal.diet %}
+                <li>
+                    <span class="glossary-meta-icon">🍽️</span>
+                    <span><strong>Alimentation</strong> — {{ animal.diet }}</span>
+                </li>
+                {% endif %}
+                {% if animal.specifics %}
+                <li>
+                    <span class="glossary-meta-icon">✨</span>
+                    <span><strong>Particularités</strong> — {{ animal.specifics }}</span>
+                </li>
+                {% endif %}
+            </ul>
+
+            <a href="{{ url_for('glossary') }}" class="glossary-animal-back">← Retour au glossaire</a>
+        </div>
+
+    </div>
 
 </main>
 

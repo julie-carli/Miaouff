@@ -1,81 +1,126 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="product-container">
-    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-image">
-    
-    <div class="product-details">
-        <h1 class="product-name">{{ product.name }}</h1>
-        <p class="product-description">{{ product.description }}</p>
-        <p class="product-price">Prix : {{ product.price_incl_tax }}€</p>
-        <p class="product-weight">Poids : {{ product.weight }} kg</p>
-        <p class="product-stock">Stock disponible : <span id="stock">{{ product.stock }}</span></p>
+{% block title %}{{ product.name }} — Miaouff{% endblock %}
 
-        <div class="quantity-container">
-            <button type="button" class="quantity-btn" id="decrease">-</button>
-            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="{{ product.stock }}">
-            <button type="button" class="quantity-btn" id="increase">+</button>
+{% block content %}
+
+<!-- ============================================================
+   Individual product detail page
+   JS handles quantity control and add-to-cart fetch
+   ============================================================ -->
+<main class="product-page">
+
+    <div class="product-detail-card">
+
+        <!-- Image -->
+        <div class="product-detail-img-wrapper">
+            <img src="{{ url_for('static', filename=product.image) }}"
+                 alt="{{ product.name }}" class="product-detail-img">
         </div>
 
-        <button id="add-to-cart" class="product-buy">Ajouter au panier</button>
-        <p id="cart-message" style="display: none; color: green; font-weight: bold;">Produit ajouté au panier !</p>
+        <!-- Info -->
+        <div class="product-detail-info">
+            {% if product.category %}
+            <p class="product-detail-eyebrow">{{ product.category.name }}</p>
+            {% endif %}
+            <h1 class="product-detail-name">{{ product.name }}</h1>
+
+            {% if product.description %}
+            <p class="product-detail-desc">{{ product.description }}</p>
+            {% endif %}
+
+            <ul class="product-detail-meta">
+                <li>
+                    <span class="product-meta-icon">⚖️</span>
+                    <span><strong>Poids</strong> — {{ product.weight }} kg</span>
+                </li>
+                <li>
+                    <span class="product-meta-icon">📦</span>
+                    <span>
+                        <strong>Stock</strong> —
+                        <span id="stock-display">{{ product.stock }}</span> disponible(s)
+                    </span>
+                </li>
+            </ul>
+
+            <div class="product-detail-price-block">
+                <span class="product-detail-price">{{ product.price_incl_tax }} €</span>
+                <span class="product-detail-tax">TTC</span>
+            </div>
+
+            {% if product.stock > 0 %}
+            <div class="product-detail-actions">
+                <div class="shop-qty">
+                    <button type="button" class="shop-qty-btn" id="decrease">−</button>
+                    <input type="number" id="quantity" class="shop-qty-input"
+                           value="1" min="1" max="{{ product.stock }}">
+                    <button type="button" class="shop-qty-btn" id="increase">+</button>
+                </div>
+                <button id="add-to-cart" class="product-detail-add-btn">
+                    Ajouter au panier
+                </button>
+            </div>
+            <p id="cart-message" class="shop-card-feedback" aria-live="polite"></p>
+            {% else %}
+            <p class="shop-card-out">Rupture de stock</p>
+            {% endif %}
+
+            <a href="{{ url_for('products') }}" class="product-detail-back">← Retour aux produits</a>
+        </div>
+
     </div>
-</div>
+
+</main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let quantityInput = document.getElementById("quantity");
-        let decreaseBtn = document.getElementById("decrease");
-        let increaseBtn = document.getElementById("increase");
-        let stock = parseInt(document.getElementById("stock").textContent);
-        let addToCartBtn = document.getElementById("add-to-cart");
-        let cartMessage = document.getElementById("cart-message");
+document.addEventListener("DOMContentLoaded", function () {
+    const quantityInput = document.getElementById("quantity");
+    const decreaseBtn   = document.getElementById("decrease");
+    const increaseBtn   = document.getElementById("increase");
+    const addBtn        = document.getElementById("add-to-cart");
+    const cartMessage   = document.getElementById("cart-message");
+    const stock         = parseInt(document.getElementById("stock-display").textContent);
 
-        decreaseBtn.addEventListener("click", function() {
-            if (quantityInput.value > 1) {
-                quantityInput.value--;
+    if (!quantityInput) return; // Product out of stock — no controls rendered
+
+    decreaseBtn.addEventListener("click", () => {
+        if (parseInt(quantityInput.value) > 1) quantityInput.value--;
+    });
+
+    increaseBtn.addEventListener("click", () => {
+        if (parseInt(quantityInput.value) < stock) quantityInput.value++;
+    });
+
+    quantityInput.addEventListener("input", function () {
+        if (this.value < 1) this.value = 1;
+        if (this.value > stock) this.value = stock;
+    });
+
+    addBtn.addEventListener("click", function () {
+        const quantity = parseInt(quantityInput.value);
+
+        fetch("{{ url_for('add_to_cart_route', product_id=product.product_id) }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quantity })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                cartMessage.textContent = "✓ Produit ajouté au panier !";
+                cartMessage.className = "shop-card-feedback shop-card-feedback--ok";
+            } else {
+                cartMessage.textContent = data.message || "Erreur.";
+                cartMessage.className = "shop-card-feedback shop-card-feedback--err";
             }
-        });
-
-        increaseBtn.addEventListener("click", function() {
-            if (quantityInput.value < stock) {
-                quantityInput.value++;
-            }
-        });
-
-        quantityInput.addEventListener("input", function() {
-            if (quantityInput.value < 1) {
-                quantityInput.value = 1;
-            }
-            if (quantityInput.value > stock) {
-                quantityInput.value = stock;
-            }
-        });
-
-        addToCartBtn.addEventListener("click", function() {
-            let quantity = quantityInput.value;
-
-            fetch("{{ url_for('add_to_cart', product_id=product.product_id) }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: "{{ product.name }}",
-                    price: "{{ product.price_incl_tax }}",
-                    quantity: quantity
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    cartMessage.style.display = "block";
-                    setTimeout(() => { cartMessage.style.display = "none"; }, 2000);
-                }
-            })
-            .catch(error => console.error("Erreur :", error));
+            setTimeout(() => { cartMessage.textContent = ""; cartMessage.className = "shop-card-feedback"; }, 2500);
+        })
+        .catch(() => {
+            cartMessage.textContent = "Erreur réseau.";
+            cartMessage.className = "shop-card-feedback shop-card-feedback--err";
         });
     });
+});
 </script>
 
 {% endblock %}

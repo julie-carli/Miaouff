@@ -1,110 +1,160 @@
 {% extends "base.html" %}
 
-{% block title %}Panier{% endblock %}
+{% block title %}Panier — Miaouff{% endblock %}
 
 {% block content %}
-<h1 class="cart-title">Votre Panier</h1>
- 
-{% if cart %}
-<div class="cart-container">
-    {% for item in cart %}
-    <div class="cart-item">
-        <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" class="cart-item-image">
-        <div class="cart-item-info">
-            <h2 class="cart-item-name">{{ item.name }}</h2>
-            <p class="cart-item-price">{{ item.price }} €</p>
+
+<!-- ============================================================
+   Cart page — list of items with quantity controls
+   JS handles update/remove via fetch
+   ============================================================ -->
+<main class="cart-page">
+
+    <h1 class="cart-page-title">Votre panier</h1>
+
+    {% if cart %}
+
+    <div class="cart-layout">
+
+        <!-- Items list -->
+        <div class="cart-items">
+            {% for item in cart %}
+            <div class="cart-item" data-id="{{ item.product_id }}">
+                <img src="{{ url_for('static', filename=item.image) }}"
+                     alt="{{ item.name }}" class="cart-item-img">
+                <div class="cart-item-info">
+                    <p class="cart-item-name">{{ item.name }}</p>
+                    <p class="cart-item-unit">{{ item.price }} € / unité</p>
+                </div>
+                <div class="shop-qty">
+                    <button type="button" class="shop-qty-btn decrease"
+                            data-id="{{ item.product_id }}">−</button>
+                    <input type="number" class="shop-qty-input cart-qty-input"
+                           value="{{ item.quantity }}" min="1"
+                           data-stock="{{ item.stock }}"
+                           data-id="{{ item.product_id }}">
+                    <button type="button" class="shop-qty-btn increase"
+                            data-id="{{ item.product_id }}">+</button>
+                </div>
+                <p class="cart-item-total" id="total-{{ item.product_id }}">
+                    {{ item.total_price }} €
+                </p>
+                <form action="{{ url_for('remove_from_cart_route', product_id=item.product_id) }}"
+                      method="POST">
+                    <button type="submit" class="cart-remove-btn" aria-label="Supprimer">🗑️</button>
+                </form>
+            </div>
+            {% endfor %}
         </div>
-        <div class="cart-item-quantity">
-            <button class="quantity-btn decrease" data-id="{{ item.product_id }}">-</button>
-            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" data-stock="{{ item.stock }}" data-id="{{ item.product_id }}">
-            <button class="quantity-btn increase" data-id="{{ item.product_id }}">+</button>
+
+        <!-- Order summary -->
+        <div class="cart-summary">
+            <h2 class="cart-summary-title">Récapitulatif</h2>
+            <ul class="cart-summary-lines">
+                <li>
+                    <span>Sous-total HT</span>
+                    <span>{{ totals.total_excl_tax }} €</span>
+                </li>
+                <li>
+                    <span>TVA (20%)</span>
+                    <span>{{ "%.2f"|format(totals.total_incl_tax - totals.total_excl_tax) }} €</span>
+                </li>
+                <li>
+                    <span>Livraison</span>
+                    <span>
+                        {% if totals.shipping_fee == 0 %}
+                            Offerte 🎉
+                        {% else %}
+                            {{ "%.2f"|format(totals.shipping_fee) }} €
+                        {% endif %}
+                    </span>
+                </li>
+            </ul>
+            <div class="cart-summary-total">
+                <span>Total TTC</span>
+                <span>{{ totals.grand_total }} €</span>
+            </div>
+            {% if totals.shipping_fee > 0 %}
+            <p class="cart-shipping-hint">
+                Plus que {{ "%.2f"|format(50 - totals.total_incl_tax) }} € pour la livraison offerte !
+            </p>
+            {% endif %}
+            <a href="{{ url_for('check_order') }}" class="cart-checkout-btn">
+                Passer la commande →
+            </a>
         </div>
-        <p class="cart-item-total">{{ item.total_price }} €</p>
-        <form action="{{ url_for('remove_from_cart', product_id=item.product_id) }}" method="POST">
-            <button type="submit" class="cart-remove-btn">🗑️</button>
-        </form>
+
     </div>
-    {% endfor %}
-</div>
 
-<a href="{{ url_for('check_order') }}" class="cart-checkout-btn">Passer commande</a>
+    {% else %}
+    <div class="cart-empty-state">
+        <p class="cart-empty-text">Votre panier est vide.</p>
+        <a href="{{ url_for('products') }}" class="cart-empty-link">Découvrir nos produits →</a>
+    </div>
+    {% endif %}
 
-{% else %}
-<p class="cart-empty">Votre panier est vide.</p>
-{% endif %}
+</main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".quantity-btn").forEach(button => {
-        button.addEventListener("click", function() {
-            let cartItem = this.closest(".cart-item");
-            let input = cartItem.querySelector(".quantity-input");
-            let price = parseFloat(cartItem.querySelector(".cart-item-price").textContent);
-            let totalPriceElement = cartItem.querySelector(".cart-item-total");
-            let productId = this.getAttribute("data-id");
-            let stock = parseInt(input.getAttribute("data-stock")); // Stock max du produit
-            let newQuantity = parseInt(input.value);
+document.addEventListener("DOMContentLoaded", function () {
 
-            if (this.classList.contains("increase")) {
-                if (newQuantity < stock) {
-                    newQuantity++;
-                }
-            } else if (this.classList.contains("decrease")) {
-                if (newQuantity > 1) {
-                    newQuantity--;
-                }
-            }
+    function updateTotal(productId, newQty, unitPrice) {
+        const totalEl = document.getElementById("total-" + productId);
+        if (totalEl) totalEl.textContent = (newQty * unitPrice).toFixed(2) + " €";
+    }
 
-            input.value = newQuantity;
-            totalPriceElement.textContent = (newQuantity * price).toFixed(2) + " €";
-
-            updateCart(productId, newQuantity, input, totalPriceElement, price);
-        });
-    });
-
-    // Bloque la saisie de quantités invalides (ex. > stock ou < 1)
-    document.querySelectorAll(".quantity-input").forEach(input => {
-        let stock = parseInt(input.getAttribute("data-stock")); // Récupère le stock
-
-        input.addEventListener("input", function() {
-            let value = parseInt(this.value);
-
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > stock) {
-                this.value = stock;
-            }
-
-            let cartItem = this.closest(".cart-item");
-            let price = parseFloat(cartItem.querySelector(".cart-item-price").textContent);
-            let totalPriceElement = cartItem.querySelector(".cart-item-total");
-            let productId = this.getAttribute("data-id");
-
-            totalPriceElement.textContent = (this.value * price).toFixed(2) + " €";
-
-            updateCart(productId, this.value, this, totalPriceElement, price);
-        });
-    });
-
-    function updateCart(productId, quantity, input, totalPriceElement, price) {
+    function syncCart(productId, newQty, input, unitPrice) {
         fetch(`/update_cart/${productId}`, {
             method: "POST",
-            body: JSON.stringify({ quantity: quantity }),
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quantity: newQty })
         })
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
             if (!data.success) {
-                alert(data.message);
                 input.value = data.corrected_quantity;
-                totalPriceElement.textContent = (data.corrected_quantity * price).toFixed(2) + " €";
+                updateTotal(productId, data.corrected_quantity, unitPrice);
             }
         });
     }
-});
 
-    </script>    
+    // +/- buttons
+    document.querySelectorAll(".shop-qty-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const productId  = this.dataset.id;
+            const row        = this.closest(".cart-item");
+            const input      = row.querySelector(".cart-qty-input");
+            const stock      = parseInt(input.dataset.stock) || 9999;
+            const unitPrice  = parseFloat(row.querySelector(".cart-item-unit").textContent);
+            let   val        = parseInt(input.value);
+
+            if (this.classList.contains("increase") && val < stock) val++;
+            if (this.classList.contains("decrease") && val > 1) val--;
+
+            input.value = val;
+            updateTotal(productId, val, unitPrice);
+            syncCart(productId, val, input, unitPrice);
+        });
+    });
+
+    // Manual input
+    document.querySelectorAll(".cart-qty-input").forEach(input => {
+        input.addEventListener("change", function () {
+            const productId = this.dataset.id;
+            const stock     = parseInt(this.dataset.stock) || 9999;
+            const row       = this.closest(".cart-item");
+            const unitPrice = parseFloat(row.querySelector(".cart-item-unit").textContent);
+            let   val       = parseInt(this.value);
+
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > stock) val = stock;
+            this.value = val;
+
+            updateTotal(productId, val, unitPrice);
+            syncCart(productId, val, this, unitPrice);
+        });
+    });
+});
+</script>
 
 {% endblock %}

@@ -2,32 +2,63 @@
 
 {% block content %}
 
-<header>
-    <h1 class="blog-title">Blog</h1>
-    <h2 class="news-title">Nos actualités</h2>
-</header>
-
-<main class="blog-container">
-    {% for article in articles %}
-    <div class="blog-article {% if loop.index % 2 == 0 %} reverse {% endif %}">
-        <div class="blog-content">
-            <h2 class="article-title">{{ article['title'] }} 
-                {% for shelter in article['shelters'] %}
-                    <a href="{{ url_for('shelter', shelter_id=shelter['shelter_id']) }}">
-                        <strong>{{ shelter['shelter_name'] }}</strong>
-                    </a>
-                    {% if not loop.last %} et {% endif %}
-                {% endfor %}
-            </h2>
-            <p class="article-text">
-                {{ article['content'] }}
-            </p>
-        </div>
-        <div class="blog-image">
-            <img src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
-        </div>
+<!-- Blog hero -->
+<section class="blog-hero">
+    <div class="blog-hero-content">
+        <h1 class="blog-hero-title">Nos actualités</h1>
+        <p class="blog-hero-sub">Adoptions, conseils, vie des refuges... suivez toute l'actualité de l'association.</p>
     </div>
-    {% endfor %}
-</main>
+</section>
+
+<!-- Articles grid -->
+<section class="blog-section">
+
+    {% if articles %}
+    <div class="blog-grid">
+        {% for article in articles %}
+        <a href="{{ url_for('blog_article', article_id=article['_id']) }}" class="blog-card">
+            <div class="blog-card-img-wrapper">
+                <img src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
+                <div class="blog-card-overlay">
+                    <span>Lire l'article →</span>
+                </div>
+            </div>
+            <div class="blog-card-body">
+                <p class="blog-card-date">
+                    {{ article['created_at'].strftime('%d %B %Y') if article.get('created_at') else '' }}
+                </p>
+                <h2 class="blog-card-title">{{ article['title'] }}</h2>
+                <!-- Show a short excerpt of the content -->
+                <p class="blog-card-excerpt">{{ article['content'][:120] }}{% if article['content']|length > 120 %}…{% endif %}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <nav class="blog-pagination" aria-label="Pagination du blog">
+        {% if current_page > 1 %}
+        <a href="{{ url_for('blog', page=current_page - 1) }}" class="blog-page-btn">← Précédent</a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+        <a href="{{ url_for('blog', page=p) }}"
+           class="blog-page-btn {% if p == current_page %}active{% endif %}">
+            {{ p }}
+        </a>
+        {% endfor %}
+
+        {% if current_page < total_pages %}
+        <a href="{{ url_for('blog', page=current_page + 1) }}" class="blog-page-btn">Suivant →</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <p class="blog-empty">Aucun article publié pour le moment. Revenez bientôt ! 🐾</p>
+    {% endif %}
+
+</section>
 
 {% endblock %}

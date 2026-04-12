@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article['title'] }} — Miaouff Blog{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+   Individual blog article page
+   Route: /blog/<article_id> — renders blog_article.html
+   ============================================================ -->
+<article class="blog-article-page">
+
+    <!-- Eyebrow + title -->
+    <header class="blog-article-header">
+        <p class="blog-article-eyebrow">
+            🐾 Miaouff —
+            {{ article['created_at'].strftime('%d %B %Y') if article.get('created_at') else 'Blog' }}
+        </p>
+        <h1 class="blog-article-title">{{ article['title'] }}</h1>
+    </header>
+
+    <!-- Thumbnail — small fixed width, centered below the title -->
+    <div class="blog-article-thumbnail">
+        <img src="{{ url_for('static', filename=article['image_url']) }}"
+             alt="{{ article['title'] }}" class="blog-article-hero-img">
+    </div>
+
+    <!-- Article content -->
+    <div class="blog-article-content">
+        {{ article['content'] }}
+    </div>
+
+    <!-- Back to blog -->
+    <div class="blog-article-back-wrapper">
+        <a href="{{ url_for('blog') }}" class="blog-article-back">← Retour au blog</a>
+    </div>
+
+</article>
+
+{% endblock %}

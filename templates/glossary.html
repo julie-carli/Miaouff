@@ -1,56 +1,83 @@
 {% extends "base.html" %}
 
+{% block title %}Glossaire des animaux — Miaouff{% endblock %}
+
 {% block content %}
 
-<main class="glossary-container">
+<!-- ============================================================
+   Glossary listing page
+   Filters by letter and species, links to individual animal pages
+   ============================================================ -->
+<main class="glossary-page">
 
-    <h1>Glossaire des animaux</h1>
+    <!-- Hero -->
+    <div class="glossary-hero">
+        <h1 class="glossary-hero-title">Glossaire des animaux</h1>
+        <p class="glossary-hero-sub">Explorez les espèces et races présentes dans nos refuges.</p>
+    </div>
 
-    <div class="glossary-filter">
-        <span>Trier par :</span>
-        <a href="{{ url_for('glossary', species=selected_species) }}" 
-           class="glossary-letter {% if not selected_letter %}active{% endif %}">
-            Tous
-        </a>
-        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-            <a href="{{ url_for('glossary', letter=letter, species=selected_species) }}" 
-               class="glossary-letter {% if selected_letter == letter %}active{% endif %}">
-                {{ letter }}
-            </a>
-        {% endfor %}
-    </div>    
+    <!-- Filters -->
+    <div class="glossary-filters">
 
-    <div class="glossary-filter">
-        <span>Filtrer par :</span>
-        
-        <a href="{{ url_for('glossary', letter=selected_letter) }}" 
-           class="glossary-letter {% if not selected_species %}active{% endif %}">
-            Tous
-        </a>
-        
-        <a href="{{ url_for('glossary', species='Chat', letter=selected_letter) }}" 
-           class="glossary-letter {% if selected_species == 'Chat' %}active{% endif %}">
-            Chat
-        </a>
-        
-        <a href="{{ url_for('glossary', species='Chien', letter=selected_letter) }}" 
-           class="glossary-letter {% if selected_species == 'Chien' %}active{% endif %}">
-            Chien
-        </a>
-    </div>    
-    
-    <section class="glossary-list">
-        {% if animals %}
-            {% for animal in animals %}
-                <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
-                    <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}" class="glossary-image">
-                    <h2 class="glossary-title">{{ animal.breed }}</h2>
+        <!-- Alphabet filter -->
+        <div class="glossary-filter-group">
+            <span class="glossary-filter-label">Lettre</span>
+            <div class="glossary-filter-pills">
+                <a href="{{ url_for('glossary', species=selected_species) }}"
+                   class="glossary-pill {% if not selected_letter %}glossary-pill--active{% endif %}">
+                    Tous
                 </a>
-            {% endfor %}
-        {% else %}
-            <p class="glossary-no-results">Aucun animal trouvé pour cette lettre ou espèce.</p>
-        {% endif %}
-    </section>
+                {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                <a href="{{ url_for('glossary', letter=letter, species=selected_species) }}"
+                   class="glossary-pill {% if selected_letter == letter %}glossary-pill--active{% endif %}">
+                    {{ letter }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Species filter -->
+        <div class="glossary-filter-group">
+            <span class="glossary-filter-label">Espèce</span>
+            <div class="glossary-filter-pills">
+                <a href="{{ url_for('glossary', letter=selected_letter) }}"
+                   class="glossary-pill {% if not selected_species %}glossary-pill--active{% endif %}">
+                    Toutes
+                </a>
+                <a href="{{ url_for('glossary', species='Chat', letter=selected_letter) }}"
+                   class="glossary-pill {% if selected_species == 'Chat' %}glossary-pill--active{% endif %}">
+                    🐱 Chats
+                </a>
+                <a href="{{ url_for('glossary', species='Chien', letter=selected_letter) }}"
+                   class="glossary-pill {% if selected_species == 'Chien' %}glossary-pill--active{% endif %}">
+                    🐶 Chiens
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Animal grid -->
+    {% if animals %}
+    <div class="glossary-grid">
+        {% for animal in animals %}
+        <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
+            <div class="glossary-card-img-wrapper">
+                <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}">
+                <div class="glossary-card-overlay">
+                    <span>Voir la fiche →</span>
+                </div>
+            </div>
+            <div class="glossary-card-body">
+                <h2 class="glossary-card-name">{{ animal.breed }}</h2>
+                <p class="glossary-card-species">{{ animal.species }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="glossary-empty">Aucun animal trouvé pour cette sélection.</p>
+    {% endif %}
 
 </main>
 
