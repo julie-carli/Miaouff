@@ -2,56 +2,141 @@
 
 {% block content %}
 
-<div class="login-container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    
-    <div class="login-forms">
+<div class="login-page">
+    <div class="login-card">
+
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Miaouff">
+        </div>
+
+        <!-- Login form -->
         <form id="loginForm" class="login-form" method="POST" action="{{ url_for('login') }}">
-            <h2 class="login-title">Connexion</h2>
-            <label for="login-email">Adresse e-mail</label>
-            <input type="email" id="login-email" name="email" class="login-input" required>
+            <input type="hidden" name="action" value="login">
 
-            <label for="login-password">Mot de passe</label>
-            <input type="password" id="login-password" name="password" class="login-input" required>
+            <h1 class="login-title">Connexion</h1>
 
-            <button type="submit" class="login-button">Se connecter</button>
-            <p class="login-switch">Vous n'avez pas de compte ? <a href="javascript:void(0)" id="showRegister">Inscrivez-vous ici</a></p>
+            <div class="login-field">
+                <label for="login-email">Adresse e-mail</label>
+                <input type="email" id="login-email" name="email"
+                       class="login-input" placeholder="vous@exemple.fr" required>
+            </div>
+
+            <div class="login-field">
+                <label for="login-password">Mot de passe</label>
+                <div class="login-input-wrapper">
+                    <input type="password" id="login-password" name="password"
+                           class="login-input" placeholder="••••••••••••" required>
+                    <button type="button" class="login-eye" data-target="login-password" aria-label="Afficher le mot de passe">
+                        <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg class="eye-icon eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="login-forgot">
+                <a href="{{ url_for('reset_password') }}">Mot de passe oublié ?</a>
+            </div>
+
+            <button type="submit" class="login-btn">Se connecter</button>
+
+            <p class="login-switch">
+                Pas encore de compte ?
+                <a href="javascript:void(0)" id="showRegister">Inscrivez-vous</a>
+            </p>
         </form>
 
+        <!-- Register form -->
         <form id="registerForm" class="login-form hidden" method="POST" action="{{ url_for('login') }}">
-            <h2 class="login-title">Inscription</h2>
-            <label for="register-email">Adresse e-mail</label>
-            <input type="email" id="register-email" name="email" class="login-input" required>
-        
-            <label for="register-password">Mot de passe</label>
-            <input type="password" id="register-password" name="password" class="login-input" required>
-            <p class="login-password-info">
-                Le mot de passe doit contenir :
-                <span id="length-criteria" class="criteria">Au moins 12 caractères</span>
-                <span id="uppercase-criteria" class="criteria">Une majuscule</span>
-                <span id="lowercase-criteria" class="criteria">Une minuscule</span>
-                <span id="number-criteria" class="criteria">Un chiffre</span>
-                <span id="symbol-criteria" class="criteria">
-                    Un symbole parmi <strong>@ $ ! % * ? & , . ; : - _ + = ( ) [ ] { } / \ | ^ ~ #</strong>
-                </span>
-            </p>                
-        
-            <label for="confirm-password">Confirmez le mot de passe</label>
-            <input type="password" id="confirm-password" name="confirm_password" class="login-input" required>
-        
-            <button type="submit" class="login-button">S'inscrire</button>
-            <p class="login-switch">Vous avez déjà un compte ? <a href="javascript:void(0)" id="showLogin">Connectez-vous ici</a></p>
-        </form>        
+            <input type="hidden" name="action" value="register">
+
+            <h1 class="login-title">Inscription</h1>
+
+            <div class="login-field">
+                <label for="register-email">Adresse e-mail</label>
+                <input type="email" id="register-email" name="email"
+                       class="login-input" placeholder="vous@exemple.fr" required>
+            </div>
+
+            <div class="login-field">
+                <label for="register-password">Mot de passe</label>
+                <div class="login-input-wrapper">
+                    <input type="password" id="register-password" name="password"
+                           class="login-input" placeholder="••••••••••••" required>
+                    <button type="button" class="login-eye" data-target="register-password" aria-label="Afficher le mot de passe">
+                        <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg class="eye-icon eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Password criteria -->
+                <ul class="login-criteria">
+                    <li id="length-criteria" class="criteria">Au moins 12 caractères</li>
+                    <li id="uppercase-criteria" class="criteria">Une majuscule</li>
+                    <li id="lowercase-criteria" class="criteria">Une minuscule</li>
+                    <li id="number-criteria" class="criteria">Un chiffre</li>
+                    <li id="symbol-criteria" class="criteria">Un symbole <span class="criteria-symbols">@ $ ! % * ? & , . ; : - _ + = ( ) [ ] { } / \ | ^ ~ #</span></li>
+                </ul>
+            </div>
+
+            <div class="login-field">
+                <label for="confirm-password">Confirmer le mot de passe</label>
+                <div class="login-input-wrapper">
+                    <input type="password" id="confirm-password" name="confirm_password"
+                           class="login-input" placeholder="••••••••••••" required>
+                    <button type="button" class="login-eye" data-target="confirm-password" aria-label="Afficher le mot de passe">
+                        <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg class="eye-icon eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn">Créer mon compte</button>
+
+            <p class="login-switch">
+                Déjà un compte ?
+                <a href="javascript:void(0)" id="showLogin">Se connecter</a>
+            </p>
+        </form>
+
     </div>
 </div>
 
 <script src="/static/js/login.js" defer></script>
+
+<!-- Eye toggle logic — separate from login.js to avoid touching existing code -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".login-eye").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const input  = document.getElementById(this.dataset.target);
+            const isText = input.type === "text";
+            input.type   = isText ? "password" : "text";
+            this.querySelector(".eye-open").classList.toggle("hidden", !isText);
+            this.querySelector(".eye-closed").classList.toggle("hidden", isText);
+        });
+    });
+});
+</script>
+
 {% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Commande #{{ order.order_id }} — Miaouff{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+   Order detail page — shows items, totals, status and address
+   ============================================================ -->
+<main class="checkout-page">
+
+    <h1 class="checkout-title">Commande #{{ order.order_id }}</h1>
+
+    <div class="checkout-layout">
+
+        <div class="checkout-left">
+
+            <!-- Order items -->
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">🛒 Articles commandés</h2>
+                {% for op in order.order_products %}
+                <div class="checkout-item">
+                    {% if op.product and op.product.image %}
+                    <img src="{{ url_for('static', filename=op.product.image) }}"
+                         alt="{{ op.product.name }}" class="checkout-item-img">
+                    {% endif %}
+                    <div class="checkout-item-info">
+                        <p class="checkout-item-name">
+                            {{ op.product.name if op.product else 'Produit supprimé' }}
+                        </p>
+                        <p class="checkout-item-qty">Quantité : {{ op.quantity }}</p>
+                        <p class="checkout-item-qty">Prix unitaire : {{ op.unit_price_incl_tax }} €</p>
+                    </div>
+                    <p class="checkout-item-total">
+                        {{ "%.2f"|format(op.quantity * op.unit_price_incl_tax) }} €
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Order status -->
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">📋 Informations</h2>
+                <ul class="account-info-list">
+                    <li>
+                        <span class="account-info-label">Date</span>
+                        <span class="account-info-value">
+                            {{ order.order_date.strftime('%d/%m/%Y à %H:%M') if order.order_date else '—' }}
+                        </span>
+                    </li>
+                    <li>
+                        <span class="account-info-label">Statut</span>
+                        <span class="account-info-value account-order-status account-order-status--{{ order.status }}">
+                            {{ order.status | capitalize }}
+                        </span>
+                    </li>
+                    <li>
+                        <span class="account-info-label">Méthode de paiement</span>
+                        <span class="account-info-value">
+                            {% if order.payments %}
+                                {{ order.payments[0].payment_method | capitalize }}
+                            {% else %}—{% endif %}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Price summary -->
+        <div class="checkout-summary">
+            <h2 class="cart-summary-title">Récapitulatif</h2>
+            <ul class="cart-summary-lines">
+                <li>
+                    <span>Sous-total HT</span>
+                    <span>{{ order.total_price_excl_tax }} €</span>
+                </li>
+                <li>
+                    <span>TVA (20%)</span>
+                    <span>
+                        {{ "%.2f"|format(order.total_price_incl_tax - order.total_price_excl_tax) }} €
+                    </span>
+                </li>
+                <li>
+                    <span>Livraison</span>
+                    <span>
+                        {% if order.shipping_fee == 0 %}Offerte
+                        {% else %}{{ order.shipping_fee }} €{% endif %}
+                    </span>
+                </li>
+            </ul>
+            <div class="cart-summary-total">
+                <span>Total TTC</span>
+                <span>
+                    {{ "%.2f"|format(order.total_price_incl_tax + order.shipping_fee) }} €
+                </span>
+            </div>
+
+            <!-- SAV contact -->
+            <div class="order-detail-sav">
+                <p class="order-detail-sav-title">Un problème avec cette commande ?</p>
+                <a href="{{ url_for('contact') }}" class="order-detail-sav-link">
+                    Contacter le service client →
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <a href="{{ url_for('account') }}" class="product-detail-back"
+       style="display:block; text-align:center; margin-top:2rem;">
+        ← Retour au compte
+    </a>
+
+</main>
+
+{% endblock %}

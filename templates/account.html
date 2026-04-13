@@ -1,62 +1,175 @@
 {% extends "base.html" %}
 
-{% block title %}Mon compte{% endblock %}
+{% block title %}Mon compte — Miaouff{% endblock %}
 
 {% block content %}
-<div class="account-container">
-    <h1 class="account-title">Mon compte</h1>
-    
-    <h2 class="account-section-title">Mes informations personnelles</h2>
-    <div class="account-box">
-        <p><strong>Prénom :</strong> {{ current_user.first_name if current_user.first_name else "Non renseigné" }}</p>
-        <p><strong>Nom :</strong> {{ current_user.last_name if current_user.last_name else "Non renseigné" }}</p>
-        <p><strong>Email :</strong> {{ current_user.email }}</p>
-        <p><strong>Mot de passe :</strong> ********</p>
-        <p><strong>Date de naissance :</strong> {{ current_user.birth_date if current_user.birth_date else "Non renseigné" }}</p>
-        <p><strong>Téléphone :</strong> {{ current_user.phone if current_user.phone else "Non renseigné" }}</p>
-        <a href="{{ url_for('home') }}" class="account-button">Modifier</a>
+
+<!-- ============================================================
+   User account dashboard
+   Sections: personal info, address, orders, admin (if role=admin)
+   ============================================================ -->
+<main class="account-page">
+
+    <div class="account-hero">
+        <div class="account-hero-avatar">
+            {{ current_user.first_name[0]|upper if current_user.first_name else current_user.email[0]|upper }}
+        </div>
+        <div>
+            <h1 class="account-hero-name">
+                {% if current_user.first_name %}
+                    {{ current_user.first_name }} {{ current_user.last_name or '' }}
+                {% else %}
+                    Mon compte
+                {% endif %}
+            </h1>
+            <p class="account-hero-email">{{ current_user.email }}</p>
+        </div>
     </div>
-    
-    <h2 class="account-section-title">Mon adresse</h2>
-    <div class="account-box">
-        <p><strong>Numéro :</strong> {{ current_user.address_number if current_user.address_number else "Non renseigné" }}</p>
-        <p><strong>Rue :</strong> {{ current_user.street_name if current_user.street_name else "Non renseigné" }}</p>
-        <p><strong>Complément :</strong> {{ current_user.address_complement if current_user.address_complement else "Non renseigné" }}</p>
-        <p><strong>Code postal :</strong> {{ current_user.postal_code if current_user.postal_code else "Non renseigné" }}</p>
-        <p><strong>Ville :</strong> {{ current_user.city if current_user.city else "Non renseigné" }}</p>
-        <p><strong>Pays :</strong> {{ current_user.country if current_user.country else "Non renseigné" }}</p>
-        <a href="{{ url_for('home') }}" class="account-button">Modifier</a>
-    </div>
-    
-    <h2 class="account-section-title">Mes commandes</h2>
-    <div class="account-box">
-        {% if current_user.orders|length >= 3 %}
-            {% for order in current_user.orders[-3:] %}
-                <p><strong>Commande #{{ order.id }}</strong> - {{ order.date }}</p>
-            {% endfor %}
-        {% elif current_user.orders %}
-            {% for order in current_user.orders %}
-                <p><strong>Commande #{{ order.id }}</strong> - {{ order.date }}</p>
-            {% endfor %}
-        {% else %}
-            <p>Aucune commande passée.</p>
+
+    <div class="account-layout">
+
+        <!-- ---- Personal info ---- -->
+        <section class="account-section">
+            <div class="account-section-header">
+                <h2 class="account-section-title">Informations personnelles</h2>
+                <a href="{{ url_for('edit_profile') }}" class="account-edit-link">Modifier</a>
+            </div>
+            <ul class="account-info-list">
+                <li>
+                    <span class="account-info-label">Prénom</span>
+                    <span class="account-info-value">
+                        {{ current_user.first_name or '—' }}
+                    </span>
+                </li>
+                <li>
+                    <span class="account-info-label">Nom</span>
+                    <span class="account-info-value">
+                        {{ current_user.last_name or '—' }}
+                    </span>
+                </li>
+                <li>
+                    <span class="account-info-label">Email</span>
+                    <span class="account-info-value">{{ current_user.email }}</span>
+                </li>
+                <li>
+                    <span class="account-info-label">Date de naissance</span>
+                    <span class="account-info-value">
+                        {{ current_user.birth_date or '—' }}
+                    </span>
+                </li>
+                <li>
+                    <span class="account-info-label">Téléphone</span>
+                    <span class="account-info-value">
+                        {{ current_user.phone or '—' }}
+                    </span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ---- Delivery address ---- -->
+        <section class="account-section">
+            <div class="account-section-header">
+                <h2 class="account-section-title">Adresse de livraison</h2>
+                <a href="{{ url_for('edit_address') }}" class="account-edit-link">Modifier</a>
+            </div>
+            {% if current_user.street_name %}
+            <ul class="account-info-list">
+                <li>
+                    <span class="account-info-label">Adresse</span>
+                    <span class="account-info-value">
+                        {{ current_user.address_number }} {{ current_user.street_name }}
+                        {% if current_user.address_complement %}, {{ current_user.address_complement }}{% endif %}
+                    </span>
+                </li>
+                <li>
+                    <span class="account-info-label">Ville</span>
+                    <span class="account-info-value">
+                        {{ current_user.postal_code }} {{ current_user.city }}
+                    </span>
+                </li>
+                <li>
+                    <span class="account-info-label">Pays</span>
+                    <span class="account-info-value">{{ current_user.country or '—' }}</span>
+                </li>
+            </ul>
+            {% else %}
+            <p class="account-empty-hint">
+                Aucune adresse enregistrée.
+                <a href="{{ url_for('edit_address') }}" class="account-edit-link">Ajouter</a>
+            </p>
+            {% endif %}
+        </section>
+
+        <!-- ---- Orders ---- -->
+        <section class="account-section account-section--full">
+            <div class="account-section-header">
+                <h2 class="account-section-title">Mes commandes</h2>
+            </div>
+            {% if current_user.orders %}
+            <div class="account-orders-list">
+                {% for order in current_user.orders | sort(attribute='order_date', reverse=True) %}
+                <a href="{{ url_for('order_detail', order_id=order.order_id) }}"
+                   class="account-order-row">
+                    <div class="account-order-id">#{{ order.order_id }}</div>
+                    <div class="account-order-date">
+                        {{ order.order_date.strftime('%d/%m/%Y') if order.order_date else '—' }}
+                    </div>
+                    <div class="account-order-total">{{ order.total_price_incl_tax }} €</div>
+                    <div class="account-order-status account-order-status--{{ order.status }}">
+                        {{ order.status | capitalize }}
+                    </div>
+                    <span class="account-order-arrow">→</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="account-empty-hint">Aucune commande passée pour le moment.</p>
+            {% endif %}
+        </section>
+
+        <!-- ---- Admin panel (admin users only) ---- -->
+        {% if current_user.is_authenticated and current_user.role == "admin" %}
+        <section class="account-section account-section--full">
+            <div class="account-section-header">
+                <h2 class="account-section-title">Administration</h2>
+            </div>
+            <div class="account-admin-grid">
+                <a href="{{ url_for('edit_shelters') }}" class="account-admin-box">
+                    <span class="account-admin-icon">🏠</span>
+                    Refuges
+                </a>
+                <a href="{{ url_for('edit_pets') }}" class="account-admin-box">
+                    <span class="account-admin-icon">🐾</span>
+                    Animaux à adopter
+                </a>
+                <a href="{{ url_for('edit_animals') }}" class="account-admin-box">
+                    <span class="account-admin-icon">📖</span>
+                    Glossaire
+                </a>
+                <a href="{{ url_for('edit_articles') }}" class="account-admin-box">
+                    <span class="account-admin-icon">✍️</span>
+                    Blog
+                </a>
+                <a href="{{ url_for('edit_categories') }}" class="account-admin-box">
+                    <span class="account-admin-icon">🗂️</span>
+                    Catégories
+                </a>
+                <a href="{{ url_for('edit_products') }}" class="account-admin-box">
+                    <span class="account-admin-icon">📦</span>
+                    Produits
+                </a>
+                <a href="{{ url_for('edit_users') }}" class="account-admin-box">
+                    <span class="account-admin-icon">👥</span>
+                    Utilisateurs
+                </a>
+            </div>
+        </section>
         {% endif %}
+
     </div>
-    
-    {% if current_user.role == "admin" %}
-    <h2 class="account-section-title">Gestion administrateur</h2>
-    <div class="account-admin-grid">
-        <a href="{{ url_for('edit_shelters') }}" class="account-admin-box">Gérer les refuges</a>
-        <a href="{{ url_for('edit_pets') }}" class="account-admin-box">Gérer les animaux à adopter</a>
-        <a href="{{ url_for('edit_animals') }}" class="account-admin-box">Gérer le glossaire</a>
-        <a href="{{ url_for('edit_articles') }}" class="account-admin-box">Gérer le blog</a>
-        <a href="{{ url_for('edit_categories') }}" class="account-admin-box">Gérer les catégories</a>
-        <a href="{{ url_for('edit_products') }}" class="account-admin-box">Gérer les produits</a>
-        <a href="{{ url_for('edit_users') }}" class="account-admin-box">Gérer les utilisateurs</a>
-        <a href="{{ url_for('home') }}" class="account-admin-box">SAV</a>
-    </div>
-    {% endif %}
-    
-    <a href="{{ url_for('logout') }}" class="account-logout-button">Se déconnecter</a>
-</div>
+
+    <a href="{{ url_for('logout') }}" class="account-logout-btn">Se déconnecter</a>
+
+</main>
+
 {% endblock %}

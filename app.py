@@ -8,16 +8,6 @@ from flask import (
     session,
     jsonify,
 )
-
-from services.cart_service import (
-    get_cart,
-    add_to_cart,
-    update_cart,
-    remove_from_cart,
-    is_address_complete,
-    get_cart_totals,
-)
-
 from flask_login import (
     LoginManager,
     login_user,
@@ -33,9 +23,10 @@ from bson import ObjectId
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
+import stripe
 
 from config import Config
-from models.models import db, User, Product, Animal, Pet, Shelter, Category
+from models.models import db, User, Product, Animal, Pet, Shelter, Category, Order, OrderProduct, Payment as PaymentModel
 from services.auth_service import (
     register_user,
     authenticate_user,
@@ -49,6 +40,7 @@ from services.cart_service import (
     update_cart,
     remove_from_cart,
     is_address_complete,
+    get_cart_totals,
 )
 from services.shelter_service import (
     save_or_update_shelter,
@@ -67,16 +59,17 @@ from services.product_service import (
     update_category,
     delete_category as do_delete_category,
 )
-
 from services.chat_service import send_message_to_make
 
- 
 
 # ============================
 # App initialization
 # ============================
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# Stripe API key set once at startup using the value from config/env
+stripe.api_key = app.config["STRIPE_SECRET_KEY"]
 
 # ============================
 # Extensions initialization
@@ -122,12 +115,13 @@ def chat():
     data = request.get_json()
     user_message = data.get("message", "").strip()
     history = data.get("history", [])
- 
+
     if not user_message:
         return jsonify({"success": False, "response": "Message vide."}), 400
- 
+
     bot_response = send_message_to_make(user_message, history)
     return jsonify({"success": True, "response": bot_response})
+
 
 @app.route("/glossary")
 def glossary():
@@ -232,11 +226,11 @@ def product(product_id):
 @app.route("/blog")
 def blog():
     collection = mongo_db.miaouff_collection
-    page     = request.args.get("page", 1, type=int)
+    page = request.args.get("page", 1, type=int)
     per_page = 9
 
     total_articles = collection.count_documents({})
-    total_pages    = (total_articles + per_page - 1) // per_page
+    total_pages = (total_articles + per_page - 1) // per_page
 
     # Fetch articles for the current page, newest first
     articles = list(
@@ -257,9 +251,8 @@ def blog():
 @app.route("/blog/<article_id>")
 def blog_article(article_id):
     collection = mongo_db.miaouff_collection
-    article    = collection.find_one({"_id": ObjectId(article_id)})
+    article = collection.find_one({"_id": ObjectId(article_id)})
 
-    # Return 404 if article doesn't exist
     if not article:
         return render_template(
             "error.html",
@@ -373,6 +366,69 @@ def login():
 @login_required
 def account():
     return render_template("account.html", user_name=current_user.email)
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    """Let the user update their personal info (name, birth date, phone, email)."""
+    user = User.query.get(current_user.user_id)
+
+    if request.method == "POST":
+        user.first_name = request.form.get("first_name")
+        user.last_name = request.form.get("last_name")
+        user.birth_date = request.form.get("birth_date") or None
+        user.phone = request.form.get("phone")
+        new_email = request.form.get("email")
+        # Avoid duplicate email if the user changes it
+        if new_email and new_email != user.email:
+            if User.query.filter_by(email=new_email).first():
+                flash("Cet email est déjà utilisé.", "danger")
+                return redirect(url_for("edit_profile"))
+            user.email = new_email
+        db.session.commit()
+        flash("Profil mis à jour.", "success")
+        return redirect(url_for("account"))
+
+    return render_template("edit_profile.html")
+
+
+@app.route("/change_password", methods=["POST"])
+@login_required
+def change_password():
+    """Handle password change from the edit_profile page."""
+    from werkzeug.security import check_password_hash, generate_password_hash
+
+    user = User.query.get(current_user.user_id)
+    current_pw = request.form.get("current_password")
+    new_pw = request.form.get("new_password")
+    confirm_pw = request.form.get("confirm_password")
+
+    if not check_password_hash(user.password, current_pw):
+        flash("Mot de passe actuel incorrect.", "danger")
+        return redirect(url_for("edit_profile"))
+
+    if new_pw != confirm_pw:
+        flash("Les mots de passe ne correspondent pas.", "danger")
+        return redirect(url_for("edit_profile"))
+
+    if len(new_pw) < 12:
+        flash("Le mot de passe doit contenir au moins 12 caractères.", "danger")
+        return redirect(url_for("edit_profile"))
+
+    user.password = generate_password_hash(new_pw, method="pbkdf2:sha256")
+    db.session.commit()
+    flash("Mot de passe modifié avec succès.", "success")
+    return redirect(url_for("account"))
+
+
+@app.route("/order/<int:order_id>")
+@login_required
+def order_detail(order_id):
+    """Show full details of a specific order — accessible only by the order owner."""
+    order = Order.query.get_or_404(order_id)
+    if order.user_id != current_user.user_id:
+        return redirect(url_for("account"))
+    return render_template("order_detail.html", order=order)
 
 
 @app.route("/logout")
@@ -496,12 +552,9 @@ def check_order():
 @login_required
 def payment():
     """
-    Show the Stripe payment page.
-    On POST: create a Stripe PaymentIntent and return the client secret.
+    GET  : display the Stripe payment form.
+    POST : create a Stripe PaymentIntent and return the client_secret to the frontend.
     """
-    import stripe
-    stripe.api_key = app.config["STRIPE_SECRET_KEY"]
-
     cart_items = get_cart(session)
     if not cart_items:
         return redirect(url_for("cart"))
@@ -509,7 +562,7 @@ def payment():
     totals = get_cart_totals(cart_items)
 
     if request.method == "POST":
-        # Amount in cents for Stripe
+        # Amount must be in cents (integer) for Stripe
         amount_cents = int(totals["grand_total"] * 100)
         try:
             intent = stripe.PaymentIntent.create(
@@ -532,12 +585,9 @@ def payment():
 @login_required
 def payment_success():
     """
-    Called by the frontend after Stripe confirms payment.
-    Creates the Order and OrderProduct records, clears the cart.
+    Called by the frontend JS after Stripe confirms the payment.
+    Creates Order, OrderProduct and Payment records, then clears the cart.
     """
-    from models.models import Order, OrderProduct, Payment as PaymentModel
-    from datetime import datetime
-
     cart_items = get_cart(session)
     if not cart_items:
         return jsonify({"success": False}), 400
@@ -545,7 +595,7 @@ def payment_success():
     totals = get_cart_totals(cart_items)
     user = User.query.get(current_user.user_id)
 
-    # Create the order
+    # Create the order record
     order = Order(
         user_id=user.user_id,
         order_date=datetime.now(),
@@ -555,12 +605,12 @@ def payment_success():
         shipping_fee=totals["shipping_fee"],
     )
     db.session.add(order)
-    db.session.flush()  # Get order_id before committing
+    db.session.flush()  # Needed to get order.order_id before commit
 
-    # Create order lines and update stock
+    # Create one OrderProduct line per cart item and decrement stock
     for item in cart_items:
-        product = Product.query.get(item["product_id"])
-        if product:
+        product_obj = Product.query.get(item["product_id"])
+        if product_obj:
             op = OrderProduct(
                 order_id=order.order_id,
                 product_id=item["product_id"],
@@ -569,22 +619,20 @@ def payment_success():
                 unit_price_incl_tax=item["price"],
             )
             db.session.add(op)
-            # Decrement stock
-            product.stock = max(0, product.stock - item["quantity"])
+            product_obj.stock = max(0, product_obj.stock - item["quantity"])
 
-    # Create payment record
-    data = request.get_json()
-    payment = PaymentModel(
+    # Create the payment record
+    payment_record = PaymentModel(
         payment_method="card",
         payment_status="paid",
         payment_date=datetime.now(),
         payment_total=totals["grand_total"],
         order_id=order.order_id,
     )
-    db.session.add(payment)
+    db.session.add(payment_record)
     db.session.commit()
 
-    # Clear the cart
+    # Clear the session cart
     session["cart"] = []
     session.modified = True
 
@@ -595,9 +643,8 @@ def payment_success():
 @login_required
 def order_confirmation(order_id):
     """Show the order confirmation page after successful payment."""
-    from models.models import Order
     order = Order.query.get_or_404(order_id)
-    # Security: only the order owner can see their confirmation
+    # Security: a user can only see their own order confirmation
     if order.user_id != current_user.user_id:
         return redirect(url_for("home"))
     return render_template("order_confirmation.html", order=order)
@@ -606,7 +653,7 @@ def order_confirmation(order_id):
 @app.route("/edit_address", methods=["GET", "POST"])
 @login_required
 def edit_address():
-    """Let the user fill in their delivery address."""
+    """Let the user fill in or update their delivery address."""
     user = User.query.get(current_user.user_id)
 
     if request.method == "POST":
@@ -876,7 +923,6 @@ def edit_categories():
     edit_id = request.args.get("edit", type=int)
     categories = Category.query.order_by(Category.name.asc()).all()
 
-    # Flag the category currently being edited
     for cat in categories:
         cat.editing = cat.category_id == edit_id
 
@@ -985,7 +1031,6 @@ def edit_article(article_id):
             "shelter_id": int(request.form.get("shelter_id")) if request.form.get("shelter_id") else None,
         }
 
-        # Only update image if a new one was uploaded
         image = request.files.get("image")
         if image and image.filename != "":
             image_filename = secure_filename(image.filename)
@@ -1014,9 +1059,6 @@ def delete_article(article_id):
 # ============================
 # Error handlers
 # ============================
-# One unified template handles all HTTP errors.
-# Each handler passes a code, a short title and a human-friendly message.
-
 def render_error(code, title, message):
     """Helper to render the shared error template with the right HTTP status."""
     return render_template(
@@ -1090,6 +1132,6 @@ def error_503(_):
 # ============================
 # Entry point
 # ============================
-if __name__ == '__main__':
+if __name__ == "__main__":
     # debug=True is for local development only, never use in production
-    app.run(debug=os.environ.get('FLASK_DEBUG', 'False') == 'True')
+    app.run(debug=os.environ.get("FLASK_DEBUG", "False") == "True")

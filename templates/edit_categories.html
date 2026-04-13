@@ -6,7 +6,7 @@
 
 <h2 class="edit-products-subtitle">Ajouter une catégorie</h2>
 <div class="edit-category-add-form">
-    <form method="POST" action="{{ url_for('add_category') }}" class="edit-products-form">
+    <form method="POST" action="{{ url_for('add_category_route') }}" class="edit-products-form">
         <input type="text" name="name" placeholder="Nom de la catégorie" required class="edit-products-input">
         <button type="submit" class="edit-products-btn">Ajouter</button>
     </form>
@@ -28,7 +28,7 @@
         <p class="edit-category-name">{{ category.name }}</p>
         <div class="category-actions">
             <a href="{{ url_for('edit_categories', edit=category.category_id) }}" class="edit-products-edit-btn">✏️</a>
-            <form method="POST" action="{{ url_for('delete_category', category_id=category.category_id) }}">
+            <form method="POST" action="{{ url_for('delete_category_route', category_id=category.category_id) }}">
                 <button type="submit" class="edit-category-delete-btn">❌</button>
             </form>
         </div>

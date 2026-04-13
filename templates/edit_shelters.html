@@ -17,7 +17,7 @@
         </div>
         <div class="edit-shelters-actions">
             <a href="{{ url_for('edit_shelter', shelter_id=shelter.shelter_id) }}" class="edit-shelters-edit-btn">✏️</a>
-            <form method="POST" action="{{ url_for('delete_shelter', shelter_id=shelter.shelter_id) }}" class="delete-shelter-form">
+            <form method="POST" action="{{ url_for('delete_shelter_route', shelter_id=shelter.shelter_id) }}" class="delete-shelter-form">
                 <button type="submit" class="edit-shelters-delete-btn">❌</button>
             </form>
         </div>
