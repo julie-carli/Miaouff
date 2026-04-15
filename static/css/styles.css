@@ -5804,7 +5804,7 @@ img {
     font-family: var(--font-heading);
     font-size: clamp(1.75rem, 5vw, 2.75rem);
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--color-coral);
     line-height: 1.2;
 }
 
@@ -7730,7 +7730,6 @@ img {
    ============================================================ */
 
 .contact-section {
-    max-width: 48rem;
     margin: 0 auto;
     padding: 3.5rem 1.5rem 5rem;
 }
@@ -8364,14 +8363,6 @@ img {
 
 .shelter-full-card--reverse > * {
     direction: ltr;
-}
-
-/* Image side */
-.shelter-full-img-wrapper {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    display: block;
 }
 
 .shelter-full-img-wrapper img {
@@ -10144,155 +10135,6 @@ img {
 }
 
 /* ============================================================
-   GLOSSARY SECTION
-   ============================================================ */
-
-.glossary-container {
-    text-align: center;
-    padding: 20px;
-}
-
-.glossary-container h1 {
-    text-align: center;
-    font-size: 36px;
-    margin-top: 20px;
-    font-weight: bold;
-    color: #ff7e5f;
-}
-
-.glossary-filter {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.glossary-letter {
-    display: inline-block;
-    padding: 5px 10px;
-    margin: 2px;
-    background-color: #ddd;
-    text-decoration: none;
-    color: black;
-    border-radius: 5px;
-}
-
-.glossary-letter:hover {
-    background-color: #feb47b;
-}
-
-.glossary-letter.active {
-    background-color: #ff7e5f;
-    color: white;
-}
-
-.glossary-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    max-width: 1000px;
-    margin: auto;
-}
-
-.glossary-card {
-    text-align: center;
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: calc(25% - 20px);
-    max-width: 220px;
-    text-decoration: none;
-    color: #ff7e5f;
-    border-radius: 5px;
-    background: white;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.glossary-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.glossary-image {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-@media (max-width: 900px) {
-    .glossary-card { width: calc(50% - 20px); }
-}
-
-@media (max-width: 500px) {
-    .glossary-card { width: 100%; }
-}
-
-/* ============================================================
-   GLOSSARY ANIMAL SECTION
-   ============================================================ */
-
-.glossary-animal-container {
-    text-align: center;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
-}
-
-.glossary-animal-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    max-width: 800px;
-    margin: auto;
-    gap: 20px;
-}
-
-.glossary-animal-image {
-    width: 100%;
-    max-width: 300px;
-    border-radius: 10px;
-}
-
-.glossary-animal-info {
-    text-align: justify;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.glossary-animal-info p {
-    text-align: justify;
-    margin-bottom: 5px;
-    margin-left: 70px;
-}
-
-.glossary-animal-title {
-    text-align: center;
-    color: #ff7e5f;
-    font-size: 30px;
-}
-
-.glossary-back-button {
-    display: block;
-    margin-top: 20px;
-    text-decoration: none;
-    color: white;
-    background-color: #ff7e5f;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-align: center;
-    width: fit-content;
-    align-self: center;
-}
-
-.glossary-back-button:hover {
-    background-color: #feb47b;
-}
-
-/* ============================================================
    ADOPT PET SECTION
    ============================================================ */
 
@@ -10357,15 +10199,6 @@ img {
     align-items: center;
     padding: 20px;
     height: 60vh;
-}
-
-.pet-detail-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    max-width: 800px;
-    margin: auto;
-    gap: 20px;
 }
 
 .pet-detail-image-container {
@@ -12035,14 +11868,6 @@ img {
     margin-bottom: 0.5rem;
 }
 
-.blog-article-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.75rem, 5vw, 3rem);
-    font-weight: 700;
-    color: var(--color-white);
-    line-height: 1.2;
-}
-
 /* Article body */
 .blog-article-body {
     max-width: 48rem;
@@ -13452,4 +13277,47 @@ img {
 
 .chat-bubble.bot a:hover {
     color: #2c5f9e;
+}
+
+.btn-cart {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Badge */
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+
+    background: #ff3b3b;
+    color: white;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+
+    border-radius: 999px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+}
+
+/* Responsive ajustement */
+@media (max-width: 768px) {
+    .cart-badge {
+        top: -4px;
+        right: -6px;
+        font-size: 10px;
+        min-width: 14px;
+        height: 14px;
+    }
 }

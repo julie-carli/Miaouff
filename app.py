@@ -124,6 +124,19 @@ def chat():
     bot_response = send_message_to_make(user_message, history)
     return jsonify({"success": True, "response": bot_response})
 
+# ============================
+# Custom Jinja2 filters
+# ============================
+@app.template_filter('date_fr')
+def date_fr_filter(dt):
+    """Format a datetime object as a French date string, e.g. '16 avril 2026'."""
+    if not dt:
+        return ''
+    mois = [
+        '', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+    ]
+    return f"{dt.day} {mois[dt.month]} {dt.year}"
 
 @app.route("/glossary")
 def glossary():
@@ -203,6 +216,11 @@ def adopt_animal(pet_id):
 def animals():
     return render_template("animals.html")
 
+@app.context_processor
+def cart_count():
+    cart = session.get("cart", [])
+    count = sum(item.get("quantity", 0) for item in cart)
+    return {"cart_count": count}
 
 @app.route("/products")
 def products():

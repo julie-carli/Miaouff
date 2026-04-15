@@ -32,7 +32,7 @@
             <a href="mailto:{{ shelter.email }}" class="shelter-info-link">{{ shelter.email }}</a>
         </div>
         <div class="shelter-info-divider"></div>
-        <a href="https://www.google.com/maps/search/?api=1&query={{ shelter.address | urlencode }}"
+        <a href="https://www.google.com/maps/search/?api=1&query={{ shelter.address.split(' ')[-2:] | join(' ') | urlencode }}"
            target="_blank" rel="noopener" class="btn-maps">
             Voir sur Maps →
         </a>

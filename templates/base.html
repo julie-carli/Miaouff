@@ -53,8 +53,12 @@
             <a href="{{ url_for('login') }}" class="btn-account">Se connecter</a>
         {% endif %}
         <a href="{{ url_for('cart') }}" class="btn-cart" aria-label="Panier">
-            <i class="fa fa-shopping-cart"></i>
-        </a>
+    <i class="fa fa-shopping-cart"></i>
+
+    {% if cart_count > 0 %}
+        <span class="cart-badge">{{ cart_count }}</span>
+    {% endif %}
+</a>
     </div>
 </header>
 

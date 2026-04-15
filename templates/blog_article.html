@@ -14,7 +14,7 @@
     <header class="blog-article-header">
         <p class="blog-article-eyebrow">
             🐾 Miaouff —
-            {{ article['created_at'].strftime('%d %B %Y') if article.get('created_at') else 'Blog' }}
+            {{ article['created_at'] | date_fr if article.get('created_at') else 'Blog' }}
         </p>
         <h1 class="blog-article-title">{{ article['title'] }}</h1>
     </header>
