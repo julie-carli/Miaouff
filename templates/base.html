@@ -229,14 +229,20 @@
     }
 
     function appendBubble(text, type) {
-        const bubble = document.createElement("div");
-        bubble.className = `chat-bubble ${type}`;
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${type}`;
+    // Only use innerHTML for bot messages; user input stays as textContent (security)
+    if (type === "bot") {
+        bubble.innerHTML = text;
+    } else {
         bubble.textContent = text;
-        chatMessages.appendChild(bubble);
-        // Scroll to the latest message automatically
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        return bubble;
     }
+
+    chatMessages.appendChild(bubble);
+    // Scroll to the latest message automatically
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return bubble;
+}
 
     // --- Pupil tracking: pupils follow the mouse cursor ---
     document.addEventListener("mousemove", (e) => {

@@ -1,31 +1,55 @@
 {% extends "base.html" %}
-
-{% block title %}Modifier l'Animal{% endblock %}
-
+{% block title %}Modifier l'Animal — Miaouff{% endblock %}
 {% block content %}
-<h1 class="edit-animal-title">Modifier l'Animal</h1>
 
-<form method="POST" class="edit-animal-form">
-    <label for="species">Espèce</label>
-    <input type="text" name="species" id="species" value="{{ animal.species }}" required class="edit-animal-input">
+<!-- ============================================================
+   Admin panel — Edit a single glossary animal
+   ============================================================ -->
+<main class="admin-page">
 
-    <label for="breed">Race</label>
-    <input type="text" name="breed" id="breed" value="{{ animal.breed }}" required class="edit-animal-input">
+    <div class="admin-header">
+        <h1 class="admin-title">✏️ Modifier un animal du glossaire</h1>
+        <a href="{{ url_for('edit_animals') }}" class="admin-back-link">← Retour au glossaire</a>
+    </div>
 
-    <label for="lifespan">Espérance de vie</label>
-    <input type="text" name="lifespan" id="lifespan" value="{{ animal.lifespan }}" class="edit-animal-input">
+    <section class="admin-section">
+        <form method="POST" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="species">Espèce</label>
+                    <input type="text" name="species" id="species"
+                           value="{{ animal.species }}" required>
+                </div>
+                <div class="admin-field">
+                    <label for="breed">Race</label>
+                    <input type="text" name="breed" id="breed"
+                           value="{{ animal.breed }}" required>
+                </div>
+                <div class="admin-field">
+                    <label for="lifespan">Espérance de vie</label>
+                    <input type="text" name="lifespan" id="lifespan"
+                           value="{{ animal.lifespan }}">
+                </div>
+                <div class="admin-field">
+                    <label for="diet">Régime alimentaire</label>
+                    <input type="text" name="diet" id="diet"
+                           value="{{ animal.diet }}">
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="specifics">Détails</label>
+                    <textarea name="specifics" id="specifics"
+                              rows="4">{{ animal.specifics }}</textarea>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="image">URL de l'image</label>
+                    <input type="text" name="image" id="image"
+                           value="{{ animal.image }}">
+                </div>
+            </div>
+            <button type="submit" class="admin-submit-btn">💾 Sauvegarder les modifications</button>
+        </form>
+    </section>
 
-    <label for="diet">Régime alimentaire</label>
-    <input type="text" name="diet" id="diet" value="{{ animal.diet }}" class="edit-animal-input">
+</main>
 
-    <label for="specifics">Détails</label>
-    <textarea name="specifics" id="specifics" class="edit-animal-textarea">{{ animal.specifics }}</textarea>
-
-    <label for="image">URL de l'image</label>
-    <input type="text" name="image" id="image" value="{{ animal.image }}" class="edit-animal-input">
-
-    <button type="submit" class="edit-animal-btn">Sauvegarder</button>
-</form>
-
-<a href="{{ url_for('edit_animals') }}" class="edit-animal-back">← Retour à la gestion des animaux</a>
 {% endblock %}

@@ -1,40 +1,71 @@
 {% extends "base.html" %}
-{% block title %}Gérer les Catégories{% endblock %}
+{% block title %}Gérer les Catégories — Miaouff{% endblock %}
 {% block content %}
 
-<h1 class="edit-products-title">Gestion des Catégories</h1>
+<!-- ============================================================
+   Admin panel — Category management
+   Sections: add category form, category list (inline edit/delete)
+   ============================================================ -->
+<main class="admin-page">
 
-<h2 class="edit-products-subtitle">Ajouter une catégorie</h2>
-<div class="edit-category-add-form">
-    <form method="POST" action="{{ url_for('add_category_route') }}" class="edit-products-form">
-        <input type="text" name="name" placeholder="Nom de la catégorie" required class="edit-products-input">
-        <button type="submit" class="edit-products-btn">Ajouter</button>
-    </form>
-</div>
-
-
-<div class="edit-categories-grid">
-    {% for category in categories %}
-    <div class="category-card">
-        {% if category.editing %}
-        <form method="POST" action="{{ url_for('edit_category', category_id=category.category_id) }}" class="category-form">
-            <input type="text" name="name" value="{{ category.name }}" class="edit-products-input" required>
-            <div class="category-actions">
-                <button type="submit" class="edit-products-btn">💾</button>
-                <a href="{{ url_for('edit_categories') }}" class="edit-products-edit-btn">❌ Annuler</a>
-            </div>
-        </form>
-        {% else %}
-        <p class="edit-category-name">{{ category.name }}</p>
-        <div class="category-actions">
-            <a href="{{ url_for('edit_categories', edit=category.category_id) }}" class="edit-products-edit-btn">✏️</a>
-            <form method="POST" action="{{ url_for('delete_category_route', category_id=category.category_id) }}">
-                <button type="submit" class="edit-category-delete-btn">❌</button>
-            </form>
-        </div>
-        {% endif %}
+    <div class="admin-header">
+        <h1 class="admin-title">🗂️ Gestion des catégories</h1>
+        <a href="{{ url_for('account') }}" class="admin-back-link">← Retour au compte</a>
     </div>
-    {% endfor %}
-</div>
+
+    <!-- ---- Add category form ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Ajouter une catégorie</h2>
+        <form method="POST" action="{{ url_for('add_category_route') }}" class="admin-form admin-form--inline">
+            <div class="admin-field admin-field--grow">
+                <input type="text" name="name" placeholder="Nom de la nouvelle catégorie" required>
+            </div>
+            <button type="submit" class="admin-submit-btn">+ Ajouter</button>
+        </form>
+    </section>
+
+    <!-- ---- Category list ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Catégories existantes</h2>
+        <div class="admin-categories-list">
+            {% for category in categories %}
+            <div class="admin-category-row">
+
+                {% if category.editing %}
+                <!-- Inline edit mode -->
+                <form method="POST"
+                      action="{{ url_for('edit_category', category_id=category.category_id) }}"
+                      class="admin-category-edit-form">
+                    <div class="admin-field admin-field--grow">
+                        <input type="text" name="name" value="{{ category.name }}" required>
+                    </div>
+                    <div class="admin-product-actions">
+                        <button type="submit" class="admin-btn admin-btn--edit">💾 Sauvegarder</button>
+                        <a href="{{ url_for('edit_categories') }}" class="admin-btn admin-btn--delete">✕ Annuler</a>
+                    </div>
+                </form>
+
+                {% else %}
+                <!-- Display mode -->
+                <span class="admin-category-name">{{ category.name }}</span>
+                <div class="admin-product-actions">
+                    <a href="{{ url_for('edit_categories', edit=category.category_id) }}"
+                       class="admin-btn admin-btn--edit">✏️ Modifier</a>
+                    <form method="POST"
+                          action="{{ url_for('delete_category_route', category_id=category.category_id) }}">
+                        <button type="submit" class="admin-btn admin-btn--delete"
+                                onclick="return confirm('Supprimer cette catégorie ?')">
+                            🗑️ Supprimer
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</main>
 
 {% endblock %}

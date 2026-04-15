@@ -1,69 +1,157 @@
 {% extends "base.html" %}
-
-{% block title %}Gérer les refuges{% endblock %}
-
+{% block title %}Gérer les Refuges — Miaouff{% endblock %}
 {% block content %}
-<h1 class="edit-shelters-title">Gestion des Refuges</h1>
 
-<div class="edit-shelters-container">
-    {% for shelter in shelters %}
-    <div class="edit-shelters-item">
-        <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}" class="edit-shelters-image">
-        <div class="edit-shelters-info">
-            <h2 class="edit-shelters-name">{{ shelter.name }}</h2>
-            <p class="edit-shelters-address">{{ shelter.address }}</p>
-            <p class="edit-shelters-contact">{{ shelter.phone }} | {{ shelter.email }}</p>
-            <p class="edit-shelters-description">{{ shelter.description }}</p>
-        </div>
-        <div class="edit-shelters-actions">
-            <a href="{{ url_for('edit_shelter', shelter_id=shelter.shelter_id) }}" class="edit-shelters-edit-btn">✏️</a>
-            <form method="POST" action="{{ url_for('delete_shelter_route', shelter_id=shelter.shelter_id) }}" class="delete-shelter-form">
-                <button type="submit" class="edit-shelters-delete-btn">❌</button>
-            </form>
-        </div>
-    </div>
-    {% endfor %}
-</div>
+<!-- ============================================================
+   Admin panel — Shelter management
+   Sections: search bar, shelter list (edit/delete + pagination),
+             add shelter form
+   ============================================================ -->
+<main class="admin-page">
 
-<div class="edit-shelters-form-container">
-<h2 class="edit-shelters-subtitle">Ajouter un refuge</h2>
-<form method="POST" action="{{ url_for('edit_shelter') }}" enctype="multipart/form-data" class="edit-shelters-form">
-    <input type="text" name="name" placeholder="Nom du refuge" required class="edit-shelters-input">
-    <input type="text" name="address" placeholder="Adresse" required class="edit-shelters-input">
-    <input type="text" name="phone" placeholder="Téléphone" required class="edit-shelters-input">
-    <input type="email" name="email" placeholder="Email" required class="edit-shelters-input">
-    <textarea name="description" placeholder="Description" class="edit-shelters-textarea" required class="edit-shelters-input"></textarea>
-
-    <label for="image">Image du refuge :</label>
-    <input type="file" id="image" name="image" accept=".png, .jpg, .jpeg, .gif" required class="edit-shelters-input" onchange="previewImage(event)">
-    <small class="edit-shelters-info">Formats acceptés : PNG, JPG, JPEG, GIF</small>
-
-    <div id="image-preview-container">
-        <img id="image-preview" src="#" alt="Prévisualisation">
-        <button type="button" onclick="removeImage()" class="edit-shelters-remove-btn">Retirer l'image</button>
+    <div class="admin-header">
+        <h1 class="admin-title">🏠 Gestion des refuges</h1>
+        <a href="{{ url_for('account') }}" class="admin-back-link">← Retour au compte</a>
     </div>
 
-    <button type="submit" class="edit-shelters-btn">Ajouter</button>
-</form>
-</div>
+    <!-- ---- Search bar ---- -->
+    <section class="admin-section">
+        <form method="GET" action="{{ url_for('edit_shelters') }}" class="admin-search-form">
+            <div class="admin-field admin-field--grow">
+                <input type="text" name="search" value="{{ search_query }}"
+                       placeholder="Rechercher par nom, adresse...">
+            </div>
+            <button type="submit" class="admin-submit-btn">🔍 Rechercher</button>
+        </form>
+    </section>
+
+    <!-- ---- Shelter list ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Refuges existants</h2>
+        <div class="admin-shelters-list">
+            {% for shelter in shelters %}
+            <div class="admin-shelter-row">
+                <img
+                    src="{{ url_for('static', filename='images/' + shelter.image) }}"
+                    alt="{{ shelter.name }}"
+                    class="admin-shelter-img"
+                >
+                <div class="admin-shelter-info">
+                    <p class="admin-shelter-name">{{ shelter.name }}</p>
+                    <p class="admin-product-meta">{{ shelter.address }}</p>
+                    <p class="admin-product-meta">{{ shelter.phone }} · {{ shelter.email }}</p>
+                </div>
+                <div class="admin-product-actions">
+                    <a href="{{ url_for('edit_shelter', shelter_id=shelter.shelter_id) }}"
+                       class="admin-btn admin-btn--edit">✏️ Modifier</a>
+                    <form method="POST"
+                          action="{{ url_for('delete_shelter_route', shelter_id=shelter.shelter_id) }}">
+                        <button type="submit" class="admin-btn admin-btn--delete"
+                                onclick="return confirm('Supprimer ce refuge ?')">
+                            🗑️ Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="admin-pagination">
+            {% if prev_page %}
+            <a href="{{ url_for('edit_shelters', page=current_page-1, search=search_query) }}"
+               class="admin-page-btn">← Précédent</a>
+            {% endif %}
+
+            {% for page_num in range(1, total_pages + 1) %}
+            <a href="{{ url_for('edit_shelters', page=page_num, search=search_query) }}"
+               class="admin-page-btn {% if page_num == current_page %}admin-page-btn--active{% endif %}">
+                {{ page_num }}
+            </a>
+            {% endfor %}
+
+            {% if next_page %}
+            <a href="{{ url_for('edit_shelters', page=current_page+1, search=search_query) }}"
+               class="admin-page-btn">Suivant →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- ---- Add shelter form ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Ajouter un refuge</h2>
+        <form method="POST" action="{{ url_for('edit_shelter') }}"
+              enctype="multipart/form-data" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="name">Nom du refuge</label>
+                    <input type="text" name="name" id="name"
+                           placeholder="Ex : Le Havre des Ronronnements" required>
+                </div>
+                <div class="admin-field">
+                    <label for="phone">Téléphone</label>
+                    <input type="text" name="phone" id="phone"
+                           placeholder="+33 2 37 00 00 00" required>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="address">Adresse</label>
+                    <input type="text" name="address" id="address"
+                           placeholder="12 Rue des Chats Heureux, 28000 Chartres" required>
+                </div>
+                <div class="admin-field">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email"
+                           placeholder="refuge@miaouff.fr" required>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" rows="4"
+                              placeholder="Décrivez le refuge..." required></textarea>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="image">
+                        Image du refuge
+                        <span class="admin-field-hint">PNG, JPG, JPEG, GIF</span>
+                    </label>
+                    <input type="file" name="image" id="image"
+                           accept=".png,.jpg,.jpeg,.gif" required
+                           onchange="previewImage(event, 'add-preview', 'add-preview-container')">
+                    <!-- Image preview shown after file selection -->
+                    <div id="add-preview-container" class="admin-img-preview-wrap" style="display:none;">
+                        <img id="add-preview" src="#" alt="Prévisualisation" class="admin-img-preview">
+                        <button type="button" class="admin-btn admin-btn--delete"
+                                onclick="removeImage('image', 'add-preview-container')">
+                            ✕ Retirer l'image
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="admin-submit-btn">+ Ajouter le refuge</button>
+        </form>
+    </section>
+
+</main>
 
 <script>
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
+    // Show a preview of the selected image before upload
+    function previewImage(event, previewId, containerId) {
+        const file = event.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('image-preview').src = e.target.result;
-            document.getElementById('image-preview-container').style.display = 'block';
+        reader.onload = (e) => {
+            document.getElementById(previewId).src = e.target.result;
+            document.getElementById(containerId).style.display = 'block';
         };
         reader.readAsDataURL(file);
     }
-}
 
-function removeImage() {
-    document.getElementById('image').value = "";
-    document.getElementById('image-preview-container').style.display = 'none';
-}
+    // Clear the file input and hide the preview
+    function removeImage(inputId, containerId) {
+        document.getElementById(inputId).value = "";
+        document.getElementById(containerId).style.display = 'none';
+    }
 </script>
 
 {% endblock %}

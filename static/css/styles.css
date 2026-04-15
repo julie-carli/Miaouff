@@ -1577,7 +1577,7 @@ img {
    ============================================================ */
 
 .contact-section {
-    max-width: 48rem;
+    max-width: 55rem !important ;
     margin: 0 auto;
     padding: 3.5rem 1.5rem 5rem;
 }
@@ -10804,440 +10804,591 @@ img {
 }
 
 /* ============================================================
-   ADMIN — EDIT SECTIONS (shelters, animals, products, users, articles)
+   Admin pages — shared layout for all CRUD panels
    ============================================================ */
 
-/* Shared edit page titles */
-.edit-shelters-title, .edit-shelter-title,
-.edit-animals-title, .edit-animal-title,
-.edit-products-title, .edit-product-title,
-.edit-users-title, .edit-user-title,
-.edit-articles-title {
-    text-align: center;
-    font-size: 32px;
-    font-weight: bold;
-    color: #ff7e5f;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
-
-/* Edit shelters list */
-.edit-shelters-container, .edit-users-container, .edit-animals-container {
-    max-width: 800px;
-    margin: auto;
-}
-
-.edit-shelters-item, .edit-users-item, .edit-animals-item {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-}
-
-.edit-shelters-image, .edit-animals-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.edit-shelters-info, .edit-users-info, .edit-animals-info {
-    flex: 1;
-    margin-left: 15px;
-}
-
-.edit-shelters-actions, .edit-users-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.edit-shelters-edit-btn, .edit-animals-edit-btn, .edit-users-edit-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 0.2s ease;
-}
-
-.edit-shelters-edit-btn:hover, .edit-animals-edit-btn:hover, .edit-users-edit-btn:hover {
-    transform: scale(1.2);
-}
-
-.edit-shelters-delete-btn, .edit-animals-delete-btn, .edit-users-delete-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: red;
-    transition: transform 0.2s ease;
-}
-
-.edit-shelters-delete-btn:hover, .edit-animals-delete-btn:hover, .edit-users-delete-btn:hover {
-    transform: scale(1.2);
-}
-
-/* Edit shelter/animal forms */
-.edit-shelters-form-container, .edit-shelter-form, .edit-animal-form, .edit-user-form {
-    max-width: 500px;
-    margin: auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 40px;
-}
-
-.edit-shelters-subtitle {
-    text-align: center;
-    font-size: 22px;
-    color: #ff7e5f;
-    margin-bottom: 15px;
-}
-
-.edit-shelters-input, .edit-shelters-textarea,
-.edit-shelter-input, .edit-shelter-textarea,
-.edit-animal-input, .edit-animal-textarea,
-.edit-user-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-.edit-shelters-textarea, .edit-shelter-textarea {
-    height: 60px;
-    resize: none;
-}
-
-.edit-shelters-btn, .edit-shelter-btn, .edit-animal-btn, .edit-user-btn {
-    display: block;
-    text-decoration: none;
-    color: white;
-    background-color: #ff7e5f;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-align: center;
-    width: fit-content;
-    align-self: center;
-    cursor: pointer;
-    border: none;
-    font-size: 16px;
-}
-
-.edit-shelters-btn:hover, .edit-shelter-btn:hover, .edit-animal-btn:hover, .edit-user-btn:hover {
-    background-color: #feb47b;
-}
-
-.edit-shelter-back, .edit-user-back {
-    display: block;
-    margin: 30px auto;
-    text-decoration: none;
-    color: white;
-    background-color: #ff7e5f;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-align: center;
-    width: fit-content;
-    cursor: pointer;
-    border: none;
-    font-size: 16px;
-    margin-bottom: 30px;
-}
-
-.edit-shelter-back:hover, .edit-user-back:hover {
-    background-color: #feb47b;
-}
-
-.edit-shelter-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-}
-
-.edit-shelter-image {
-    border-radius: 15px;
-    width: 80%;
-    max-width: 400px;
-    display: block;
-}
-
-#image-preview-container {
-    display: none;
-    text-align: center;
-    margin-top: 15px;
-}
-
-#image-preview {
-    max-height: 400px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: block;
-    margin: 0 auto;
-    width: 80%;
-    max-width: 400px;
-}
-
-.edit-shelters-remove-btn, .edit-shelter-remove-btn {
-    display: block;
-    margin: 10px auto;
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-/* Edit products */
-.edit-products-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.edit-products-item {
-    border: 1px solid #ddd;
-    padding: 15px;
-    text-align: center;
-    position: relative;
-    background: #fff;
-}
-
-.edit-products-image {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-}
-
-.edit-products-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.edit-products-input {
-    padding: 10px;
-    font-size: 16px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.edit-products-input:focus {
-    outline: none;
-    border: 2px solid #ff7e5f;
-}
-
-.edit-products-btn {
-    display: block;
-    margin: 20px auto;
-    background: #ff7e5f;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    width: fit-content;
-    font-size: 18px;
-    transition: background 0.3s;
-}
-
-.edit-products-btn:hover {
-    background: #feb47b;
-}
-
-.edit-products-subtitle {
-    text-align: center;
-    font-size: 24px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    color: #ff7e5f;
-}
-
-/* Edit categories */
-.edit-categories-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto 40px;
-}
-
-.category-card {
-    background: #fff;
-    border: 2px solid #feb47b;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 120px;
-}
-
-.category-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.category-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.category-name, .edit-category-name {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-}
-
-.edit-products-edit-btn {
-    font-size: 22px;
-    padding: 6px 10px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.edit-products-edit-btn:hover {
-    transform: scale(1.2);
-}
-
-.edit-category-delete-btn, .edit-category-add-form {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.edit-category-delete-btn {
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 22px;
-    background: none;
-    transition: transform 0.2s ease;
-}
-
-.edit-category-delete-btn:hover {
-    transform: scale(1.2);
-}
-
-/* Edit articles */
-.edit-articles-container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-.edit-article-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-}
-
-.edit-article-text h2 {
-    margin: 0;
-    font-size: 20px;
-}
-
-.edit-article-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.edit-btn, .delete-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.edit-articles-subtitle {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-.edit-article-page, .edit-article-form {
-    max-width: 600px;
+.admin-page {
+    max-width: 1100px;
     margin: 40px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 0 24px 60px;
 }
 
-.edit-article-page h1 {
-    text-align: center;
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d2d2d;
+}
+
+.admin-back-link {
+    font-size: 0.9rem;
+    color: #ff7e5f;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.admin-back-link:hover {
+    opacity: 0.75;
+}
+
+/* ---- Section card ---- */
+.admin-section {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.admin-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ff7e5f;
     margin-bottom: 20px;
-    color: #333;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f5f5f5;
 }
 
-.edit-article-page form input,
-.edit-article-page form textarea,
-.edit-article-page form select,
-.edit-article-form input,
-.edit-article-form textarea,
-.edit-article-form select {
-    display: block;
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 12px;
-    border: 1px solid #ccc;
+/* ---- Product list grid ---- */
+.admin-products-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-product-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fafafa;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: box-shadow 0.2s;
+}
+
+.admin-product-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.admin-product-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
     border-radius: 8px;
-    font-size: 16px;
-    box-sizing: border-box;
+    flex-shrink: 0;
+    background: #eee;
 }
 
-.edit-article-form textarea {
-    resize: vertical;
-    min-height: 150px;
+.admin-product-info {
+    flex: 1;
 }
 
-.btn-submit {
-    background-color: #ff7e5f;
-    color: white;
+.admin-product-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #2d2d2d;
+    margin-bottom: 4px;
+}
+
+.admin-product-meta {
+    font-size: 0.82rem;
+    color: #888;
+}
+
+.admin-product-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* ---- Action buttons ---- */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
     border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.2s ease;
-    width: 100%;
+    text-decoration: none;
+    transition: opacity 0.2s;
 }
 
-.btn-submit:hover {
-    background-color: #feb47b;
+.admin-btn--edit {
+    background: #fff4f0;
+    color: #ff7e5f;
+    border: 1px solid #ffd6cb;
 }
+
+.admin-btn--delete {
+    background: #fff0f0;
+    color: #e05252;
+    border: 1px solid #ffd0d0;
+}
+
+.admin-btn:hover {
+    opacity: 0.8;
+}
+
+/* ---- Add / Edit form ---- */
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Field spanning full width of the grid */
+.admin-field--full {
+    grid-column: 1 / -1;
+}
+
+.admin-field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+    color: #2d2d2d;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: vertical;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+    outline: none;
+    border-color: #ff7e5f;
+    box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.12);
+    background: #fff;
+}
+
+.admin-submit-btn {
+    display: inline-block;
+    background: #ff7e5f;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.admin-submit-btn:hover {
+    background: #feb47b;
+    transform: translateY(-1px);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-product-card {
+        flex-wrap: wrap;
+    }
+
+    .admin-product-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================================
+   Admin — Categories specific styles
+   ============================================================ */
+
+/* Inline form (add category): input + button side by side */
+.admin-form--inline {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Field that stretches to fill available space */
+.admin-field--grow {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-field--grow input {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+    color: #2d2d2d;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-field--grow input:focus {
+    outline: none;
+    border-color: #ff7e5f;
+    box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.12);
+    background: #fff;
+}
+
+/* Category list — one row per category */
+.admin-categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-category-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fafafa;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: box-shadow 0.2s;
+}
+
+.admin-category-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.admin-category-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+/* Edit form inside a row — stretches to fill the row */
+.admin-category-edit-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .admin-category-row {
+        flex-wrap: wrap;
+    }
+
+    .admin-product-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================================
+   Admin — Blog articles specific styles
+   ============================================================ */
+
+/* Article list — one row per article */
+.admin-articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-article-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fafafa;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: box-shadow 0.2s;
+}
+
+.admin-article-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.admin-article-info {
+    flex: 1;
+}
+
+.admin-article-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-bottom: 3px;
+}
+
+.admin-article-date {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+/* Pagination */
+.admin-pagination {
+    display: flex;
+    gap: 6px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #ff7e5f;
+    border: 1px solid #ffd6cb;
+    background: #fff4f0;
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-page-btn:hover {
+    background: #ff7e5f;
+    color: #fff;
+}
+
+.admin-page-btn--active {
+    background: #ff7e5f;
+    color: #fff;
+    border-color: #ff7e5f;
+    pointer-events: none;
+}
+
+/* Hint text inside a label (e.g. "laisser vide pour conserver") */
+.admin-field-hint {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #aaa;
+    margin-left: 4px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .admin-article-row {
+        flex-wrap: wrap;
+    }
+
+    .admin-product-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================================
+   Admin — Shelters specific styles
+   ============================================================ */
+
+/* Shelter list — one row per shelter */
+.admin-shelters-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-shelter-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fafafa;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: box-shadow 0.2s;
+}
+
+.admin-shelter-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.admin-shelter-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: #eee;
+}
+
+.admin-shelter-info {
+    flex: 1;
+}
+
+.admin-shelter-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-bottom: 4px;
+}
+
+/* Image preview block (add + edit forms) */
+.admin-img-preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.admin-img-preview {
+    width: 100%;
+    max-width: 360px;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #efefef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .admin-shelter-row {
+        flex-wrap: wrap;
+    }
+
+    .admin-product-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================================
+   Admin — Users specific styles
+   ============================================================ */
+
+/* Search bar: input + button side by side */
+.admin-search-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Scrollable wrapper for the table on small screens */
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+/* Users table */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.admin-table thead tr {
+    background: #ff7e5f;
+    color: #fff;
+}
+
+.admin-table th {
+    padding: 12px 14px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: #fafafa;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ============================================================
+   Admin — Pets specific styles
+   ============================================================ */
+
+/* Pet list — one row per animal */
+.admin-pets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-pet-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fafafa;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: box-shadow 0.2s;
+}
+
+.admin-pet-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.admin-pet-info {
+    flex: 1;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .admin-pet-row {
+        flex-wrap: wrap;
+    }
+
+    .admin-product-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+
 
 /* ============================================================
    RESET PASSWORD SECTION
@@ -13291,4 +13442,14 @@ img {
  
 .reset-resend {
     margin-top: 1rem;
+}
+
+/* Clickable links inside bot chat bubbles */
+.chat-bubble.bot a {
+    color: #4a90d9;
+    text-decoration: underline;
+}
+
+.chat-bubble.bot a:hover {
+    color: #2c5f9e;
 }

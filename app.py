@@ -91,6 +91,8 @@ mongo_db = client.get_database()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
+login_manager.login_message_category = "danger"
 
 
 @login_manager.user_loader
@@ -366,6 +368,7 @@ def login():
 @login_required
 def account():
     return render_template("account.html", user_name=current_user.email)
+
 
 @app.route("/edit_profile", methods=["GET", "POST"])
 @login_required
@@ -681,6 +684,7 @@ def edit_users():
     page = request.args.get("page", 1, type=int)
     search_query = request.args.get("search", "")
 
+    # Filter users by name, email, city or country
     users_query = User.query.filter(
         (User.first_name.ilike(f"%{search_query}%"))
         | (User.last_name.ilike(f"%{search_query}%"))
@@ -755,8 +759,31 @@ def edit_shelters():
                 flash(f"Erreur lors de l'enregistrement de l'image : {str(e)}", "danger")
                 return redirect(request.url)
 
-    shelters_list = Shelter.query.all()
-    return render_template("edit_shelters.html", shelters=shelters_list)
+    page = request.args.get("page", 1, type=int)
+    search_query = request.args.get("search", "")
+    per_page = 10
+
+    # Filter shelters by name or address
+    query = Shelter.query
+    if search_query:
+        query = query.filter(
+            Shelter.name.ilike(f"%{search_query}%")
+            | Shelter.address.ilike(f"%{search_query}%")
+        )
+
+    paginated = query.order_by(Shelter.name).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    return render_template(
+        "edit_shelters.html",
+        shelters=paginated.items,
+        total_pages=paginated.pages,
+        prev_page=paginated.has_prev,
+        next_page=paginated.has_next,
+        current_page=page,
+        search_query=search_query,
+    )
 
 
 @app.route("/edit-shelter", methods=["GET", "POST"])
@@ -795,8 +822,32 @@ def edit_animals():
     if current_user.role != "admin":
         flash("Accès refusé.", "danger")
         return redirect(url_for("home"))
-    animals_list = Animal.query.all()
-    return render_template("edit_animals.html", animals=animals_list)
+
+    page = request.args.get("page", 1, type=int)
+    search_query = request.args.get("search", "")
+    per_page = 10
+
+    # Filter by species or breed if a search term is provided
+    query = Animal.query
+    if search_query:
+        query = query.filter(
+            Animal.species.ilike(f"%{search_query}%")
+            | Animal.breed.ilike(f"%{search_query}%")
+        )
+
+    paginated = query.order_by(Animal.species, Animal.breed).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    return render_template(
+        "edit_animals.html",
+        animals=paginated.items,
+        total_pages=paginated.pages,
+        prev_page=paginated.has_prev,
+        next_page=paginated.has_next,
+        current_page=page,
+        search_query=search_query,
+    )
 
 
 @app.route("/edit_animal", methods=["GET", "POST"])
@@ -834,8 +885,38 @@ def edit_pets():
     if current_user.role != "admin":
         flash("Accès refusé.", "danger")
         return redirect(url_for("home"))
-    pets = Pet.query.all()
-    return render_template("edit_pets.html", pets=pets)
+
+    page = request.args.get("page", 1, type=int)
+    search_query = request.args.get("search", "")
+    per_page = 10
+
+    # Join Animal to allow filtering by species/breed as well as pet name
+    query = Pet.query.join(Animal)
+    if search_query:
+        query = query.filter(
+            Pet.name.ilike(f"%{search_query}%")
+            | Animal.species.ilike(f"%{search_query}%")
+            | Animal.breed.ilike(f"%{search_query}%")
+        )
+
+    paginated = query.order_by(Pet.name).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    shelters_list = Shelter.query.all()
+    animals_list = Animal.query.all()
+
+    return render_template(
+        "edit_pets.html",
+        pets=paginated.items,
+        shelters=shelters_list,
+        animals=animals_list,
+        total_pages=paginated.pages,
+        prev_page=paginated.has_prev,
+        next_page=paginated.has_next,
+        current_page=page,
+        search_query=search_query,
+    )
 
 
 @app.route("/edit_pet", methods=["GET", "POST"])
@@ -878,9 +959,35 @@ def edit_products():
     if current_user.role != "admin":
         flash("Accès refusé.", "danger")
         return redirect(url_for("home"))
-    products_list = Product.query.all()
+
+    page = request.args.get("page", 1, type=int)
+    search_query = request.args.get("search", "")
+    per_page = 10
+
+    # Filter by product name or category name
+    query = Product.query.outerjoin(Category)
+    if search_query:
+        query = query.filter(
+            Product.name.ilike(f"%{search_query}%")
+            | Category.name.ilike(f"%{search_query}%")
+        )
+
+    paginated = query.order_by(Product.name).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
     categories = Category.query.all()
-    return render_template("edit_products.html", products=products_list, categories=categories)
+
+    return render_template(
+        "edit_products.html",
+        products=paginated.items,
+        categories=categories,
+        total_pages=paginated.pages,
+        prev_page=paginated.has_prev,
+        next_page=paginated.has_next,
+        current_page=page,
+        search_query=search_query,
+    )
 
 
 @app.route("/edit-product", methods=["POST"])
@@ -973,6 +1080,7 @@ def edit_articles():
         return redirect(url_for("home"))
 
     page = int(request.args.get("page", 1))
+    search_query = request.args.get("search", "")
     per_page = 10
     collection = mongo_db.miaouff_collection
 
@@ -995,10 +1103,15 @@ def edit_articles():
         flash("Article créé avec succès.", "success")
         return redirect(url_for("edit_articles"))
 
-    total_articles = collection.count_documents({})
+    # Build MongoDB filter based on search query (case-insensitive on title)
+    mongo_filter = {}
+    if search_query:
+        mongo_filter = {"title": {"$regex": search_query, "$options": "i"}}
+
+    total_articles = collection.count_documents(mongo_filter)
     total_pages = (total_articles + per_page - 1) // per_page
     articles = list(
-        collection.find()
+        collection.find(mongo_filter)
         .sort("created_at", -1)
         .skip((page - 1) * per_page)
         .limit(per_page)
@@ -1011,6 +1124,7 @@ def edit_articles():
         shelters=shelters_list,
         total_pages=total_pages,
         current_page=page,
+        search_query=search_query,
     )
 
 

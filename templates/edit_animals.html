@@ -1,41 +1,124 @@
 {% extends "base.html" %}
-
-{% block title %}Gérer les Animaux{% endblock %}
-
+{% block title %}Gérer le Glossaire — Miaouff{% endblock %}
 {% block content %}
-<h1 class="edit-animals-title">Gestion des Animaux</h1>
 
-<form method="GET" action="{{ url_for('edit_animals') }}" class="search-form">
-    <input type="text" name="search" value="{{ search_query }}" placeholder="Rechercher..." class="search-input">
-    <button type="submit" class="search-btn">Rechercher</button>
-</form>
+<!-- ============================================================
+   Admin panel — Glossary animal management
+   Sections: search bar, animal list (edit/delete + pagination),
+             add animal form
+   ============================================================ -->
+<main class="admin-page">
 
-<div class="edit-animals-container">
-    {% for animal in animals %}
-    <div class="edit-animals-item">
-        <img src="{{ url_for('static', filename= animal.image) }}" alt="{{ animal.species }}" class="edit-animals-image">
-        <div class="edit-animals-info">
-            <h2 class="edit-animals-species">{{ animal.species }} - {{ animal.breed }}</h2>
-            <p class="edit-animals-lifespan">Espérance de vie : {{ animal.lifespan }}</p>
-            <p class="edit-animals-diet">Régime : {{ animal.diet }}</p>
-            <p class="edit-animals-specifics">{{ animal.specifics }}</p>
-        </div>
-        <a href="{{ url_for('edit_animal', animal_id=animal.animal_id) }}" class="edit-animals-edit-btn">✏️</a>
-        <form action="{{ url_for('delete_animal_route', animal_id=animal.animal_id) }}" method="POST" class="edit-animals-delete-form">
-            <button type="submit" class="edit-animals-delete-btn">❌</button>
-        </form>
+    <div class="admin-header">
+        <h1 class="admin-title">📖 Gestion du glossaire</h1>
+        <a href="{{ url_for('account') }}" class="admin-back-link">← Retour au compte</a>
     </div>
-    {% endfor %}
-</div> 
 
-<h2 class="edit-animals-subtitle">Ajouter un animal</h2>
-<form method="POST" action="{{ url_for('edit_animal') }}" class="edit-animals-form">
-    <input type="text" name="species" placeholder="Espèce" required class="edit-animals-input">
-    <input type="text" name="breed" placeholder="Race" required class="edit-animals-input">
-    <input type="text" name="lifespan" placeholder="Espérance de vie" class="edit-animals-input">
-    <input type="text" name="diet" placeholder="Régime alimentaire" class="edit-animals-input">
-    <textarea name="specifics" placeholder="Détails" class="edit-animals-textarea"></textarea>
-    <input type="text" name="image" placeholder="URL de l'image" class="edit-animals-input">
-    <button type="submit" class="edit-animals-btn">Ajouter</button>
-</form>
+    <!-- ---- Search bar ---- -->
+    <section class="admin-section">
+        <form method="GET" action="{{ url_for('edit_animals') }}" class="admin-search-form">
+            <div class="admin-field admin-field--grow">
+                <input type="text" name="search" value="{{ search_query }}"
+                       placeholder="Rechercher par espèce, race...">
+            </div>
+            <button type="submit" class="admin-submit-btn">🔍 Rechercher</button>
+        </form>
+    </section>
+
+    <!-- ---- Animal list ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Animaux existants</h2>
+        <div class="admin-pets-list">
+            {% for animal in animals %}
+            <div class="admin-pet-row">
+                <img
+                    src="{{ url_for('static', filename=animal.image) }}"
+                    alt="{{ animal.species }}"
+                    class="admin-product-img"
+                >
+                <div class="admin-pet-info">
+                    <p class="admin-product-name">{{ animal.species }} — {{ animal.breed }}</p>
+                    <p class="admin-product-meta">Espérance de vie : {{ animal.lifespan }}</p>
+                    <p class="admin-product-meta">Régime : {{ animal.diet }}</p>
+                </div>
+                <div class="admin-product-actions">
+                    <a href="{{ url_for('edit_animal', animal_id=animal.animal_id) }}"
+                       class="admin-btn admin-btn--edit">✏️ Modifier</a>
+                    <form method="POST"
+                          action="{{ url_for('delete_animal_route', animal_id=animal.animal_id) }}">
+                        <button type="submit" class="admin-btn admin-btn--delete"
+                                onclick="return confirm('Supprimer cet animal du glossaire ?')">
+                            🗑️ Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="admin-pagination">
+            {% if prev_page %}
+            <a href="{{ url_for('edit_animals', page=current_page-1, search=search_query) }}"
+               class="admin-page-btn">← Précédent</a>
+            {% endif %}
+
+            {% for page_num in range(1, total_pages + 1) %}
+            <a href="{{ url_for('edit_animals', page=page_num, search=search_query) }}"
+               class="admin-page-btn {% if page_num == current_page %}admin-page-btn--active{% endif %}">
+                {{ page_num }}
+            </a>
+            {% endfor %}
+
+            {% if next_page %}
+            <a href="{{ url_for('edit_animals', page=current_page+1, search=search_query) }}"
+               class="admin-page-btn">Suivant →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- ---- Add animal form ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Ajouter un animal au glossaire</h2>
+        <form method="POST" action="{{ url_for('edit_animal') }}" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="species">Espèce</label>
+                    <input type="text" name="species" id="species"
+                           placeholder="Ex : Chat" required>
+                </div>
+                <div class="admin-field">
+                    <label for="breed">Race</label>
+                    <input type="text" name="breed" id="breed"
+                           placeholder="Ex : Persan" required>
+                </div>
+                <div class="admin-field">
+                    <label for="lifespan">Espérance de vie</label>
+                    <input type="text" name="lifespan" id="lifespan"
+                           placeholder="Ex : 12-15 ans">
+                </div>
+                <div class="admin-field">
+                    <label for="diet">Régime alimentaire</label>
+                    <input type="text" name="diet" id="diet"
+                           placeholder="Ex : Carnivore">
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="specifics">Détails</label>
+                    <textarea name="specifics" id="specifics" rows="3"
+                              placeholder="Caractéristiques, besoins particuliers..."></textarea>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="image">URL de l'image</label>
+                    <input type="text" name="image" id="image"
+                           placeholder="images/animals/persan.jpg">
+                </div>
+            </div>
+            <button type="submit" class="admin-submit-btn">+ Ajouter l'animal</button>
+        </form>
+    </section>
+
+</main>
+
 {% endblock %}

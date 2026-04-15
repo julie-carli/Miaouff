@@ -1,65 +1,93 @@
 {% extends "base.html" %}
-
-{% block title %}Modifier le Refuge{% endblock %}
-
+{% block title %}Modifier le Refuge — Miaouff{% endblock %}
 {% block content %}
-<h1 class="edit-shelter-title">Modifier le Refuge</h1>
 
-<form method="POST" enctype="multipart/form-data" class="edit-shelter-form">
-    <label for="name">Nom du refuge</label>
-    <input type="text" name="name" id="name" value="{{ shelter.name }}" required class="edit-shelter-input">
+<!-- ============================================================
+   Admin panel — Edit a single shelter
+   ============================================================ -->
+<main class="admin-page">
 
-    <label for="address">Adresse</label>
-    <input type="text" name="address" id="address" value="{{ shelter.address }}" required class="edit-shelter-input">
-
-    <label for="phone">Téléphone</label>
-    <input type="text" name="phone" id="phone" value="{{ shelter.phone }}" required class="edit-shelter-input">
-
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" value="{{ shelter.email }}" required class="edit-shelter-input">
-
-    <label for="description">Description</label>
-    <textarea name="description" id="description" required class="edit-shelter-textarea">{{ shelter.description }}</textarea>
-
-    <label for="current-image">Image actuelle</label>
-    {% if shelter.image %}
-        <div class="edit-shelter-image-container">
-            <img id="current-image" src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="Image du refuge" class="edit-shelter-image">
-        </div>
-    {% else %}
-        <p>Aucune image disponible.</p>
-    {% endif %}
-
-    <label for="image">Nouvelle image</label>
-    <input type="file" name="image" id="image" accept=".png, .jpg, .jpeg, .gif" class="edit-shelter-input" onchange="previewImage(event)">
-
-    <div id="image-preview-container" style="display: none;">
-        <img id="image-preview" src="#" alt="Prévisualisation" class="edit-shelter-image">
-        <button type="button" onclick="removeImage()" class="edit-shelter-remove-btn">Retirer l'image</button>
+    <div class="admin-header">
+        <h1 class="admin-title">✏️ Modifier un refuge</h1>
+        <a href="{{ url_for('edit_shelters') }}" class="admin-back-link">← Retour aux refuges</a>
     </div>
 
-    <button type="submit" class="edit-shelter-btn">Sauvegarder</button>
-</form>
+    <section class="admin-section">
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="name">Nom du refuge</label>
+                    <input type="text" name="name" id="name" value="{{ shelter.name }}" required>
+                </div>
+                <div class="admin-field">
+                    <label for="phone">Téléphone</label>
+                    <input type="text" name="phone" id="phone" value="{{ shelter.phone }}" required>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="address">Adresse</label>
+                    <input type="text" name="address" id="address" value="{{ shelter.address }}" required>
+                </div>
+                <div class="admin-field">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="{{ shelter.email }}" required>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" rows="4" required>{{ shelter.description }}</textarea>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label>Image actuelle</label>
+                    {% if shelter.image %}
+                    <div class="admin-img-preview-wrap" style="display:block;">
+                        <img src="{{ url_for('static', filename='images/' + shelter.image) }}"
+                             alt="Image actuelle du refuge" class="admin-img-preview">
+                    </div>
+                    {% else %}
+                    <p class="admin-product-meta">Aucune image disponible.</p>
+                    {% endif %}
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="image">
+                        Nouvelle image
+                        <span class="admin-field-hint">(laisser vide pour conserver l'actuelle)</span>
+                    </label>
+                    <input type="file" name="image" id="image"
+                           accept=".png,.jpg,.jpeg,.gif"
+                           onchange="previewImage(event, 'edit-preview', 'edit-preview-container')">
+                    <!-- Preview of the newly selected image -->
+                    <div id="edit-preview-container" class="admin-img-preview-wrap" style="display:none;">
+                        <img id="edit-preview" src="#" alt="Prévisualisation" class="admin-img-preview">
+                        <button type="button" class="admin-btn admin-btn--delete"
+                                onclick="removeImage('image', 'edit-preview-container')">
+                            ✕ Retirer l'image
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="admin-submit-btn">💾 Sauvegarder les modifications</button>
+        </form>
+    </section>
 
-<a href="{{ url_for('edit_shelters') }}" class="edit-shelter-back">Retour à la gestion des refuges</a>
+</main>
 
 <script>
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
+    // Show a preview of the selected image before upload
+    function previewImage(event, previewId, containerId) {
+        const file = event.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('image-preview').src = e.target.result;
-            document.getElementById('image-preview-container').style.display = 'block';
+        reader.onload = (e) => {
+            document.getElementById(previewId).src = e.target.result;
+            document.getElementById(containerId).style.display = 'block';
         };
         reader.readAsDataURL(file);
     }
-}
 
-function removeImage() {
-    document.getElementById('image').value = "";
-    document.getElementById('image-preview-container').style.display = 'none';
-}
+    // Clear the file input and hide the preview
+    function removeImage(inputId, containerId) {
+        document.getElementById(inputId).value = "";
+        document.getElementById(containerId).style.display = 'none';
+    }
 </script>
 
 {% endblock %}

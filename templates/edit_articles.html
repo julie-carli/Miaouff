@@ -1,41 +1,85 @@
 {% extends "base.html" %}
+{% block title %}Gérer le Blog — Miaouff{% endblock %}
 {% block content %}
-<div class="edit-articles-container">
-    <h1 class="edit-articles-title">Gestion des articles</h1>
 
-    {% for article in articles %}
-    <div class="edit-article-card">
-        <div class="edit-article-text">
-            <h2>{{ article['title'] }}</h2>
-            <p>{{ article['created_at'].strftime("%d/%m/%Y") }}</p>
-        </div>
-        <div class="edit-article-actions">
-            <a href="{{ url_for('edit_article', article_id=article['_id']) }}" class="edit-btn">✏️</a>
-            <form action="{{ url_for('delete_article', article_id=article['_id']) }}" method="post" onsubmit="return confirm('Supprimer cet article ?')">
-                <button type="submit" class="delete-btn">❌</button>
-            </form>
-        </div>
-    </div>
-    {% endfor %}
+<!-- ============================================================
+   Admin panel — Blog article management
+   Sections: article list (edit/delete + pagination), create form
+   ============================================================ -->
+<main class="admin-page">
 
-    <div class="pagination">
-        {% for page in range(1, total_pages + 1) %}
-        <a href="{{ url_for('edit_articles', page=page) }}" class="{% if page == current_page %}active{% endif %}">{{ page }}</a>
-        {% endfor %}
+    <div class="admin-header">
+        <h1 class="admin-title">✍️ Gestion du blog</h1>
+        <a href="{{ url_for('account') }}" class="admin-back-link">← Retour au compte</a>
     </div>
 
-    <h2 class="edit-articles-subtitle">Créer un nouvel article</h2>
-    <form method="POST" enctype="multipart/form-data" class="edit-article-form">
-        <input type="text" name="title" placeholder="Titre" required>
-        <textarea name="content" placeholder="Contenu" required></textarea>
-        <input type="file" name="image" accept="image/*" required>
-        <select name="shelter_id">
-            <option value="">Aucun refuge associé</option>
-            {% for shelter in shelters %}
-                <option value="{{ shelter.shelter_id }}">{{ shelter.name }}</option>
+    <!-- ---- Article list ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Articles existants</h2>
+        <div class="admin-articles-list">
+            {% for article in articles %}
+            <div class="admin-article-row">
+                <div class="admin-article-info">
+                    <p class="admin-article-title">{{ article['title'] }}</p>
+                    <p class="admin-article-date">{{ article['created_at'].strftime("%d/%m/%Y") }}</p>
+                </div>
+                <div class="admin-product-actions">
+                    <a href="{{ url_for('edit_article', article_id=article['_id']) }}"
+                       class="admin-btn admin-btn--edit">✏️ Modifier</a>
+                    <form method="POST"
+                          action="{{ url_for('delete_article', article_id=article['_id']) }}"
+                          onsubmit="return confirm('Supprimer cet article ?')">
+                        <button type="submit" class="admin-btn admin-btn--delete">🗑️ Supprimer</button>
+                    </form>
+                </div>
+            </div>
             {% endfor %}
-        </select>
-        <button type="submit" class="btn-submit">Créer l'article</button>
-    </form>
-</div>
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="admin-pagination">
+            {% for page in range(1, total_pages + 1) %}
+            <a href="{{ url_for('edit_articles', page=page) }}"
+               class="admin-page-btn {% if page == current_page %}admin-page-btn--active{% endif %}">
+                {{ page }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- ---- Create article form ---- -->
+    <section class="admin-section">
+        <h2 class="admin-section-title">Créer un nouvel article</h2>
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="admin-field admin-field--full">
+                    <label for="title">Titre</label>
+                    <input type="text" name="title" id="title" placeholder="Titre de l'article" required>
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label for="content">Contenu</label>
+                    <textarea name="content" id="content" rows="6" placeholder="Rédigez votre article..." required></textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="image">Image</label>
+                    <input type="file" name="image" id="image" accept="image/*" required>
+                </div>
+                <div class="admin-field">
+                    <label for="shelter_id">Refuge associé</label>
+                    <select name="shelter_id" id="shelter_id">
+                        <option value="">Aucun refuge associé</option>
+                        {% for shelter in shelters %}
+                        <option value="{{ shelter.shelter_id }}">{{ shelter.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="admin-submit-btn">+ Créer l'article</button>
+        </form>
+    </section>
+
+</main>
+
 {% endblock %}
