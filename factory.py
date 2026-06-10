@@ -9,6 +9,7 @@ import os
 import stripe
 from flask import Flask, render_template
 from flask_migrate import Migrate
+from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from blueprints.admin import admin_bp
@@ -17,7 +18,6 @@ from blueprints.main import main_bp
 from blueprints.shop import shop_bp
 from config import Config
 from extensions import csrf, init_mongo, limiter, login_manager, mail
-from flask_session import Session
 from models.models import db
 
 

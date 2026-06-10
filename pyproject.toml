@@ -13,3 +13,7 @@ extend-exclude = '''
 profile = "black"
 line_length = 88
 skip = ["venv", "migrations", "flask_session"]
+# Declared explicitly so import grouping is deterministic regardless of the
+# local flask_session/ directory (which would otherwise be seen as first-party).
+known_first_party = ["blueprints", "config", "extensions", "factory", "models", "services"]
+known_third_party = ["flask_session"]
