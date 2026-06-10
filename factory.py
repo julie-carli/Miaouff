@@ -7,6 +7,7 @@ and is the idiomatic way to assemble a blueprint-based Flask application.
 import stripe
 from flask import Flask, render_template
 from flask_migrate import Migrate
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from blueprints.admin import admin_bp
 from blueprints.auth import auth_bp
@@ -22,6 +23,10 @@ def create_app(config_class=Config):
     """Create and configure a Flask application instance."""
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # Trust one proxy hop (Render) for the real client IP and HTTPS scheme,
+    # so rate limiting keys per client and external URLs use https.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # Stripe secret key, set once at startup from the config/env.
     stripe.api_key = app.config["STRIPE_SECRET_KEY"]
