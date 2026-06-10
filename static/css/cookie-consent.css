@@ -1,13 +1,20 @@
 /* Cookie consent banner and preferences dialog. */
 
+/* Ensure the hidden attribute always wins over the layout rules below
+   (an author display: value would otherwise override [hidden]). */
+.cookie-banner[hidden],
+.cookie-prefs[hidden] {
+  display: none !important;
+}
+
+/* Bottom-left banner. */
 .cookie-banner {
   position: fixed;
   left: 1rem;
-  right: 1rem;
   bottom: 1rem;
   z-index: 1000;
-  max-width: 56rem;
-  margin: 0 auto;
+  width: calc(100% - 2rem);
+  max-width: 24rem;
   background: #ffffff;
   color: #2b2b2b;
   border: 1px solid #f0d9d2;
