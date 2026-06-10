@@ -99,7 +99,7 @@
             <!-- SAV contact -->
             <div class="order-detail-sav">
                 <p class="order-detail-sav-title">Un problème avec cette commande ?</p>
-                <a href="{{ url_for('contact') }}" class="order-detail-sav-link">
+                <a href="{{ url_for('main.contact') }}" class="order-detail-sav-link">
                     Contacter le service client →
                 </a>
             </div>
@@ -107,7 +107,7 @@
 
     </div>
 
-    <a href="{{ url_for('account') }}" class="product-detail-back"
+    <a href="{{ url_for('auth.account') }}" class="product-detail-back"
        style="display:block; text-align:center; margin-top:2rem;">
         ← Retour au compte
     </a>

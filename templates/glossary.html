@@ -23,12 +23,12 @@
         <div class="glossary-filter-group">
             <span class="glossary-filter-label">Lettre</span>
             <div class="glossary-filter-pills">
-                <a href="{{ url_for('glossary', species=selected_species) }}"
+                <a href="{{ url_for('main.glossary', species=selected_species) }}"
                    class="glossary-pill {% if not selected_letter %}glossary-pill--active{% endif %}">
                     Tous
                 </a>
                 {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                <a href="{{ url_for('glossary', letter=letter, species=selected_species) }}"
+                <a href="{{ url_for('main.glossary', letter=letter, species=selected_species) }}"
                    class="glossary-pill {% if selected_letter == letter %}glossary-pill--active{% endif %}">
                     {{ letter }}
                 </a>
@@ -40,15 +40,15 @@
         <div class="glossary-filter-group">
             <span class="glossary-filter-label">Espèce</span>
             <div class="glossary-filter-pills">
-                <a href="{{ url_for('glossary', letter=selected_letter) }}"
+                <a href="{{ url_for('main.glossary', letter=selected_letter) }}"
                    class="glossary-pill {% if not selected_species %}glossary-pill--active{% endif %}">
                     Toutes
                 </a>
-                <a href="{{ url_for('glossary', species='Chat', letter=selected_letter) }}"
+                <a href="{{ url_for('main.glossary', species='Chat', letter=selected_letter) }}"
                    class="glossary-pill {% if selected_species == 'Chat' %}glossary-pill--active{% endif %}">
                     🐱 Chats
                 </a>
-                <a href="{{ url_for('glossary', species='Chien', letter=selected_letter) }}"
+                <a href="{{ url_for('main.glossary', species='Chien', letter=selected_letter) }}"
                    class="glossary-pill {% if selected_species == 'Chien' %}glossary-pill--active{% endif %}">
                     🐶 Chiens
                 </a>
@@ -61,7 +61,7 @@
     {% if animals %}
     <div class="glossary-grid">
         {% for animal in animals %}
-        <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
+        <a href="{{ url_for('main.glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
             <div class="glossary-card-img-wrapper">
                 <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}">
                 <div class="glossary-card-overlay">

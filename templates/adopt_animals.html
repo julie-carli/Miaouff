@@ -23,12 +23,12 @@
         <div class="adopt-filter-group">
             <span class="adopt-filter-label">Refuge</span>
             <div class="adopt-filter-pills">
-                <a href="{{ url_for('adopt_animals', species=selected_species) }}"
+                <a href="{{ url_for('main.adopt_animals', species=selected_species) }}"
                    class="adopt-pill {% if not selected_shelter %}adopt-pill--active{% endif %}">
                     Tous
                 </a>
                 {% for shelter in shelters %}
-                <a href="{{ url_for('adopt_animals', shelter_id=shelter.shelter_id, species=selected_species) }}"
+                <a href="{{ url_for('main.adopt_animals', shelter_id=shelter.shelter_id, species=selected_species) }}"
                    class="adopt-pill {% if selected_shelter and selected_shelter.shelter_id == shelter.shelter_id %}adopt-pill--active{% endif %}">
                     {{ shelter.name }}
                 </a>
@@ -40,15 +40,15 @@
         <div class="adopt-filter-group">
             <span class="adopt-filter-label">Espèce</span>
             <div class="adopt-filter-pills">
-                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None) }}"
+                <a href="{{ url_for('main.adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None) }}"
                    class="adopt-pill {% if not selected_species %}adopt-pill--active{% endif %}">
                     Toutes
                 </a>
-                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chien') }}"
+                <a href="{{ url_for('main.adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chien') }}"
                    class="adopt-pill {% if selected_species and selected_species.lower() == 'chien' %}adopt-pill--active{% endif %}">
                     🐶 Chiens
                 </a>
-                <a href="{{ url_for('adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chat') }}"
+                <a href="{{ url_for('main.adopt_animals', shelter_id=selected_shelter.shelter_id if selected_shelter else None, species='chat') }}"
                    class="adopt-pill {% if selected_species and selected_species.lower() == 'chat' %}adopt-pill--active{% endif %}">
                     🐱 Chats
                 </a>
@@ -61,7 +61,7 @@
     {% if pets %}
     <div class="adopt-grid">
         {% for pet in pets %}
-        <a href="{{ url_for('adopt_animal', pet_id=pet.pet_id) }}" class="adopt-card">
+        <a href="{{ url_for('main.adopt_animal', pet_id=pet.pet_id) }}" class="adopt-card">
             <div class="adopt-card-img-wrapper">
                 <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}">
                 <div class="adopt-card-overlay">

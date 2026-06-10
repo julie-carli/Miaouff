@@ -65,7 +65,7 @@
             <p class="shop-card-out">Rupture de stock</p>
             {% endif %}
 
-            <a href="{{ url_for('products') }}" class="product-detail-back">← Retour aux produits</a>
+            <a href="{{ url_for('main.products') }}" class="product-detail-back">← Retour aux produits</a>
         </div>
 
     </div>
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addBtn.addEventListener("click", function () {
         const quantity = parseInt(quantityInput.value);
 
-        fetch("{{ url_for('add_to_cart_route', product_id=product.product_id) }}", {
+        fetch("{{ url_for('shop.add_to_cart_route', product_id=product.product_id) }}", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ quantity })

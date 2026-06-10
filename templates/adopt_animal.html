@@ -39,7 +39,7 @@
                     <span class="pet-meta-icon">🐾</span>
                     <span>
                         <strong>Race</strong> —
-                        <a href="{{ url_for('glossary_animal', animal_id=animal.animal_id) }}"
+                        <a href="{{ url_for('main.glossary_animal', animal_id=animal.animal_id) }}"
                            class="pet-detail-link">{{ animal.breed }}</a>
                     </span>
                 </li>
@@ -47,13 +47,13 @@
                     <span class="pet-meta-icon">🏠</span>
                     <span>
                         <strong>Refuge</strong> —
-                        <a href="{{ url_for('shelter', shelter_id=pet.shelter_id) }}"
+                        <a href="{{ url_for('main.shelter', shelter_id=pet.shelter_id) }}"
                            class="pet-detail-link">{{ pet.shelter.name }}</a>
                     </span>
                 </li>
             </ul>
 
-            <a href="{{ url_for('adopt_animals') }}" class="pet-detail-back">← Retour à la liste</a>
+            <a href="{{ url_for('main.adopt_animals') }}" class="pet-detail-back">← Retour à la liste</a>
         </div>
 
     </div>

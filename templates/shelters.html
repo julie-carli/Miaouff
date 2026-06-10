@@ -25,7 +25,7 @@
     <article class="shelter-full-card {% if loop.index is even %}shelter-full-card--reverse{% endif %}">
 
         <!-- Image side -->
-        <a href="{{ url_for('shelter', shelter_id=shelter.shelter_id) }}" class="shelter-full-img-wrapper">
+        <a href="{{ url_for('main.shelter', shelter_id=shelter.shelter_id) }}" class="shelter-full-img-wrapper">
             <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}">
             <div class="shelter-full-img-overlay">
                 <span>Voir les animaux →</span>
@@ -54,7 +54,7 @@
             </ul>
 
             <div class="shelter-full-actions">
-                <a href="{{ url_for('shelter', shelter_id=shelter.shelter_id) }}" class="btn-shelter-primary">
+                <a href="{{ url_for('main.shelter', shelter_id=shelter.shelter_id) }}" class="btn-shelter-primary">
                     Voir les animaux
                 </a>
                 <a href="https://www.google.com/maps/search/?api=1&query={{ shelter.address | urlencode }}"
@@ -97,14 +97,14 @@
             lat: 48.4469,
             lng: 1.4880,
             address: "12 Rue des Chats Heureux, 28000 Chartres",
-            url: "{{ url_for('shelter', shelter_id=1) }}"
+            url: "{{ url_for('main.shelter', shelter_id=1) }}"
         },
         {
             name: "Le Refuge des Câlins Canins",
             lat: 48.7363,
             lng: 1.3664,
             address: "25 Avenue des Amis Fidèles, 28100 Dreux",
-            url: "{{ url_for('shelter', shelter_id=2) }}"
+            url: "{{ url_for('main.shelter', shelter_id=2) }}"
         }
     ];
 

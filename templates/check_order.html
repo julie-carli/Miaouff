@@ -21,7 +21,7 @@
             <div class="checkout-section">
                 <div class="checkout-section-header">
                     <h2 class="checkout-section-title">📍 Adresse de livraison</h2>
-                    <a href="{{ url_for('edit_address') }}" class="checkout-edit-link">Modifier</a>
+                    <a href="{{ url_for('shop.edit_address') }}" class="checkout-edit-link">Modifier</a>
                 </div>
                 <p class="checkout-address-line">
                     {{ user.first_name }} {{ user.last_name }}
@@ -80,7 +80,7 @@
                 <span>Total TTC</span>
                 <span>{{ totals.grand_total }} €</span>
             </div>
-            <a href="{{ url_for('payment') }}" class="cart-checkout-btn">
+            <a href="{{ url_for('shop.payment') }}" class="cart-checkout-btn">
                 Procéder au paiement →
             </a>
         </div>

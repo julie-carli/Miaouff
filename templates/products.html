@@ -19,12 +19,12 @@
     <!-- Category filters -->
     <div class="shop-filters">
         <div class="shop-filter-pills">
-            <a href="{{ url_for('products') }}"
+            <a href="{{ url_for('main.products') }}"
                class="shop-pill {% if not selected_category %}shop-pill--active{% endif %}">
                 Tous
             </a>
             {% for category in categories %}
-            <a href="{{ url_for('products', category=category.name) }}"
+            <a href="{{ url_for('main.products', category=category.name) }}"
                class="shop-pill {% if selected_category == category.name %}shop-pill--active{% endif %}">
                 {{ category.name }}
             </a>
@@ -39,13 +39,13 @@
         <div class="shop-card">
 
             <!-- Product image links to detail page -->
-            <a href="{{ url_for('product', product_id=product.product_id) }}" class="shop-card-img-wrapper">
+            <a href="{{ url_for('main.product', product_id=product.product_id) }}" class="shop-card-img-wrapper">
                 <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
                 <div class="shop-card-overlay"><span>Voir le produit →</span></div>
             </a>
 
             <div class="shop-card-body">
-                <a href="{{ url_for('product', product_id=product.product_id) }}" class="shop-card-name">
+                <a href="{{ url_for('main.product', product_id=product.product_id) }}" class="shop-card-name">
                     {{ product.name }}
                 </a>
                 <p class="shop-card-price">{{ product.price_incl_tax }} €</p>

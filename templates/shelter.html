@@ -60,7 +60,7 @@
     {% if animals %}
     <div class="shelter-animals-grid">
         {% for animal in animals %}
-        <a href="{{ url_for('adopt_animal', pet_id=animal.pet_id) }}" class="animal-card">
+        <a href="{{ url_for('main.adopt_animal', pet_id=animal.pet_id) }}" class="animal-card">
             <div class="animal-card-img-wrapper">
                 <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.name }}">
                 <div class="animal-card-overlay">
@@ -80,7 +80,7 @@
     {% else %}
     <div class="shelter-empty">
         <p>🐾 Tous nos pensionnaires ont trouvé un foyer ! Revenez bientôt.</p>
-        <a href="{{ url_for('shelters') }}" class="btn-shelter-primary" style="margin-top:1rem; display:inline-block;">
+        <a href="{{ url_for('main.shelters') }}" class="btn-shelter-primary" style="margin-top:1rem; display:inline-block;">
             Voir nos autres refuges
         </a>
     </div>

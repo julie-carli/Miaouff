@@ -10,7 +10,7 @@
         </div>
 
         <!-- Login form -->
-        <form id="loginForm" class="login-form" method="POST" action="{{ url_for('login') }}">
+        <form id="loginForm" class="login-form" method="POST" action="{{ url_for('auth.login') }}">
             <input type="hidden" name="action" value="login">
 
             <h1 class="login-title">Connexion</h1>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="login-forgot">
-                <a href="{{ url_for('reset_password') }}">Mot de passe oublié ?</a>
+                <a href="{{ url_for('auth.reset_password') }}">Mot de passe oublié ?</a>
             </div>
 
             <button type="submit" class="login-btn">Se connecter</button>
@@ -53,7 +53,7 @@
         </form>
 
         <!-- Register form -->
-        <form id="registerForm" class="login-form hidden" method="POST" action="{{ url_for('login') }}">
+        <form id="registerForm" class="login-form hidden" method="POST" action="{{ url_for('auth.login') }}">
             <input type="hidden" name="action" value="register">
 
             <h1 class="login-title">Inscription</h1>

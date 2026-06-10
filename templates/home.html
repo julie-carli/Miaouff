@@ -17,8 +17,8 @@
         <h1 class="hero-title">Chaque animal<br>mérite un foyer</h1>
         <p class="hero-subtitle">Adoptez, soutenez, agissez. Ensemble, faisons la différence.</p>
         <div class="hero-cta">
-            <a href="{{ url_for('adopt_animals') }}" class="btn-hero-primary">Adopter un animal</a>
-            <a href="{{ url_for('shelters') }}" class="btn-hero-secondary">Nos refuges</a>
+            <a href="{{ url_for('main.adopt_animals') }}" class="btn-hero-primary">Adopter un animal</a>
+            <a href="{{ url_for('main.shelters') }}" class="btn-hero-secondary">Nos refuges</a>
         </div>
     </div>
 
@@ -59,7 +59,7 @@
     </div>
 
     <div class="shelters-grid">
-        <a href="{{ url_for('shelter', shelter_id=1) }}" class="shelter-card">
+        <a href="{{ url_for('main.shelter', shelter_id=1) }}" class="shelter-card">
             <div class="shelter-card-img-wrapper">
                 <img src="{{ url_for('static', filename='images/the_haven_of_purrs.png') }}" alt="Le Havre des Ronronnements">
                 <div class="shelter-card-overlay">
@@ -72,7 +72,7 @@
             </div>
         </a>
 
-        <a href="{{ url_for('shelter', shelter_id=2) }}" class="shelter-card">
+        <a href="{{ url_for('main.shelter', shelter_id=2) }}" class="shelter-card">
             <div class="shelter-card-img-wrapper">
                 <img src="{{ url_for('static', filename='images/the_canine_cuddle_shelter.png') }}" alt="Le Refuge des Câlins Canins">
                 <div class="shelter-card-overlay">
@@ -95,7 +95,7 @@
     </div>
 
     <div class="products-grid">
-        <a href="{{ url_for('products', category='Alimentation') }}" class="product-card">
+        <a href="{{ url_for('main.products', category='Alimentation') }}" class="product-card">
             <div class="product-card-img-wrapper">
                 <img src="{{ url_for('static', filename='images/food.png') }}" alt="Alimentation">
             </div>
@@ -105,7 +105,7 @@
             </div>
         </a>
 
-        <a href="{{ url_for('products', category='Jouets') }}" class="product-card">
+        <a href="{{ url_for('main.products', category='Jouets') }}" class="product-card">
             <div class="product-card-img-wrapper">
                 <img src="{{ url_for('static', filename='images/toys.png') }}" alt="Jouets">
             </div>
@@ -115,7 +115,7 @@
             </div>
         </a>
 
-        <a href="{{ url_for('products', category='Hygiène') }}" class="product-card">
+        <a href="{{ url_for('main.products', category='Hygiène') }}" class="product-card">
             <div class="product-card-img-wrapper">
                 <img src="{{ url_for('static', filename='images/hygiene.png') }}" alt="Hygiène">
             </div>

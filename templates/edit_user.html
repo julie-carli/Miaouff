@@ -10,10 +10,10 @@
 
     <div class="admin-header">
         <h1 class="admin-title">✏️ Modifier un utilisateur</h1>
-        <a href="{{ url_for('edit_users') }}" class="admin-back-link">← Retour aux utilisateurs</a>
+        <a href="{{ url_for('admin.edit_users') }}" class="admin-back-link">← Retour aux utilisateurs</a>
     </div>
 
-    <form method="POST" action="{{ url_for('edit_user', user_id=user.user_id) }}">
+    <form method="POST" action="{{ url_for('admin.edit_user', user_id=user.user_id) }}">
 
         <!-- ---- Personal info ---- -->
         <section class="admin-section">
@@ -47,7 +47,7 @@
                 <div class="admin-field admin-field--full">
                     <label>Mot de passe</label>
                     <div>
-                        <a href="{{ url_for('send_reset_code', user_id=user.user_id) }}"
+                        <a href="{{ url_for('auth.send_reset_code', user_id=user.user_id) }}"
                            class="admin-btn admin-btn--edit">
                             🔑 Envoyer un code de réinitialisation
                         </a>

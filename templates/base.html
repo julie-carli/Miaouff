@@ -17,7 +17,7 @@
 <!-- ========== HEADER ========== -->
 <header class="header">
     <div class="header-logo">
-        <a href="{{ url_for('home') }}">
+        <a href="{{ url_for('main.home') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Miaouff">
         </a>
     </div>
@@ -31,18 +31,18 @@
 
     <nav class="header-navbar" id="main-nav" aria-label="Navigation principale">
         <ul>
-            <li><a href="{{ url_for('home') }}">Accueil</a></li>
-            <li><a href="{{ url_for('shelters') }}">Refuges</a></li>
-            <li><a href="{{ url_for('animals') }}">Animaux</a></li>
-            <li><a href="{{ url_for('products') }}">Produits</a></li>
-            <li><a href="{{ url_for('blog') }}">Blog</a></li>
-            <li><a href="{{ url_for('games') }}">Jeux</a></li>
+            <li><a href="{{ url_for('main.home') }}">Accueil</a></li>
+            <li><a href="{{ url_for('main.shelters') }}">Refuges</a></li>
+            <li><a href="{{ url_for('main.animals') }}">Animaux</a></li>
+            <li><a href="{{ url_for('main.products') }}">Produits</a></li>
+            <li><a href="{{ url_for('main.blog') }}">Blog</a></li>
+            <li><a href="{{ url_for('main.games') }}">Jeux</a></li>
         </ul>
     </nav>
 
     <div class="header-buttons">
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('account') }}" class="btn-account">
+            <a href="{{ url_for('auth.account') }}" class="btn-account">
                 {% if current_user.first_name %}
                     Coucou {{ current_user.first_name }} 👋
                 {% else %}
@@ -50,9 +50,9 @@
                 {% endif %}
             </a>
         {% else %}
-            <a href="{{ url_for('login') }}" class="btn-account">Se connecter</a>
+            <a href="{{ url_for('auth.login') }}" class="btn-account">Se connecter</a>
         {% endif %}
-        <a href="{{ url_for('cart') }}" class="btn-cart" aria-label="Panier">
+        <a href="{{ url_for('shop.cart') }}" class="btn-cart" aria-label="Panier">
     <i class="fa fa-shopping-cart"></i>
 
     {% if cart_count > 0 %}
@@ -89,7 +89,7 @@
 <footer class="footer">
     <!-- Footer top: logo + tagline -->
     <div class="footer-brand">
-        <a href="{{ url_for('home') }}">
+        <a href="{{ url_for('main.home') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Miaouff">
         </a>
         <p class="footer-tagline">Ensemble pour eux 🐾</p>
@@ -97,12 +97,12 @@
 
     <!-- Footer center: navigation links -->
     <nav class="footer-links" aria-label="Liens légaux">
-        <a href="{{ url_for('terms_conditions') }}">CGV</a>
-        <a href="{{ url_for('legal_notices') }}">Mentions légales</a>
-        <a href="{{ url_for('privacy_policy') }}">Confidentialité</a>
-        <a href="{{ url_for('cookie_policy') }}">Cookies</a>
-        <a href="{{ url_for('faq') }}">FAQ</a>
-        <a href="{{ url_for('contact') }}">Contact</a>
+        <a href="{{ url_for('main.terms_conditions') }}">CGV</a>
+        <a href="{{ url_for('main.legal_notices') }}">Mentions légales</a>
+        <a href="{{ url_for('main.privacy_policy') }}">Confidentialité</a>
+        <a href="{{ url_for('main.cookie_policy') }}">Cookies</a>
+        <a href="{{ url_for('main.faq') }}">FAQ</a>
+        <a href="{{ url_for('main.contact') }}">Contact</a>
     </nav>
 
     <!-- Footer right: social networks -->

@@ -16,7 +16,7 @@
     {% if articles %}
     <div class="blog-grid">
         {% for article in articles %}
-        <a href="{{ url_for('blog_article', article_id=article['_id']) }}" class="blog-card">
+        <a href="{{ url_for('main.blog_article', article_id=article['_id']) }}" class="blog-card">
             <div class="blog-card-img-wrapper">
                 <img src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
                 <div class="blog-card-overlay">
@@ -39,18 +39,18 @@
     {% if total_pages > 1 %}
     <nav class="blog-pagination" aria-label="Pagination du blog">
         {% if current_page > 1 %}
-        <a href="{{ url_for('blog', page=current_page - 1) }}" class="blog-page-btn">← Précédent</a>
+        <a href="{{ url_for('main.blog', page=current_page - 1) }}" class="blog-page-btn">← Précédent</a>
         {% endif %}
 
         {% for p in range(1, total_pages + 1) %}
-        <a href="{{ url_for('blog', page=p) }}"
+        <a href="{{ url_for('main.blog', page=p) }}"
            class="blog-page-btn {% if p == current_page %}active{% endif %}">
             {{ p }}
         </a>
         {% endfor %}
 
         {% if current_page < total_pages %}
-        <a href="{{ url_for('blog', page=current_page + 1) }}" class="blog-page-btn">Suivant →</a>
+        <a href="{{ url_for('main.blog', page=current_page + 1) }}" class="blog-page-btn">Suivant →</a>
         {% endif %}
     </nav>
     {% endif %}

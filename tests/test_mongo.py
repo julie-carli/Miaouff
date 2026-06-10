@@ -3,10 +3,10 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app import mongo_db
+import app as _app  # noqa: F401  ensures the factory ran and Mongo is initialised
+from extensions import articles_collection
 
 
 def test_mongo_connection():
-    collection = mongo_db.miaouff_collection
-    documents = list(collection.find())
+    documents = list(articles_collection().find())
     assert isinstance(documents, list)
