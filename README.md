@@ -153,8 +153,15 @@ Aucune base n'est à recréer sur Render : il suffit de réutiliser les chaînes
 
 1. Sur [dashboard.render.com](https://dashboard.render.com), cliquer **New → Blueprint** et connecter le dépôt GitHub `miaouff`.
 2. Render lit `render.yaml` et propose de créer le service web `miaouff`.
-3. Renseigner les variables d'environnement marquées `sync: false` (onglet **Environment**), en copiant les valeurs depuis le `.env` local :
+3. Renseigner les variables d'environnement (onglet **Environment**) :
    `SECRET_KEY`, `DATABASE_URL`, `MONGODB_URI`, les `MAIL_*`, `STRIPE_*`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
+   - `DATABASE_URL` : la *connection string* fournie par **Neon** (console Neon → Connect),
+     au format `postgresql://user:pass@ep-xxxx.region.aws.neon.tech/neondb?sslmode=require`.
+     ⚠️ Ce n'est PAS la valeur du `.env` local (qui pointe sur `localhost`).
+   - `MONGODB_URI` : la *connection string* fournie par **MongoDB Atlas**.
+   - Les autres valeurs peuvent être reprises du `.env` local.
+   - Les variables `DB_USER`/`DB_PASSWORD`/`DB_NAME`/`DB_HOST`/`DB_PORT` ne sont pas utilisées
+     par l'application (seul `DATABASE_URL` est lu) : inutile de les créer sur Render.
 4. Valider : Render lance `pip install -r requirements.txt` puis démarre l'app avec
    `gunicorn app:app --bind 0.0.0.0:$PORT`.
 
