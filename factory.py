@@ -4,6 +4,8 @@ Using a factory keeps global state out of import time, makes testing easier
 and is the idiomatic way to assemble a blueprint-based Flask application.
 """
 
+import os
+
 import stripe
 from flask import Flask, render_template
 from flask_migrate import Migrate
@@ -36,9 +38,23 @@ def create_app(config_class=Config):
     _register_filters(app)
     _register_context(app)
     _register_security_headers(app)
+    _register_static_cache_busting(app)
     _register_error_handlers(app)
 
     return app
+
+
+def _register_static_cache_busting(app):
+    @app.url_defaults
+    def add_static_version(endpoint, values):
+        """Append ?v=<mtime> to static URLs so the long cache busts on change."""
+        if endpoint != "static" or "filename" not in values:
+            return
+        path = os.path.join(app.static_folder, values["filename"])
+        try:
+            values["v"] = int(os.stat(path).st_mtime)
+        except OSError:
+            pass
 
 
 # Content Security Policy allowing the third parties actually used by the site
