@@ -1,8 +1,5 @@
-"""Unit tests for the authentication service (no database needed)."""
+"""Unit tests for the authentication service."""
 
-import datetime
-
-from services import auth_service
 from services.auth_service import (
     generate_reset_token,
     is_password_strong,
@@ -28,25 +25,19 @@ class TestPasswordStrength:
 
 
 class TestResetToken:
-    def test_generated_token_validates(self):
-        token = generate_reset_token("alice@example.com")
-        assert verify_reset_token("alice@example.com", token) is True
+    """Signed reset tokens (need the app context for the SECRET_KEY)."""
 
-    def test_wrong_token_is_rejected(self):
-        generate_reset_token("bob@example.com")
-        assert verify_reset_token("bob@example.com", "deadbeef") is False
+    def test_round_trip_returns_email(self, flask_app):
+        with flask_app.app_context():
+            token = generate_reset_token("alice@example.com")
+            assert verify_reset_token(token) == "alice@example.com"
 
-    def test_empty_token_is_rejected(self):
-        generate_reset_token("carol@example.com")
-        assert verify_reset_token("carol@example.com", "") is False
+    def test_invalid_token_returns_none(self, flask_app):
+        with flask_app.app_context():
+            assert verify_reset_token("not-a-real-token") is None
 
-    def test_unknown_email_is_rejected(self):
-        assert verify_reset_token("nobody@example.com", "whatever") is False
-
-    def test_expired_token_is_rejected(self):
-        email = "dan@example.com"
-        token = generate_reset_token(email)
-        auth_service.reset_tokens[email][
-            "expires_at"
-        ] = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
-        assert verify_reset_token(email, token) is False
+    def test_expired_token_returns_none(self, flask_app):
+        with flask_app.app_context():
+            token = generate_reset_token("bob@example.com")
+            # A negative max_age forces the token to be treated as expired.
+            assert verify_reset_token(token, max_age=-1) is None

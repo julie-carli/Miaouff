@@ -1,6 +1,14 @@
 """Authentication and user account: login, register, profile, password reset."""
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -108,54 +116,79 @@ def logout():
     return redirect(url_for("auth.login"))
 
 
+def _send_password_reset_email(user):
+    """Email a password-reset link to the given user."""
+    token = generate_reset_token(user.email)
+    reset_url = url_for("auth.reset_password", token=token, _external=True)
+    msg = Message(
+        "Réinitialisation de votre mot de passe Miaouff",
+        recipients=[user.email],
+    )
+    msg.html = render_template(
+        "emails/reset_password_email.html", user=user, reset_url=reset_url
+    )
+    mail.send(msg)
+
+
+@auth_bp.route("/forgot_password", methods=["GET", "POST"])
+@limiter.limit("5 per minute", methods=["POST"])
+def forgot_password():
+    """Public entry point: request a password-reset link by email."""
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip()
+        user = User.query.filter_by(email=email).first()
+        if user:
+            try:
+                _send_password_reset_email(user)
+            except Exception as e:  # noqa: BLE001
+                current_app.logger.warning("Reset email failed: %s", e)
+        # Neutral message: never reveal whether an account exists for this email.
+        flash(
+            "Si un compte est associé à cette adresse, un lien de "
+            "réinitialisation vient d'être envoyé.",
+            "success",
+        )
+        return redirect(url_for("auth.login"))
+
+    return render_template("forgot_password.html")
+
+
 @auth_bp.route("/send_reset_code/<int:user_id>")
 @limiter.limit("5 per minute")
 def send_reset_code(user_id):
+    """Admin action: send a reset link to a given user."""
     user = User.query.get(user_id)
     if not user:
         flash("Utilisateur introuvable.", "danger")
         return redirect(url_for("admin.edit_users"))
-
-    reset_code = generate_reset_token(user.email)
-    msg = Message("Réinitialisation de votre mot de passe", recipients=[user.email])
-    msg.html = f"""
-    <html>
-        <body>
-            <h2 style="color: #4CAF50;">Réinitialisation de votre mot de passe</h2>
-            <p>Bonjour {user.first_name} {user.last_name},</p>
-            <p>Veuillez utiliser le code suivant pour réinitialiser votre mot de passe :</p>
-            <h3 style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; color: #333;">
-                {reset_code}
-            </h3>
-            <p>Si vous n'avez pas demandé cette réinitialisation, ignorez cet e-mail.</p>
-            <p>Cordialement,<br>L'équipe Miaouff</p>
-        </body>
-    </html>
-    """
     try:
-        mail.send(msg)
-        flash("Le code a été envoyé par mail.", "success")
-    except Exception as e:
+        _send_password_reset_email(user)
+        flash("Le lien de réinitialisation a été envoyé par mail.", "success")
+    except Exception as e:  # noqa: BLE001
         flash(f"Erreur lors de l'envoi du mail : {str(e)}", "danger")
-
     return redirect(url_for("admin.edit_users"))
 
 
-@auth_bp.route("/reset_password", methods=["GET", "POST"])
+@auth_bp.route("/reset_password/<token>", methods=["GET", "POST"])
 @limiter.limit("10 per minute", methods=["POST"])
-def reset_password():
-    if request.method == "POST":
-        email = request.form.get("email")
-        code = request.form.get("code")
-        new_password = request.form.get("new_password")
+def reset_password(token):
+    """Set a new password from a signed reset link."""
+    email = verify_reset_token(token)
+    if not email:
+        flash("Lien de réinitialisation invalide ou expiré.", "danger")
+        return redirect(url_for("auth.forgot_password"))
 
-        if not verify_reset_token(email, code):
-            flash("Code invalide.", "danger")
-            return redirect(url_for("auth.reset_password"))
+    if request.method == "POST":
+        new_password = request.form.get("new_password")
+        confirm = request.form.get("confirm_new_password")
+        if new_password != confirm:
+            flash("Les mots de passe ne correspondent pas.", "danger")
+            return redirect(url_for("auth.reset_password", token=token))
 
         success, message = do_reset_password(email, new_password)
         flash(message, "success" if success else "danger")
         if success:
             return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.reset_password", token=token))
 
-    return render_template("reset_password.html")
+    return render_template("reset_password.html", token=token)

@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-import secrets
-from datetime import datetime, timedelta
-
+from flask import current_app
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models.models import User, db
 
-# In-memory store for password-reset codes: email -> {"token", "expires_at"}.
-# Note: should be replaced by a DB table in production so codes survive restarts.
-reset_tokens: dict[str, dict] = {}
-
-# Reset codes are valid for a limited time only.
-RESET_TOKEN_TTL = timedelta(minutes=15)
+# Reset tokens are signed (no server-side storage) and valid for one hour.
+RESET_TOKEN_MAX_AGE = 3600
+_RESET_SALT = "password-reset"
 
 
 def register_user(email: str, password: str) -> tuple[bool, str]:
@@ -61,36 +57,26 @@ def is_password_strong(password: str) -> bool:
     )
 
 
+def _reset_serializer() -> URLSafeTimedSerializer:
+    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt=_RESET_SALT)
+
+
 def generate_reset_token(email: str) -> str:
-    """
-    Generate and store a time-limited reset token for the given email.
-    Returns the generated token.
-    """
-    token = secrets.token_hex(4)
-    reset_tokens[email] = {
-        "token": token,
-        "expires_at": datetime.utcnow() + RESET_TOKEN_TTL,
-    }
-    return token
+    """Return a signed, time-limited token embedding the user's email."""
+    return _reset_serializer().dumps(email)
 
 
-def verify_reset_token(email: str, code: str) -> bool:
-    """
-    Check that the provided code matches the stored token and is not expired.
-    Uses a constant-time comparison to avoid timing attacks.
-    """
-    entry = reset_tokens.get(email)
-    if not entry:
-        return False
-    if datetime.utcnow() > entry["expires_at"]:
-        reset_tokens.pop(email, None)
-        return False
-    return secrets.compare_digest(entry["token"], code or "")
+def verify_reset_token(token: str, max_age: int = RESET_TOKEN_MAX_AGE) -> str | None:
+    """Return the email if the token is valid and not expired, else None."""
+    try:
+        return _reset_serializer().loads(token, max_age=max_age)
+    except (BadSignature, SignatureExpired):
+        return None
 
 
 def reset_password(email: str, new_password: str) -> tuple[bool, str]:
     """
-    Update the user's password and remove the used reset token (single use).
+    Update the user's password after validating its strength.
     Returns (success, message).
     """
     user = User.query.filter_by(email=email).first()
@@ -102,5 +88,4 @@ def reset_password(email: str, new_password: str) -> tuple[bool, str]:
 
     user.password = generate_password_hash(new_password, method="pbkdf2:sha256")
     db.session.commit()
-    reset_tokens.pop(email, None)
     return True, "Mot de passe modifié avec succès !"
