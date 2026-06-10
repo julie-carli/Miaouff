@@ -6,12 +6,15 @@ Usage (with the MAIL_* environment variables set, e.g. via .env):
 Default recipient is neko.chan.levelup@gmail.com. Check that inbox afterwards.
 """
 
+import os
 import sys
 
-from flask_mail import Message
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app import app
-from extensions import mail
+from flask_mail import Message  # noqa: E402
+
+from app import app  # noqa: E402
+from extensions import mail  # noqa: E402
 
 DEFAULT_RECIPIENT = "neko.chan.levelup@gmail.com"
 
