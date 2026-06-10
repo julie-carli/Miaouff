@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from werkzeug.utils import secure_filename
@@ -7,12 +9,14 @@ from models.models import Animal, Pet, Shelter, db
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 
-def allowed_file(filename):
+def allowed_file(filename: str) -> bool:
     """Check if the uploaded file has an allowed image extension."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def save_image(file, upload_folder, old_image_path=None):
+def save_image(
+    file, upload_folder: str, old_image_path: str | None = None
+) -> str | None:
     """
     Save an uploaded image to the upload folder.
     Optionally delete the old image if provided.
@@ -35,7 +39,9 @@ def save_image(file, upload_folder, old_image_path=None):
     return filename
 
 
-def save_or_update_shelter(form_data, file, upload_folder, shelter=None):
+def save_or_update_shelter(
+    form_data, file, upload_folder: str, shelter: Shelter | None = None
+) -> Shelter:
     """
     Create a new shelter or update an existing one.
     Returns the shelter instance.
@@ -80,14 +86,14 @@ def save_or_update_shelter(form_data, file, upload_folder, shelter=None):
     return shelter
 
 
-def delete_shelter(shelter_id):
+def delete_shelter(shelter_id: int) -> None:
     """Delete a shelter by ID."""
     shelter = Shelter.query.get_or_404(shelter_id)
     db.session.delete(shelter)
     db.session.commit()
 
 
-def save_or_update_animal(form_data, animal=None):
+def save_or_update_animal(form_data, animal: Animal | None = None) -> Animal:
     """Create a new animal entry or update an existing one."""
     species = form_data["species"]
     breed = form_data["breed"]
@@ -118,14 +124,14 @@ def save_or_update_animal(form_data, animal=None):
     return animal
 
 
-def delete_animal(animal_id):
+def delete_animal(animal_id: int) -> None:
     """Delete an animal entry by ID."""
     animal = Animal.query.get_or_404(animal_id)
     db.session.delete(animal)
     db.session.commit()
 
 
-def save_or_update_pet(form_data, pet=None):
+def save_or_update_pet(form_data, pet: Pet | None = None) -> Pet:
     """Create a new pet or update an existing one."""
     if pet:
         pet.name = form_data["name"]
@@ -153,7 +159,7 @@ def save_or_update_pet(form_data, pet=None):
     return pet
 
 
-def delete_pet(pet_id):
+def delete_pet(pet_id: int) -> None:
     """Delete a pet by ID."""
     pet = Pet.query.get_or_404(pet_id)
     db.session.delete(pet)

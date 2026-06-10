@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import secrets
 from datetime import datetime, timedelta
 
@@ -7,16 +9,16 @@ from models.models import User, db
 
 # In-memory store for password-reset codes: email -> {"token", "expires_at"}.
 # Note: should be replaced by a DB table in production so codes survive restarts.
-reset_tokens = {}
+reset_tokens: dict[str, dict] = {}
 
 # Reset codes are valid for a limited time only.
 RESET_TOKEN_TTL = timedelta(minutes=15)
 
 
-def register_user(email, password):
+def register_user(email: str, password: str) -> tuple[bool, str]:
     """
     Create a new user account after validating email uniqueness and password strength.
-    Returns (success: bool, message: str).
+    Returns (success, message).
     """
     if User.query.filter_by(email=email).first():
         return False, "Cet e-mail est déjà utilisé."
@@ -31,7 +33,7 @@ def register_user(email, password):
     return True, "Inscription réussie ! Vous pouvez maintenant vous connecter."
 
 
-def authenticate_user(email, password):
+def authenticate_user(email: str, password: str) -> User | None:
     """
     Verify credentials and return the user if valid, None otherwise.
     """
@@ -41,7 +43,7 @@ def authenticate_user(email, password):
     return None
 
 
-def is_password_strong(password):
+def is_password_strong(password: str) -> bool:
     """
     Validate password strength:
     - At least 12 characters
@@ -59,7 +61,7 @@ def is_password_strong(password):
     )
 
 
-def generate_reset_token(email):
+def generate_reset_token(email: str) -> str:
     """
     Generate and store a time-limited reset token for the given email.
     Returns the generated token.
@@ -72,7 +74,7 @@ def generate_reset_token(email):
     return token
 
 
-def verify_reset_token(email, code):
+def verify_reset_token(email: str, code: str) -> bool:
     """
     Check that the provided code matches the stored token and is not expired.
     Uses a constant-time comparison to avoid timing attacks.
@@ -86,10 +88,10 @@ def verify_reset_token(email, code):
     return secrets.compare_digest(entry["token"], code or "")
 
 
-def reset_password(email, new_password):
+def reset_password(email: str, new_password: str) -> tuple[bool, str]:
     """
     Update the user's password and remove the used reset token (single use).
-    Returns (success: bool, message: str).
+    Returns (success, message).
     """
     user = User.query.filter_by(email=email).first()
     if not user:

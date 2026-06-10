@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from models.models import Category, Product, db
 
 
-def get_products_by_category(category_name=None):
+def get_products_by_category(category_name: str | None = None) -> tuple[list, list]:
     """
     Return all products, or filter by category name if provided.
     Returns a tuple (products_list, categories).
@@ -21,7 +23,7 @@ def get_products_by_category(category_name=None):
     return products_list, categories
 
 
-def save_or_update_product(form_data, product=None):
+def save_or_update_product(form_data, product: Product | None = None) -> Product:
     """Create a new product or update an existing one."""
     name = form_data["name"]
     description = form_data.get("description", "")
@@ -58,14 +60,14 @@ def save_or_update_product(form_data, product=None):
     return product
 
 
-def delete_product(product_id):
+def delete_product(product_id: int) -> None:
     """Delete a product by ID."""
     product = Product.query.get_or_404(product_id)
     db.session.delete(product)
     db.session.commit()
 
 
-def add_category(name):
+def add_category(name: str) -> Category | None:
     """Add a new category if the name is not empty."""
     if name:
         category = Category(name=name)
@@ -75,7 +77,7 @@ def add_category(name):
     return None
 
 
-def update_category(category_id, new_name):
+def update_category(category_id: int, new_name: str) -> Category:
     """Update an existing category's name."""
     category = Category.query.get_or_404(category_id)
     category.name = new_name
@@ -83,7 +85,7 @@ def update_category(category_id, new_name):
     return category
 
 
-def delete_category(category_id):
+def delete_category(category_id: int) -> None:
     """Delete a category by ID."""
     category = Category.query.get_or_404(category_id)
     db.session.delete(category)
