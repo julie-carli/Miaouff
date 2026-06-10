@@ -1,12 +1,16 @@
 import secrets
+from datetime import datetime, timedelta
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models.models import User, db
 
-# In-memory token store for password reset
-# Note: should be replaced by a DB table with expiration in production
+# In-memory store for password-reset codes: email -> {"token", "expires_at"}.
+# Note: should be replaced by a DB table in production so codes survive restarts.
 reset_tokens = {}
+
+# Reset codes are valid for a limited time only.
+RESET_TOKEN_TTL = timedelta(minutes=15)
 
 
 def register_user(email, password):
@@ -57,29 +61,42 @@ def is_password_strong(password):
 
 def generate_reset_token(email):
     """
-    Generate and store a reset token for the given email.
+    Generate and store a time-limited reset token for the given email.
     Returns the generated token.
     """
     token = secrets.token_hex(4)
-    reset_tokens[email] = token
+    reset_tokens[email] = {
+        "token": token,
+        "expires_at": datetime.utcnow() + RESET_TOKEN_TTL,
+    }
     return token
 
 
 def verify_reset_token(email, code):
     """
-    Check if the provided code matches the stored reset token for the email.
+    Check that the provided code matches the stored token and is not expired.
+    Uses a constant-time comparison to avoid timing attacks.
     """
-    return reset_tokens.get(email) == code
+    entry = reset_tokens.get(email)
+    if not entry:
+        return False
+    if datetime.utcnow() > entry["expires_at"]:
+        reset_tokens.pop(email, None)
+        return False
+    return secrets.compare_digest(entry["token"], code or "")
 
 
 def reset_password(email, new_password):
     """
-    Update the user's password and remove the used reset token.
+    Update the user's password and remove the used reset token (single use).
     Returns (success: bool, message: str).
     """
     user = User.query.filter_by(email=email).first()
     if not user:
         return False, "Utilisateur introuvable."
+
+    if not is_password_strong(new_password):
+        return False, "Le mot de passe ne respecte pas les critères de sécurité."
 
     user.password = generate_password_hash(new_password, method="pbkdf2:sha256")
     db.session.commit()

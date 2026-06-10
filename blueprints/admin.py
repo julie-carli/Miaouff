@@ -2,6 +2,7 @@
 categories and blog articles. Every route requires an authenticated admin."""
 
 import os
+import re
 from datetime import datetime
 from functools import wraps
 
@@ -435,10 +436,11 @@ def edit_articles():
         flash("Article créé avec succès.", "success")
         return redirect(url_for("admin.edit_articles"))
 
-    # Build MongoDB filter based on search query (case-insensitive on title)
+    # Build MongoDB filter based on search query (case-insensitive on title).
+    # Escape the input so it is treated as a literal, not a user regex (ReDoS).
     mongo_filter = {}
     if search_query:
-        mongo_filter = {"title": {"$regex": search_query, "$options": "i"}}
+        mongo_filter = {"title": {"$regex": re.escape(search_query), "$options": "i"}}
 
     total_articles = collection.count_documents(mongo_filter)
     total_pages = (total_articles + per_page - 1) // per_page
