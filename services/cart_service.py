@@ -6,6 +6,11 @@ def get_cart(session):
     return session.get("cart", [])
 
 
+def get_cart_count(session):
+    """Return the total number of items currently in the cart."""
+    return sum(item.get("quantity", 0) for item in get_cart(session))
+
+
 def add_to_cart(session, product_id, quantity_requested):
     """
     Add a product to the cart or update its quantity if already present.

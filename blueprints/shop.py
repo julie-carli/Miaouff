@@ -22,6 +22,7 @@ from models.models import Product, User, db
 from services.cart_service import (
     add_to_cart,
     get_cart,
+    get_cart_count,
     get_cart_totals,
     is_address_complete,
     remove_from_cart,
@@ -45,7 +46,7 @@ def add_to_cart_route(product_id):
     success, message = add_to_cart(session, product_id, quantity_requested)
     if not success:
         return jsonify({"success": False, "message": message}), 400
-    return jsonify({"success": True})
+    return jsonify({"success": True, "cart_count": get_cart_count(session)})
 
 
 @shop_bp.route("/update_cart/<int:product_id>", methods=["POST"])
@@ -56,11 +57,16 @@ def update_cart_route(product_id):
     if not success:
         return (
             jsonify(
-                {"success": False, "message": message, "corrected_quantity": corrected}
+                {
+                    "success": False,
+                    "message": message,
+                    "corrected_quantity": corrected,
+                    "cart_count": get_cart_count(session),
+                }
             ),
             400,
         )
-    return jsonify({"success": True})
+    return jsonify({"success": True, "cart_count": get_cart_count(session)})
 
 
 @shop_bp.route("/remove_from_cart/<int:product_id>", methods=["POST"])

@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     msg.textContent = "✓ Ajouté !";
                     msg.className = "shop-card-feedback shop-card-feedback--ok";
+                    if (data.cart_count != null) updateCartBadge(data.cart_count);
                 } else {
                     msg.textContent = data.message || "Erreur.";
                     msg.className = "shop-card-feedback shop-card-feedback--err";

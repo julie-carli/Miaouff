@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success) {
                 cartMessage.textContent = "✓ Produit ajouté au panier !";
                 cartMessage.className = "shop-card-feedback shop-card-feedback--ok";
+                if (data.cart_count != null) updateCartBadge(data.cart_count);
             } else {
                 cartMessage.textContent = data.message || "Erreur.";
                 cartMessage.className = "shop-card-feedback shop-card-feedback--err";

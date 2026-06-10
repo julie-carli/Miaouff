@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 input.value = data.corrected_quantity;
                 updateTotal(productId, data.corrected_quantity, unitPrice);
             }
+            if (data.cart_count != null) updateCartBadge(data.cart_count);
         });
     }
 

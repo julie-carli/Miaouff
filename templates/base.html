@@ -75,10 +75,7 @@
         {% endif %}
         <a href="{{ url_for('shop.cart') }}" class="btn-cart" aria-label="Panier">
     <i class="fa fa-shopping-cart"></i>
-
-    {% if cart_count > 0 %}
-        <span class="cart-badge">{{ cart_count }}</span>
-    {% endif %}
+    <span class="cart-badge" id="cart-badge"{% if cart_count == 0 %} style="display:none"{% endif %}>{{ cart_count }}</span>
 </a>
     </div>
 </header>
@@ -176,6 +173,14 @@
      SCRIPTS
      ================================================ -->
 <script>
+    // --- Cart badge: update the header counter without reloading the page ---
+    window.updateCartBadge = function (count) {
+        const badge = document.getElementById("cart-badge");
+        if (!badge) return;
+        badge.textContent = count;
+        badge.style.display = count > 0 ? "" : "none";
+    };
+
     // --- Flash messages: auto-dismiss after 5 seconds ---
     document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
