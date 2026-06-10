@@ -145,6 +145,30 @@ def payment_success():
         return jsonify({"success": False}), 400
 
     totals = get_cart_totals(cart_items)
+
+    # Never trust the client: confirm with Stripe that the payment really
+    # succeeded and that its amount matches the cart before creating the order.
+    data = request.get_json(silent=True) or {}
+    intent_id = data.get("payment_intent_id")
+    if not intent_id:
+        return jsonify({"success": False, "error": "Paiement non identifié."}), 400
+    try:
+        intent = stripe.PaymentIntent.retrieve(intent_id)
+    except stripe.error.StripeError:
+        return (
+            jsonify(
+                {"success": False, "error": "Vérification du paiement impossible."}
+            ),
+            400,
+        )
+
+    expected_amount = int(round(totals["grand_total"] * 100))
+    if intent.status != "succeeded" or intent.amount != expected_amount:
+        return (
+            jsonify({"success": False, "error": "Le paiement n'a pas été validé."}),
+            400,
+        )
+
     user = User.query.get(current_user.user_id)
 
     # Create the order record
