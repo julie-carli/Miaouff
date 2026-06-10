@@ -42,7 +42,7 @@ Le titre CDA = **3 activités-types (AT)** découpées en **11 compétences prof
 |---|---|---|
 | Fonctionnel (boutique, adoption, blog, glossaire, jeux, admin) | ✅ Riche et abouti | — |
 | Architecture (models / services / templates) | 🟡 Correcte mais `app.py` monolithique (1268 lignes) | Moyenne |
-| Sécurité applicative | 🔴 **Plusieurs failles critiques** | **Haute** |
+| Sécurité applicative | 🟢 **Failles critiques corrigées** (CSRF, accès admin, en-têtes, cookies, rate limiting, tokens) | — |
 | Tests | 🔴 **Très insuffisants** (~8 tests, <5% couverture) | **Haute** |
 | Accessibilité / RGAA | 🟡 Bonne base sémantique, pas d'audit | Moyenne |
 | Responsivité | ✅ Media queries + viewport OK | Basse |
@@ -383,14 +383,14 @@ Cibles concrètes pour Miaouff :
 
 ## 12. Plan d'action priorisé
 
-### Lot 1 — Sécurité (le plus urgent, très valorisé)
-1. Décorateur `@admin_required` + protéger toutes les routes admin (faille critique).
-2. CSRF (Flask-WTF) sur tous les formulaires.
-3. Config cookies de session sécurisée.
-4. En-têtes de sécurité (Flask-Talisman).
-5. Rate limiting (Flask-Limiter) sur login/register/reset.
-6. Reset password : tokens longs, en base, avec expiration.
-7. Assainir le HTML des articles (bleach) + `re.escape` sur la recherche Mongo.
+### Lot 1 — Sécurité (le plus urgent, très valorisé) — ✅ FAIT
+1. ✅ Décorateur `@admin_required` sur toutes les routes admin (faille critique corrigée).
+2. ✅ CSRF (Flask-WTF) sur tous les formulaires + header `X-CSRFToken` sur les fetch.
+3. ✅ Cookies de session sécurisés (HttpOnly, SameSite, Secure en prod) + `MAX_CONTENT_LENGTH`.
+4. ✅ En-têtes de sécurité (CSP, X-Frame-Options, nosniff, Referrer-Policy, HSTS, Permissions-Policy).
+5. ✅ Rate limiting (Flask-Limiter) sur login/reset/send_reset_code.
+6. ✅ Tokens de reset : expiration 15 min, comparaison constante, usage unique, vérif force du mot de passe. *(persistance en base = amélioration future restante)*
+7. ✅ `re.escape` sur la recherche Mongo. *(XSS articles : non concerné — Jinja échappe déjà, pas de `|safe`.)*
 
 ### Lot 2 — Tests (chantier CP9)
 8. Tests unitaires `services/` + tests d'intégration routes/auth/autorisation.
