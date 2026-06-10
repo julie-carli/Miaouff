@@ -14,6 +14,7 @@
 
     <section class="admin-section">
         <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="admin-form-grid">
                 <div class="admin-field admin-field--full">
                     <label for="title">Titre</label>

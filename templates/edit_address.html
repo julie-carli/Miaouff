@@ -17,6 +17,7 @@
         </p>
 
         <form method="POST" action="{{ url_for('shop.edit_address') }}" class="address-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="address-row">
                 <div class="address-field">

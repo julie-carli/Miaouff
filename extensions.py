@@ -8,6 +8,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_wtf import CSRFProtect
 from pymongo import MongoClient
 
 # Models can be imported without an app context; User is needed by load_user.
@@ -15,6 +16,7 @@ from models.models import User
 
 login_manager = LoginManager()
 mail = Mail()
+csrf = CSRFProtect()
 
 # Rate limiter, keyed by client IP. In-memory storage is enough for this
 # project; a shared store (e.g. Redis) would be used for a multi-instance prod.

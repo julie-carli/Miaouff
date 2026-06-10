@@ -46,6 +46,7 @@
                        class="admin-btn admin-btn--edit">✏️ Modifier</a>
                     <form method="POST"
                           action="{{ url_for('admin.delete_animal_route', animal_id=animal.animal_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="admin-btn admin-btn--delete"
                                 onclick="return confirm('Supprimer cet animal du glossaire ?')">
                             🗑️ Supprimer
@@ -83,6 +84,7 @@
     <section class="admin-section">
         <h2 class="admin-section-title">Ajouter un animal au glossaire</h2>
         <form method="POST" action="{{ url_for('admin.edit_animal') }}" class="admin-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="admin-form-grid">
                 <div class="admin-field">
                     <label for="species">Espèce</label>

@@ -13,7 +13,7 @@ from blueprints.auth import auth_bp
 from blueprints.main import main_bp
 from blueprints.shop import shop_bp
 from config import Config
-from extensions import init_mongo, limiter, login_manager, mail
+from extensions import csrf, init_mongo, limiter, login_manager, mail
 from flask_session import Session
 from models.models import db
 
@@ -84,6 +84,7 @@ def _init_extensions(app):
     Session(app)
     mail.init_app(app)
     limiter.init_app(app)
+    csrf.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"

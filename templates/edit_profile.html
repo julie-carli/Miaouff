@@ -13,6 +13,7 @@
         <h1 class="checkout-title">Informations personnelles</h1>
 
         <form method="POST" action="{{ url_for('auth.edit_profile') }}" class="address-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="address-row">
                 <div class="address-field">
@@ -54,6 +55,7 @@
         <div class="profile-password-section">
             <h2 class="checkout-section-title">Changer de mot de passe</h2>
             <form method="POST" action="{{ url_for('auth.change_password') }}" class="address-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="address-field">
                     <label for="current_password">Mot de passe actuel</label>
                     <input type="password" id="current_password" name="current_password" required>

@@ -41,6 +41,7 @@
                 </p>
                 <form action="{{ url_for('shop.remove_from_cart_route', product_id=item.product_id) }}"
                       method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="cart-remove-btn" aria-label="Supprimer">🗑️</button>
                 </form>
             </div>
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function syncCart(productId, newQty, input, unitPrice) {
         fetch(`/update_cart/${productId}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content },
             body: JSON.stringify({ quantity: newQty })
         })
         .then(r => r.json())

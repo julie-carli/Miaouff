@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             fetch(`/add_to_cart/${productId}`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content },
                 body: JSON.stringify({ quantity })
             })
             .then(r => r.json())

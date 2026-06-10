@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch("/login", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content },
             body: new URLSearchParams({
                 email: email,
                 password: password,
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch("/login", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content },
             body: new URLSearchParams({
                 email: email,
                 password: password,

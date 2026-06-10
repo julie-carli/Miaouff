@@ -14,6 +14,7 @@
 
     <section class="admin-section">
         <form method="POST" class="admin-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="admin-form-grid">
                 <div class="admin-field">
                     <label for="name">Nom</label>

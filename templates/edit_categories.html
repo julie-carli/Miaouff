@@ -17,6 +17,7 @@
     <section class="admin-section">
         <h2 class="admin-section-title">Ajouter une catégorie</h2>
         <form method="POST" action="{{ url_for('admin.add_category_route') }}" class="admin-form admin-form--inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="admin-field admin-field--grow">
                 <input type="text" name="name" placeholder="Nom de la nouvelle catégorie" required>
             </div>
@@ -36,6 +37,7 @@
                 <form method="POST"
                       action="{{ url_for('admin.edit_category', category_id=category.category_id) }}"
                       class="admin-category-edit-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="admin-field admin-field--grow">
                         <input type="text" name="name" value="{{ category.name }}" required>
                     </div>
@@ -53,6 +55,7 @@
                        class="admin-btn admin-btn--edit">✏️ Modifier</a>
                     <form method="POST"
                           action="{{ url_for('admin.delete_category_route', category_id=category.category_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="admin-btn admin-btn--delete"
                                 onclick="return confirm('Supprimer cette catégorie ?')">
                             🗑️ Supprimer

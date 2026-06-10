@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch("{{ url_for('shop.add_to_cart_route', product_id=product.product_id) }}", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content },
             body: JSON.stringify({ quantity })
         })
         .then(r => r.json())
