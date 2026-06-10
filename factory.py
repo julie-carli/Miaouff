@@ -13,7 +13,7 @@ from blueprints.auth import auth_bp
 from blueprints.main import main_bp
 from blueprints.shop import shop_bp
 from config import Config
-from extensions import init_mongo, login_manager, mail
+from extensions import init_mongo, limiter, login_manager, mail
 from flask_session import Session
 from models.models import db
 
@@ -30,9 +30,45 @@ def create_app(config_class=Config):
     _register_blueprints(app)
     _register_filters(app)
     _register_context(app)
+    _register_security_headers(app)
     _register_error_handlers(app)
 
     return app
+
+
+# Content Security Policy allowing the third parties actually used by the site
+# (Stripe, Font Awesome, Google Fonts, Google Analytics). 'unsafe-inline' is
+# kept for now because the templates still contain inline scripts and styles.
+CSP = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline' https://js.stripe.com "
+    "https://www.googletagmanager.com https://www.google-analytics.com; "
+    "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
+    "https://fonts.googleapis.com; "
+    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; "
+    "img-src 'self' data: https://www.google-analytics.com; "
+    "connect-src 'self' https://api.stripe.com https://www.google-analytics.com; "
+    "frame-src https://js.stripe.com https://hooks.stripe.com; "
+    "object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+)
+
+
+def _register_security_headers(app):
+    @app.after_request
+    def set_security_headers(response):
+        """Add defensive HTTP security headers to every response."""
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), microphone=(), camera=()"
+        )
+        response.headers["Content-Security-Policy"] = CSP
+        # Tell browsers to stick to HTTPS for the next two years.
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=63072000; includeSubDomains"
+        )
+        return response
 
 
 def _register_context(app):
@@ -47,6 +83,7 @@ def _init_extensions(app):
     Migrate(app, db)
     Session(app)
     mail.init_app(app)
+    limiter.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"

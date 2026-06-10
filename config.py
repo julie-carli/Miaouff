@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from dotenv import load_dotenv
 
@@ -19,9 +20,19 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # ============================
-    # Session
+    # Session & cookie security
     # ============================
     SESSION_TYPE = "filesystem"
+    # Cookies are never exposed to JavaScript and are scoped to same-site
+    # navigation, which mitigates XSS cookie theft and CSRF.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    # Secure flag (HTTPS only) is on by default; disabled in local/CI HTTP via
+    # SESSION_COOKIE_SECURE=False.
+    SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True") == "True"
+    PERMANENT_SESSION_LIFETIME = timedelta(days=7)
+    # Reject request bodies larger than 5 MB (also caps file uploads).
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
 
     # ============================
     # File uploads

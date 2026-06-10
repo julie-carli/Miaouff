@@ -5,7 +5,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from extensions import mail
+from extensions import limiter, mail
 from models.models import User, db
 from services.auth_service import authenticate_user, generate_reset_token, register_user
 from services.auth_service import reset_password as do_reset_password
@@ -15,6 +15,7 @@ auth_bp = Blueprint("auth", __name__)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("auth.account"))
@@ -108,6 +109,7 @@ def logout():
 
 
 @auth_bp.route("/send_reset_code/<int:user_id>")
+@limiter.limit("5 per minute")
 def send_reset_code(user_id):
     user = User.query.get(user_id)
     if not user:
@@ -140,6 +142,7 @@ def send_reset_code(user_id):
 
 
 @auth_bp.route("/reset_password", methods=["GET", "POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def reset_password():
     if request.method == "POST":
         email = request.form.get("email")

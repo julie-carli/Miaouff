@@ -18,6 +18,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       # Added: MongoDB URI now injected into the CI environment
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      # Disable the Secure cookie flag so the test client (HTTP) keeps sessions
+      SESSION_COOKIE_SECURE: "False"
 
     steps:
       # Step 1: Checkout the repository code
