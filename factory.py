@@ -29,9 +29,17 @@ def create_app(config_class=Config):
     _init_extensions(app)
     _register_blueprints(app)
     _register_filters(app)
+    _register_context(app)
     _register_error_handlers(app)
 
     return app
+
+
+def _register_context(app):
+    @app.context_processor
+    def inject_globals():
+        """Expose shared values (e.g. the analytics id) to every template."""
+        return {"ga_measurement_id": app.config.get("GA_MEASUREMENT_ID", "")}
 
 
 def _init_extensions(app):

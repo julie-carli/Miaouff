@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Miaouff est une association dédiée à l'aide et l'adoption des animaux. Découvrez nos refuges et les animaux disponibles à l'adoption.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie-consent.css') }}">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Brand fonts: Quicksand for headings, Inter for body text -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="static/images/logo.png">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <title>Miaouff</title>
+    {% if ga_measurement_id %}
+    <script>
+        window.GA_MEASUREMENT_ID = "{{ ga_measurement_id }}";
+    </script>
+    {% endif %}
 </head>
 <body>
 
@@ -103,6 +109,7 @@
         <a href="{{ url_for('main.cookie_policy') }}">Cookies</a>
         <a href="{{ url_for('main.faq') }}">FAQ</a>
         <a href="{{ url_for('main.contact') }}">Contact</a>
+        <button type="button" id="open-cookie-settings" class="footer-cookie-btn">Gérer les cookies</button>
     </nav>
 
     <!-- Footer right: social networks -->
@@ -147,6 +154,9 @@
     </div>
 
 </div>
+
+<!-- ========== COOKIE CONSENT ========== -->
+{% include "partials/cookie_consent.html" %}
 
 <!-- ================================================
      SCRIPTS
@@ -274,6 +284,8 @@
         });
     });
 </script>
+
+<script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>
 
 </body>
 </html>

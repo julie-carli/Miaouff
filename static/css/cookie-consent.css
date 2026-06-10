@@ -1,0 +1,147 @@
+/* Cookie consent banner and preferences dialog. */
+
+.cookie-banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1000;
+  max-width: 56rem;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #2b2b2b;
+  border: 1px solid #f0d9d2;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 1.25rem 1.5rem;
+}
+
+.cookie-banner__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.cookie-banner__text {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cookie-banner__text a {
+  color: #e66a4a;
+  text-decoration: underline;
+}
+
+.cookie-banner__actions,
+.cookie-prefs__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.cookie-btn {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid #e66a4a;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cookie-btn--primary {
+  background: #e66a4a;
+  color: #ffffff;
+}
+
+.cookie-btn--primary:hover {
+  background: #d2543a;
+}
+
+.cookie-btn--ghost {
+  background: transparent;
+  color: #e66a4a;
+}
+
+.cookie-btn--ghost:hover {
+  background: #fbeee9;
+}
+
+.cookie-btn:focus-visible {
+  outline: 3px solid #2b2b2b;
+  outline-offset: 2px;
+}
+
+/* Preferences dialog */
+.cookie-prefs {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+
+.cookie-prefs__dialog {
+  background: #ffffff;
+  color: #2b2b2b;
+  border-radius: 1rem;
+  padding: 1.75rem;
+  max-width: 34rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cookie-prefs__title {
+  margin-top: 0;
+}
+
+.cookie-cat {
+  border: 1px solid #eee;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cookie-cat legend {
+  font-weight: 600;
+  padding: 0 0.4rem;
+}
+
+.cookie-cat__desc {
+  margin: 0.4rem 0 0;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.cookie-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+/* Footer "manage cookies" link styled like the other footer links. */
+.footer-cookie-btn {
+  font: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+@media (max-width: 30rem) {
+  .cookie-banner__actions,
+  .cookie-prefs__actions {
+    justify-content: stretch;
+  }
+
+  .cookie-btn {
+    flex: 1 1 auto;
+  }
+}

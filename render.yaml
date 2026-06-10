@@ -56,6 +56,12 @@ services:
       - key: STRIPE_SECRET_KEY
         sync: false
 
+      # --- Analytics (optional) ---
+      # Google Analytics 4 measurement id (e.g. G-XXXXXXXXXX). Leave unset to
+      # disable analytics entirely; when set, it loads only after consent.
+      - key: GA_MEASUREMENT_ID
+        sync: false
+
       # --- Compte admin (utilisé par setup_db.py) ---
       - key: ADMIN_EMAIL
         sync: false

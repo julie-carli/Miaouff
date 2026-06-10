@@ -50,3 +50,10 @@ class Config:
     # ============================
     STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
     STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+    # ============================
+    # Analytics (Google Analytics 4)
+    # ============================
+    # Measurement id (e.g. "G-XXXXXXXXXX"). Empty by default, so no analytics
+    # script is loaded until both an id is set and the user gives consent.
+    GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")

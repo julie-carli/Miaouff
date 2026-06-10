@@ -1,0 +1,80 @@
+{# Cookie consent UI: a CNIL-style banner (refuse all / customise / accept all)
+   plus a preferences dialog. Behaviour lives in static/js/cookie-consent.js. #}
+
+<!-- Consent banner -->
+<div
+  id="cookie-banner"
+  class="cookie-banner"
+  role="dialog"
+  aria-labelledby="cookie-banner-title"
+  aria-describedby="cookie-banner-desc"
+  hidden
+>
+  <div class="cookie-banner__content">
+    <h2 id="cookie-banner-title" class="cookie-banner__title">🍪 Gérer les cookies</h2>
+    <p id="cookie-banner-desc" class="cookie-banner__text">
+      Nous utilisons des cookies pour assurer le bon fonctionnement du site et,
+      avec votre accord, pour mesurer son audience. Vous pouvez tout accepter,
+      tout refuser ou personnaliser vos choix. Plus d'infos dans notre
+      <a href="{{ url_for('main.cookie_policy') }}">politique cookies</a>.
+    </p>
+    <div class="cookie-banner__actions">
+      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="refuse">
+        Refuser tout
+      </button>
+      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="customize">
+        Suivant
+      </button>
+      <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept">
+        Accepter tout
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Preferences dialog (opened from "Suivant") -->
+<div
+  id="cookie-prefs"
+  class="cookie-prefs"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cookie-prefs-title"
+  hidden
+>
+  <div class="cookie-prefs__dialog">
+    <h2 id="cookie-prefs-title" class="cookie-prefs__title">Personnaliser les cookies</h2>
+
+    <fieldset class="cookie-cat">
+      <legend>Cookies essentiels</legend>
+      <label class="cookie-switch">
+        <input type="checkbox" checked disabled />
+        <span>Toujours actifs</span>
+      </label>
+      <p class="cookie-cat__desc">
+        Nécessaires au fonctionnement du site (session, panier). Ils ne peuvent
+        pas être désactivés.
+      </p>
+    </fieldset>
+
+    <fieldset class="cookie-cat">
+      <legend>Mesure d'audience</legend>
+      <label class="cookie-switch">
+        <input type="checkbox" id="cookie-analytics-toggle" />
+        <span>Autoriser Google Analytics</span>
+      </label>
+      <p class="cookie-cat__desc">
+        Statistiques de visite anonymisées, pour comprendre l'usage du site et
+        l'améliorer.
+      </p>
+    </fieldset>
+
+    <div class="cookie-prefs__actions">
+      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="refuse">
+        Tout refuser
+      </button>
+      <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="save">
+        Enregistrer mes choix
+      </button>
+    </div>
+  </div>
+</div>
