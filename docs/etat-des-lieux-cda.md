@@ -44,11 +44,11 @@ Le titre CDA = **3 activités-types (AT)** découpées en **11 compétences prof
 | Architecture (models / services / templates) | 🟡 Correcte mais `app.py` monolithique (1268 lignes) | Moyenne |
 | Sécurité applicative | 🟢 **Failles critiques corrigées** (CSRF, accès admin, en-têtes, cookies, rate limiting, tokens) | — |
 | Tests | 🟢 Suite structurée (67 tests : unit/intégration/sécurité) ; reste e2e Playwright | Moyenne |
-| Accessibilité / RGAA | 🟡 Bonne base sémantique, pas d'audit | Moyenne |
+| Accessibilité / RGAA | 🟡 Base sémantique + lien d'évitement ; reste audit axe/WAVE | Moyenne |
 | Responsivité | ✅ Media queries + viewport OK | Basse |
-| SEO | 🟡 À structurer | Moyenne |
-| Performance / rapidité | 🟡 À mesurer et optimiser | Moyenne |
-| Éco-conception | 🟡 À documenter / améliorer | Moyenne |
+| SEO | 🟢 Titres/descriptions par page, canonical, OG/Twitter, sitemap.xml, robots.txt, noindex admin | Basse |
+| Performance / rapidité | 🟡 Lazy-loading + cache assets faits ; reste WebP + audit Lighthouse | Moyenne |
+| Éco-conception | 🟡 Lazy + cache + sobriété ; reste mesure EcoIndex + démarche | Moyenne |
 | RGPD / mentions légales | 🟡 Pages présentes, consentement cookies absent | Moyenne |
 | Déploiement / CI-CD (DevOps) | 🟡 CI GitHub + Render OK, pas de conteneur/CD complet | Moyenne |
 | Qualité de code / outillage (black, flake8, prettier, pre-commit) | 🟡 flake8 seul, à compléter | Moyenne |
@@ -404,11 +404,11 @@ Cibles concrètes pour Miaouff :
 14. **vulture** : supprimer tout le code mort ; docstrings + commentaires **en anglais** + type hints.
 15. (Argument d'archi) refactor `app.py` en **Blueprints** par domaine.
 
-### Lot 4 — Qualité transverse (visible au jury)
-16. SEO complet (title/description uniques, canonical, sitemap.xml, robots, OG/Twitter, JSON-LD, favicon, 404 soignée).
-17. Performance (Lighthouse + images WebP/lazy + cache HTTP + index BDD).
-18. Accessibilité/RGAA (audit axe/WAVE + corrections), éco-conception (EcoIndex + démarche GreenIT).
-19. RGPD (bandeau de consentement cookies + droit à l'effacement).
+### Lot 4 — Qualité transverse (visible au jury) — 🟢 EN GRANDE PARTIE FAIT
+16. ✅ SEO : title/description par page, canonical, OG/Twitter, sitemap.xml, robots.txt, noindex admin, favicon corrigé. *(reste : JSON-LD Schema.org — bonus.)*
+17. 🟡 Performance : ✅ lazy-loading images + cache HTTP assets (30 j). *(reste : conversion WebP + audit Lighthouse + index BDD.)*
+18. 🟡 Accessibilité : ✅ lien d'évitement + ancre `#main-content`. *(reste : audit axe/WAVE + corrections.)* · Éco : ✅ lazy + cache + sobriété. *(reste : mesure EcoIndex + démarche GreenIT documentée.)*
+19. ✅ RGPD : bandeau de consentement cookies fait (Lot bandeau). *(reste : droit à l'effacement.)*
 
 ### Lot 5 — Documentaire (pour le dossier)
 20. MCD/MPD, diagrammes UML (cas d'utilisation, séquence), maquettes, architecture, cahier des charges, planning, dossier projet 40–60 pages.
