@@ -43,7 +43,7 @@ Le titre CDA = **3 activités-types (AT)** découpées en **11 compétences prof
 | Fonctionnel (boutique, adoption, blog, glossaire, jeux, admin) | ✅ Riche et abouti | — |
 | Architecture (models / services / templates) | 🟡 Correcte mais `app.py` monolithique (1268 lignes) | Moyenne |
 | Sécurité applicative | 🟢 **Failles critiques corrigées** (CSRF, accès admin, en-têtes, cookies, rate limiting, tokens) | — |
-| Tests | 🔴 **Très insuffisants** (~8 tests, <5% couverture) | **Haute** |
+| Tests | 🟢 Suite structurée (67 tests : unit/intégration/sécurité) ; reste e2e Playwright | Moyenne |
 | Accessibilité / RGAA | 🟡 Bonne base sémantique, pas d'audit | Moyenne |
 | Responsivité | ✅ Media queries + viewport OK | Basse |
 | SEO | 🟡 À structurer | Moyenne |
@@ -392,11 +392,11 @@ Cibles concrètes pour Miaouff :
 6. ✅ Tokens de reset : expiration 15 min, comparaison constante, usage unique, vérif force du mot de passe. *(persistance en base = amélioration future restante)*
 7. ✅ `re.escape` sur la recherche Mongo. *(XSS articles : non concerné — Jinja échappe déjà, pas de `|safe`.)*
 
-### Lot 2 — Tests (chantier CP9)
-8. Tests unitaires `services/` + tests d'intégration routes/auth/autorisation.
-9. Tests de sécurité (CSRF, auth bypass, injections, brute-force).
-10. E2E Playwright des 3 parcours + jeu d'essai documenté.
-11. CI étendue : bandit, pip-audit, seuil de couverture.
+### Lot 2 — Tests (chantier CP9) — 🟢 EN GRANDE PARTIE FAIT
+8. ✅ Tests unitaires `services/` + intégration routes + ✅ tests d'autorisation admin (régression sécurité).
+9. ✅ Tests de sécurité : CSRF (rejet/acceptation) + rate-limiting (429). *(injection SQL/NoSQL : couverte par l'ORM + `re.escape`.)*
+10. 🔴 Reste : E2E Playwright des 3 parcours + jeu d'essai documenté.
+11. 🔴 Reste : CI étendue (bandit, pip-audit, seuil de couverture).
 
 ### Lot 3 — Qualité de code & outillage (rapide, fort effet « pro »)
 12. **pre-commit** + **black** + **isort** + **flake8** + **Prettier** + **.editorconfig**.
