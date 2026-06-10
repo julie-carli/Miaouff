@@ -1,9 +1,9 @@
 /**
- * Cookie consent management.
+ * Cookie consent management (single source of truth).
  *
- * Stores the user's choice in localStorage and loads Google Analytics only
- * after explicit consent. No analytics script is injected before the user
- * accepts the "audience measurement" category (CNIL-compliant).
+ * Stores the user's choice in localStorage under one key and loads Google
+ * Analytics only after explicit consent. The same API is reused by the cookie
+ * policy page, so the banner and the policy page always stay in sync.
  */
 (function () {
   "use strict";
@@ -13,9 +13,7 @@
 
   function readConsent() {
     try {
-      var raw = window.localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      var data = JSON.parse(raw);
+      var data = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
       return data && data.version === CONSENT_VERSION ? data : null;
     } catch (e) {
       return null;
@@ -51,9 +49,23 @@
     }
     window.gtag = gtag;
     gtag("js", new Date());
-    // anonymize_ip keeps the audience measurement privacy-friendly.
     gtag("config", id, { anonymize_ip: true });
   }
+
+  function applyConsent(analyticsAllowed) {
+    saveConsent(analyticsAllowed);
+    if (analyticsAllowed) loadAnalytics();
+  }
+
+  // Public API, available synchronously and reused by the cookie policy page.
+  window.MiaouffCookies = {
+    getConsent: readConsent,
+    setAnalytics: applyConsent,
+    open: function () {
+      var banner = document.getElementById("cookie-banner");
+      if (banner) banner.hidden = false;
+    },
+  };
 
   function show(el) {
     if (el) el.hidden = false;
@@ -68,28 +80,19 @@
     var analyticsToggle = document.getElementById("cookie-analytics-toggle");
     if (!banner) return;
 
-    function applyAndClose(analyticsAllowed) {
-      saveConsent(analyticsAllowed);
+    function close(analyticsAllowed) {
+      applyConsent(analyticsAllowed);
       hide(banner);
       hide(prefs);
-      if (analyticsAllowed) loadAnalytics();
     }
 
     function handleAction(action) {
-      switch (action) {
-        case "accept":
-          applyAndClose(true);
-          break;
-        case "refuse":
-          applyAndClose(false);
-          break;
-        case "customize":
-          hide(banner);
-          show(prefs);
-          break;
-        case "save":
-          applyAndClose(analyticsToggle && analyticsToggle.checked);
-          break;
+      if (action === "accept") close(true);
+      else if (action === "refuse") close(false);
+      else if (action === "save") close(analyticsToggle && analyticsToggle.checked);
+      else if (action === "customize") {
+        hide(banner);
+        show(prefs);
       }
     }
 
@@ -98,21 +101,6 @@
         handleAction(btn.getAttribute("data-cookie-action"));
       });
     });
-
-    // Footer entry point to reopen the banner at any time.
-    var reopen = document.getElementById("open-cookie-settings");
-    if (reopen) {
-      reopen.addEventListener("click", function (e) {
-        e.preventDefault();
-        var current = readConsent();
-        if (analyticsToggle) analyticsToggle.checked = !!(current && current.analytics);
-        hide(prefs);
-        show(banner);
-      });
-    }
-
-    // Public hook so other scripts can reopen the settings if needed.
-    window.MiaouffCookies = { open: function () { show(banner); } };
 
     var consent = readConsent();
     if (!consent) {

@@ -32,7 +32,7 @@
                 <li class="cookie-toggle-item">
                     <div class="cookie-toggle-info">
                         <span class="cookie-badge cookie-badge--necessary">Nécessaires</span>
-                        <p>Essentiels à la navigation : accès au compte, panier, session utilisateur.</p>
+                        <p>Essentiels à la navigation : accès au compte, panier, session utilisateur. Toujours actifs.</p>
                     </div>
                     <!-- Necessary cookies are always on and cannot be toggled -->
                     <div class="cookie-toggle-wrapper">
@@ -46,41 +46,13 @@
 
                 <li class="cookie-toggle-item">
                     <div class="cookie-toggle-info">
-                        <span class="cookie-badge cookie-badge--performance">Performance</span>
-                        <p>Collecte anonyme pour analyser les performances et améliorer le site.</p>
+                        <span class="cookie-badge cookie-badge--performance">Mesure d'audience</span>
+                        <p>Statistiques de visite anonymisées via Google Analytics, pour comprendre l'usage du site et l'améliorer.</p>
                     </div>
                     <div class="cookie-toggle-wrapper">
-                        <span class="cookie-toggle-label" id="label-performance">Désactivé</span>
-                        <label class="cookie-toggle" aria-label="Cookies de performance">
-                            <input type="checkbox" id="toggle-performance">
-                            <span class="cookie-toggle-slider"></span>
-                        </label>
-                    </div>
-                </li>
-
-                <li class="cookie-toggle-item">
-                    <div class="cookie-toggle-info">
-                        <span class="cookie-badge cookie-badge--functional">Fonctionnels</span>
-                        <p>Mémorisent vos préférences (langue, région) pour personnaliser votre expérience.</p>
-                    </div>
-                    <div class="cookie-toggle-wrapper">
-                        <span class="cookie-toggle-label" id="label-functional">Désactivé</span>
-                        <label class="cookie-toggle" aria-label="Cookies fonctionnels">
-                            <input type="checkbox" id="toggle-functional">
-                            <span class="cookie-toggle-slider"></span>
-                        </label>
-                    </div>
-                </li>
-
-                <li class="cookie-toggle-item">
-                    <div class="cookie-toggle-info">
-                        <span class="cookie-badge cookie-badge--targeting">Publicité</span>
-                        <p>Diffusent des annonces pertinentes selon vos centres d'intérêt.</p>
-                    </div>
-                    <div class="cookie-toggle-wrapper">
-                        <span class="cookie-toggle-label" id="label-targeting">Désactivé</span>
-                        <label class="cookie-toggle" aria-label="Cookies publicitaires">
-                            <input type="checkbox" id="toggle-targeting">
+                        <span class="cookie-toggle-label" id="label-analytics">Désactivé</span>
+                        <label class="cookie-toggle" aria-label="Cookies de mesure d'audience">
+                            <input type="checkbox" id="toggle-analytics">
                             <span class="cookie-toggle-slider"></span>
                         </label>
                     </div>
@@ -124,48 +96,31 @@
 </section>
 
 <script>
-    // --- Cookie preference keys stored in localStorage ---
-    const PREFS_KEY = 'miaouff_cookie_prefs';
+    // This page drives the SAME consent as the cookie banner, through the
+    // shared window.MiaouffCookies API (defined in cookie-consent.js).
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById("toggle-analytics");
+        const label = document.getElementById("label-analytics");
 
-    const toggles = [
-        { id: 'toggle-performance', labelId: 'label-performance', key: 'performance' },
-        { id: 'toggle-functional',  labelId: 'label-functional',  key: 'functional'  },
-        { id: 'toggle-targeting',   labelId: 'label-targeting',   key: 'targeting'   },
-    ];
+        function syncLabel() {
+            label.textContent = toggle.checked ? "Activé" : "Désactivé";
+        }
 
-    // Load saved preferences from localStorage on page load
-    function loadPrefs() {
-        const saved = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
-        toggles.forEach(({ id, labelId, key }) => {
-            const checkbox = document.getElementById(id);
-            const label    = document.getElementById(labelId);
-            const isActive = saved[key] ?? false;
-            checkbox.checked  = isActive;
-            label.textContent = isActive ? 'Activé' : 'Désactivé';
-        });
-    }
+        // Reflect the current consent state on load.
+        const consent = window.MiaouffCookies && window.MiaouffCookies.getConsent();
+        toggle.checked = !!(consent && consent.analytics);
+        syncLabel();
 
-    // Update label text when a toggle changes
-    toggles.forEach(({ id, labelId }) => {
-        document.getElementById(id).addEventListener('change', function () {
-            document.getElementById(labelId).textContent = this.checked ? 'Activé' : 'Désactivé';
+        toggle.addEventListener("change", syncLabel);
+
+        document.getElementById("cookie-save-btn").addEventListener("click", () => {
+            if (window.MiaouffCookies) {
+                window.MiaouffCookies.setAnalytics(toggle.checked);
+            }
+            const confirm = document.getElementById("cookie-save-confirm");
+            confirm.classList.add("visible");
+            setTimeout(() => confirm.classList.remove("visible"), 3000);
         });
     });
-
-    // Save preferences to localStorage on button click
-    document.getElementById('cookie-save-btn').addEventListener('click', () => {
-        const prefs = {};
-        toggles.forEach(({ id, key }) => {
-            prefs[key] = document.getElementById(id).checked;
-        });
-        localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
-
-        // Show confirmation message then hide after 3 seconds
-        const confirm = document.getElementById('cookie-save-confirm');
-        confirm.classList.add('visible');
-        setTimeout(() => confirm.classList.remove('visible'), 3000);
-    });
-
-    loadPrefs();
 </script>
 {% endblock %}
