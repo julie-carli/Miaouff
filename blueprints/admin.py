@@ -38,6 +38,13 @@ from services.shelter_service import (
 admin_bp = Blueprint("admin", __name__)
 
 
+@admin_bp.after_request
+def add_noindex_header(response):
+    """Keep the back office out of search engine indexes."""
+    response.headers["X-Robots-Tag"] = "noindex, nofollow"
+    return response
+
+
 def admin_required(view):
     """Restrict a view to authenticated users with the admin role."""
 

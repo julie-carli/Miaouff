@@ -63,7 +63,7 @@
         {% for animal in animals %}
         <a href="{{ url_for('main.glossary_animal', animal_id=animal.animal_id) }}" class="glossary-card">
             <div class="glossary-card-img-wrapper">
-                <img src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}">
+                <img loading="lazy" src="{{ url_for('static', filename=animal.image) }}" alt="{{ animal.breed }}">
                 <div class="glossary-card-overlay">
                     <span>Voir la fiche →</span>
                 </div>

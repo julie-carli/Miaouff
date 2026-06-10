@@ -63,7 +63,7 @@
         {% for pet in pets %}
         <a href="{{ url_for('main.adopt_animal', pet_id=pet.pet_id) }}" class="adopt-card">
             <div class="adopt-card-img-wrapper">
-                <img src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}">
+                <img loading="lazy" src="{{ url_for('static', filename=pet.image) }}" alt="{{ pet.name }}">
                 <div class="adopt-card-overlay">
                     <span>Voir la fiche →</span>
                 </div>

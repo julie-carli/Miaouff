@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Nos refuges partenaires — Miaouff{% endblock %}
 
 {% block content %}
 
@@ -26,7 +27,7 @@
 
         <!-- Image side -->
         <a href="{{ url_for('main.shelter', shelter_id=shelter.shelter_id) }}" class="shelter-full-img-wrapper">
-            <img src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}">
+            <img loading="lazy" src="{{ url_for('static', filename='images/' + shelter.image) }}" alt="{{ shelter.name }}">
             <div class="shelter-full-img-overlay">
                 <span>Voir les animaux →</span>
             </div>

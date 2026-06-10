@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Blog — conseils et actualités animaux — Miaouff{% endblock %}
 
 {% block content %}
 
@@ -18,7 +19,7 @@
         {% for article in articles %}
         <a href="{{ url_for('main.blog_article', article_id=article['_id']) }}" class="blog-card">
             <div class="blog-card-img-wrapper">
-                <img src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
+                <img loading="lazy" src="{{ url_for('static', filename=article['image_url']) }}" alt="{{ article['title'] }}">
                 <div class="blog-card-overlay">
                     <span>Lire l'article →</span>
                 </div>

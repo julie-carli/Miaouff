@@ -13,7 +13,7 @@
 
         <!-- Image -->
         <div class="pet-detail-img-wrapper">
-            <img src="{{ url_for('static', filename=pet.image) }}"
+            <img loading="lazy" src="{{ url_for('static', filename=pet.image) }}"
                  alt="{{ pet.name }}" class="pet-detail-img">
         </div>
 

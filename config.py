@@ -33,6 +33,8 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     # Reject request bodies larger than 5 MB (also caps file uploads).
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+    # Cache static assets for 30 days (performance & eco-design).
+    SEND_FILE_MAX_AGE_DEFAULT = timedelta(days=30)
 
     # ============================
     # File uploads

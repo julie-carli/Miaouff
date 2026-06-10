@@ -1,7 +1,15 @@
 """Public-facing pages: home, catalogue, adoption, blog, glossary, games."""
 
 from bson import ObjectId
-from flask import Blueprint, jsonify, render_template, request, session
+from flask import (
+    Blueprint,
+    Response,
+    jsonify,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 from extensions import articles_collection
 from models.models import Animal, Pet, Product, Shelter
@@ -233,6 +241,50 @@ def hangman():
 @main_bp.route("/rapido")
 def rapido():
     return render_template("rapido.html")
+
+
+@main_bp.route("/robots.txt")
+def robots():
+    """Serve robots.txt: allow public pages, keep admin/account out of indexes."""
+    lines = [
+        "User-agent: *",
+        "Disallow: /edit-",
+        "Disallow: /edit_",
+        "Disallow: /delete",
+        "Disallow: /account",
+        f"Sitemap: {request.url_root}sitemap.xml",
+        "",
+    ]
+    return Response("\n".join(lines), mimetype="text/plain")
+
+
+@main_bp.route("/sitemap.xml")
+def sitemap():
+    """Serve a sitemap listing the public, indexable pages."""
+    endpoints = [
+        "main.home",
+        "main.shelters",
+        "main.animals",
+        "main.adopt_animals",
+        "main.products",
+        "main.blog",
+        "main.glossary",
+        "main.games",
+        "main.contact",
+        "main.faq",
+        "main.privacy_policy",
+        "main.legal_notices",
+        "main.terms_conditions",
+        "main.cookie_policy",
+    ]
+    xml = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for endpoint in endpoints:
+        xml.append(f"  <url><loc>{url_for(endpoint, _external=True)}</loc></url>")
+    xml.append("</urlset>")
+    return Response("\n".join(xml), mimetype="application/xml")
 
 
 @main_bp.app_context_processor

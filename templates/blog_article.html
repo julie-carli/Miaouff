@@ -21,7 +21,7 @@
 
     <!-- Thumbnail — small fixed width, centered below the title -->
     <div class="blog-article-thumbnail">
-        <img src="{{ url_for('static', filename=article['image_url']) }}"
+        <img loading="lazy" src="{{ url_for('static', filename=article['image_url']) }}"
              alt="{{ article['title'] }}" class="blog-article-hero-img">
     </div>
 

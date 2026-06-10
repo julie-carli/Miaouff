@@ -14,7 +14,7 @@
 
         <!-- Image -->
         <div class="product-detail-img-wrapper">
-            <img src="{{ url_for('static', filename=product.image) }}"
+            <img loading="lazy" src="{{ url_for('static', filename=product.image) }}"
                  alt="{{ product.name }}" class="product-detail-img">
         </div>
 

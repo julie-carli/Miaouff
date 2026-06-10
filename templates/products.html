@@ -40,7 +40,7 @@
 
             <!-- Product image links to detail page -->
             <a href="{{ url_for('main.product', product_id=product.product_id) }}" class="shop-card-img-wrapper">
-                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+                <img loading="lazy" src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
                 <div class="shop-card-overlay"><span>Voir le produit →</span></div>
             </a>
 
