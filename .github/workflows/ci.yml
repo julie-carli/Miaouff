@@ -17,6 +17,8 @@ jobs:
       # Injected from GitHub Secrets (never hardcode credentials).
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      # A secret key is required for CSRF and signed tokens (test value only).
+      SECRET_KEY: "ci-test-secret-key"
       # Disable the Secure cookie flag so the test client (HTTP) keeps sessions.
       SESSION_COOKIE_SECURE: "False"
 
