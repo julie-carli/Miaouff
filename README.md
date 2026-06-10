@@ -138,22 +138,32 @@ L'application est accessible sur `http://localhost:5000`.
 
 ---
 
-## 🚀 Déploiement (Railway)
+## 🚀 Déploiement (Render)
 
-Le projet est déployé sur [Railway](https://railway.app).
+Le projet est déployé sur [Render](https://render.com) via le **Blueprint** `render.yaml` présent à la racine.
 
-Les variables d'environnement sont à renseigner directement dans le dashboard Railway (onglet **Variables**), sans fichier `.env`.
+### Bases de données (externes, non gérées par Render)
 
-Railway détecte automatiquement le projet Python. Il faut s'assurer d'avoir à la racine :
+- **PostgreSQL** : hébergée sur [Neon](https://neon.tech) → variable `DATABASE_URL`
+- **MongoDB** : hébergée sur [MongoDB Atlas](https://www.mongodb.com/atlas) → variable `MONGODB_URI`
 
-- `requirements.txt` — pour l'installation des dépendances
-- Un `Procfile` ou la commande de démarrage configurée dans Railway :
+Aucune base n'est à recréer sur Render : il suffit de réutiliser les chaînes de connexion existantes.
 
-```
-web: python app.py
-```
+### Mise en place
 
-> ⚠️ En production, penser à passer `debug=False` dans `app.run()` et à sécuriser la `SECRET_KEY`.
+1. Sur [dashboard.render.com](https://dashboard.render.com), cliquer **New → Blueprint** et connecter le dépôt GitHub `miaouff`.
+2. Render lit `render.yaml` et propose de créer le service web `miaouff`.
+3. Renseigner les variables d'environnement marquées `sync: false` (onglet **Environment**), en copiant les valeurs depuis le `.env` local :
+   `SECRET_KEY`, `DATABASE_URL`, `MONGODB_URI`, les `MAIL_*`, `STRIPE_*`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
+4. Valider : Render lance `pip install -r requirements.txt` puis démarre l'app avec
+   `gunicorn app:app --bind 0.0.0.0:$PORT`.
+
+Chaque `git push` sur `main` déclenche un redéploiement automatique (`autoDeploy: true`).
+
+> ⚠️ Le système de fichiers de Render est **éphémère** : les images uploadées à chaud
+> dans `static/images/` et les sessions filesystem sont réinitialisées à chaque
+> déploiement. Les images du site sont versionnées dans le dépôt et donc toujours
+> redéployées. `FLASK_DEBUG` est forcé à `False` en production via le Blueprint.
 
 ---
 

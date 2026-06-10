@@ -1,0 +1,63 @@
+# Render Blueprint - https://render.com/docs/blueprint-spec
+# Déploiement de Miaouff (Flask + gunicorn).
+#
+# Bases de données externes (NON gérées par Render) :
+#   - PostgreSQL : Neon  -> renseigner DATABASE_URL
+#   - MongoDB    : Atlas -> renseigner MONGODB_URI
+#
+# Les variables marquées "sync: false" sont des secrets : elles ne sont PAS
+# versionnées et doivent être saisies dans le dashboard Render
+# (onglet Environment du service), en copiant les valeurs de ton .env local.
+
+services:
+  - type: web
+    name: miaouff
+    runtime: python
+    plan: free
+    region: frankfurt           # serveur en Europe (plus proche que l'US par défaut)
+    branch: main
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    autoDeploy: true            # redéploie automatiquement à chaque push sur main
+    envVars:
+      # --- Version de Python (alignée sur les dépendances) ---
+      - key: PYTHON_VERSION
+        value: "3.11.9"      # même version que le CI (.github/workflows/ci.yml)
+
+      # --- Production : jamais de debug ---
+      - key: FLASK_DEBUG
+        value: "False"
+
+      # --- Secrets / config (à saisir dans le dashboard Render) ---
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL        # chaîne de connexion Neon (postgresql://...)
+        sync: false
+      - key: MONGODB_URI         # chaîne de connexion MongoDB Atlas (mongodb+srv://...)
+        sync: false
+
+      # --- E-mail (Flask-Mail) ---
+      - key: MAIL_SERVER
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USE_TLS
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+
+      # --- Stripe ---
+      - key: STRIPE_PUBLIC_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+
+      # --- Compte admin (utilisé par setup_db.py) ---
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
