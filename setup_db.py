@@ -1,9 +1,10 @@
-from flask import Flask
-from dotenv import load_dotenv
-from werkzeug.security import generate_password_hash
 import os
 
-from models.models import db, User, Shelter, Animal, Pet, Category, Product
+from dotenv import load_dotenv
+from flask import Flask
+from werkzeug.security import generate_password_hash
+
+from models.models import Animal, Category, Pet, Product, Shelter, User, db
 
 # Load environment variables before anything else
 load_dotenv()

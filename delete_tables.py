@@ -1,8 +1,9 @@
-from setup_db import db
-from flask import Flask
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
+from flask import Flask
+
+from setup_db import db
 
 app = Flask(__name__)
 

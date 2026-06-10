@@ -1,6 +1,8 @@
 import secrets
-from werkzeug.security import generate_password_hash, check_password_hash
-from models.models import db, User
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from models.models import User, db
 
 # In-memory token store for password reset
 # Note: should be replaced by a DB table with expiration in production

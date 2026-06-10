@@ -35,15 +35,17 @@ def add_to_cart(session, product_id, quantity_requested):
     if quantity_requested > product.stock:
         return False, "Stock insuffisant."
 
-    cart.append({
-        "product_id": product_id,
-        "name": product.name,
-        "price": price,
-        "quantity": quantity_requested,
-        "total_price": round(quantity_requested * price, 2),
-        "image": product.image,
-        "stock": product.stock,
-    })
+    cart.append(
+        {
+            "product_id": product_id,
+            "name": product.name,
+            "price": price,
+            "quantity": quantity_requested,
+            "total_price": round(quantity_requested * price, 2),
+            "image": product.image,
+            "stock": product.stock,
+        }
+    )
     session["cart"] = cart
     session.modified = True
     return True, "Produit ajouté au panier."
@@ -81,15 +83,17 @@ def is_address_complete(user):
     """
     Check that all required address fields are filled before proceeding to payment.
     """
-    return all([
-        user.first_name,
-        user.last_name,
-        user.address_number,
-        user.street_name,
-        user.postal_code,
-        user.city,
-        user.country,
-    ])
+    return all(
+        [
+            user.first_name,
+            user.last_name,
+            user.address_number,
+            user.street_name,
+            user.postal_code,
+            user.city,
+            user.country,
+        ]
+    )
 
 
 def get_cart_totals(cart):

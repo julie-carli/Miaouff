@@ -28,6 +28,8 @@ def send_message_to_make(message: str, history: list = None) -> str:
             return response.text
 
     except requests.exceptions.Timeout:
-        return "Le chatbot ne répond pas pour le moment, réessaie dans quelques instants."
+        return (
+            "Le chatbot ne répond pas pour le moment, réessaie dans quelques instants."
+        )
     except requests.exceptions.RequestException as e:
         return f"Erreur de connexion au chatbot : {str(e)}"

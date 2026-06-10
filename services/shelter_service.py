@@ -1,16 +1,15 @@
 import os
+
 from werkzeug.utils import secure_filename
-from models.models import db, Shelter, Animal, Pet
+
+from models.models import Animal, Pet, Shelter, db
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 
 def allowed_file(filename):
     """Check if the uploaded file has an allowed image extension."""
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def save_image(file, upload_folder, old_image_path=None):

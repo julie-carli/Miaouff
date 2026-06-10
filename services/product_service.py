@@ -1,4 +1,4 @@
-from models.models import db, Product, Category
+from models.models import Category, Product, db
 
 
 def get_products_by_category(category_name=None):

@@ -1,10 +1,10 @@
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from setup_db import Category
 from app import app
+from setup_db import Category
 
 
 def test_postgres_connection():

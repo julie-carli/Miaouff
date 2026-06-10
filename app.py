@@ -1,66 +1,64 @@
+import os
+from datetime import datetime
+
+import stripe
+from bson import ObjectId
 from flask import (
     Flask,
+    flash,
+    jsonify,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
-    flash,
     session,
-    jsonify,
+    url_for,
 )
 from flask_login import (
     LoginManager,
+    current_user,
+    login_required,
     login_user,
     logout_user,
-    login_required,
-    current_user,
 )
-from flask_migrate import Migrate
-from flask_session import Session
 from flask_mail import Mail, Message
+from flask_migrate import Migrate
 from pymongo import MongoClient
-from bson import ObjectId
 from werkzeug.utils import secure_filename
-from datetime import datetime
-import os
-import stripe
 
 from config import Config
-from models.models import db, User, Product, Animal, Pet, Shelter, Category, Order, OrderProduct, Payment as PaymentModel
-from services.auth_service import (
-    register_user,
-    authenticate_user,
-    generate_reset_token,
-    verify_reset_token,
-    reset_password as do_reset_password,
-)
+from flask_session import Session
+from models.models import Animal, Category, Order, OrderProduct
+from models.models import Payment as PaymentModel
+from models.models import Pet, Product, Shelter, User, db
+from services.auth_service import authenticate_user, generate_reset_token, register_user
+from services.auth_service import reset_password as do_reset_password
+from services.auth_service import verify_reset_token
 from services.cart_service import (
-    get_cart,
     add_to_cart,
-    update_cart,
-    remove_from_cart,
-    is_address_complete,
+    get_cart,
     get_cart_totals,
+    is_address_complete,
+    remove_from_cart,
+    update_cart,
 )
-from services.shelter_service import (
-    save_or_update_shelter,
-    delete_shelter,
-    save_or_update_animal,
-    delete_animal,
-    save_or_update_pet,
-    delete_pet,
-    allowed_file,
-)
+from services.chat_service import send_message_to_make
+from services.product_service import add_category
+from services.product_service import delete_category as do_delete_category
+from services.product_service import delete_product as do_delete_product
 from services.product_service import (
     get_products_by_category,
     save_or_update_product,
-    delete_product as do_delete_product,
-    add_category,
     update_category,
-    delete_category as do_delete_category,
 )
-from services.chat_service import send_message_to_make
-
+from services.shelter_service import (
+    allowed_file,
+    delete_animal,
+    delete_pet,
+    delete_shelter,
+    save_or_update_animal,
+    save_or_update_pet,
+    save_or_update_shelter,
+)
 
 # ============================
 # App initialization
@@ -124,19 +122,32 @@ def chat():
     bot_response = send_message_to_make(user_message, history)
     return jsonify({"success": True, "response": bot_response})
 
+
 # ============================
 # Custom Jinja2 filters
 # ============================
-@app.template_filter('date_fr')
+@app.template_filter("date_fr")
 def date_fr_filter(dt):
     """Format a datetime object as a French date string, e.g. '16 avril 2026'."""
     if not dt:
-        return ''
+        return ""
     mois = [
-        '', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+        "",
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre",
     ]
     return f"{dt.day} {mois[dt.month]} {dt.year}"
+
 
 @app.route("/glossary")
 def glossary():
@@ -216,11 +227,13 @@ def adopt_animal(pet_id):
 def animals():
     return render_template("animals.html")
 
+
 @app.context_processor
 def cart_count():
     cart = session.get("cart", [])
     count = sum(item.get("quantity", 0) for item in cart)
     return {"cart_count": count}
+
 
 @app.route("/products")
 def products():
@@ -274,12 +287,15 @@ def blog_article(article_id):
     article = collection.find_one({"_id": ObjectId(article_id)})
 
     if not article:
-        return render_template(
-            "error.html",
-            error_code=404,
-            error_title="Article introuvable",
-            error_message="Cet article n'existe pas ou a été supprimé.",
-        ), 404
+        return (
+            render_template(
+                "error.html",
+                error_code=404,
+                error_title="Article introuvable",
+                error_message="Cet article n'existe pas ou a été supprimé.",
+            ),
+            404,
+        )
 
     return render_template("blog_article.html", article=article)
 
@@ -537,7 +553,12 @@ def update_cart_route(product_id):
     new_quantity = int(data.get("quantity", 1))
     success, message, corrected = update_cart(session, product_id, new_quantity)
     if not success:
-        return jsonify({"success": False, "message": message, "corrected_quantity": corrected}), 400
+        return (
+            jsonify(
+                {"success": False, "message": message, "corrected_quantity": corrected}
+            ),
+            400,
+        )
     return jsonify({"success": True})
 
 
@@ -566,7 +587,9 @@ def check_order():
         return redirect(url_for("edit_address"))
 
     totals = get_cart_totals(cart_items)
-    return render_template("check_order.html", cart=cart_items, user=user, totals=totals)
+    return render_template(
+        "check_order.html", cart=cart_items, user=user, totals=totals
+    )
 
 
 @app.route("/payment", methods=["GET", "POST"])
@@ -774,7 +797,9 @@ def edit_shelters():
             try:
                 file.save(save_path)
             except Exception as e:
-                flash(f"Erreur lors de l'enregistrement de l'image : {str(e)}", "danger")
+                flash(
+                    f"Erreur lors de l'enregistrement de l'image : {str(e)}", "danger"
+                )
                 return redirect(request.url)
 
     page = request.args.get("page", 1, type=int)
@@ -817,7 +842,10 @@ def edit_shelter(shelter_id=None):
     if request.method == "POST":
         file = request.files.get("image")
         save_or_update_shelter(request.form, file, app.config["UPLOAD_FOLDER"], shelter)
-        flash("Refuge mis à jour avec succès." if shelter else "Nouveau refuge ajouté.", "success")
+        flash(
+            "Refuge mis à jour avec succès." if shelter else "Nouveau refuge ajouté.",
+            "success",
+        )
         return redirect(url_for("edit_shelters"))
 
     return render_template("edit_shelter.html", shelter=shelter)
@@ -951,10 +979,15 @@ def edit_pet(pet_id=None):
 
     if request.method == "POST":
         save_or_update_pet(request.form, pet)
-        flash("Animal de compagnie mis à jour." if pet else "Nouvel animal ajouté.", "success")
+        flash(
+            "Animal de compagnie mis à jour." if pet else "Nouvel animal ajouté.",
+            "success",
+        )
         return redirect(url_for("edit_pets"))
 
-    return render_template("edit_pet.html", pet=pet, shelters=shelters_list, animals=animals_list)
+    return render_template(
+        "edit_pet.html", pet=pet, shelters=shelters_list, animals=animals_list
+    )
 
 
 @app.route("/delete_pet/<int:pet_id>", methods=["POST"])
@@ -1016,12 +1049,16 @@ def edit_product(product_id=None):
         flash("Accès refusé.", "danger")
         return redirect(url_for("home"))
 
-    product = Product.query.get_or_404(product_id) if product_id and product_id != 0 else None
+    product = (
+        Product.query.get_or_404(product_id) if product_id and product_id != 0 else None
+    )
     categories = Category.query.all()
 
     if request.method == "POST":
         save_or_update_product(request.form, product)
-        flash("Produit mis à jour." if product else "Nouveau produit ajouté.", "success")
+        flash(
+            "Produit mis à jour." if product else "Nouveau produit ajouté.", "success"
+        )
         return redirect(url_for("edit_products"))
 
     return render_template("edit_product.html", product=product, categories=categories)
@@ -1160,7 +1197,11 @@ def edit_article(article_id):
         update_data = {
             "title": request.form["title"],
             "content": request.form["content"],
-            "shelter_id": int(request.form.get("shelter_id")) if request.form.get("shelter_id") else None,
+            "shelter_id": (
+                int(request.form.get("shelter_id"))
+                if request.form.get("shelter_id")
+                else None
+            ),
         }
 
         image = request.files.get("image")
@@ -1193,12 +1234,15 @@ def delete_article(article_id):
 # ============================
 def render_error(code, title, message):
     """Helper to render the shared error template with the right HTTP status."""
-    return render_template(
-        "error.html",
-        error_code=code,
-        error_title=title,
-        error_message=message,
-    ), code
+    return (
+        render_template(
+            "error.html",
+            error_code=code,
+            error_title=title,
+            error_message=message,
+        ),
+        code,
+    )
 
 
 @app.errorhandler(401)

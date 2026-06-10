@@ -1,8 +1,8 @@
-from pymongo import MongoClient
-from datetime import datetime
 import os
-from dotenv import load_dotenv
+from datetime import datetime
 
+from dotenv import load_dotenv
+from pymongo import MongoClient
 
 load_dotenv()
 mongo_uri = os.getenv("MONGODB_URI")
