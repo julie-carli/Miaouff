@@ -1,0 +1,11 @@
+# Jinja2 templates: Prettier does not understand {% %} / {{ }} syntax
+templates/
+
+# Non-editable assets
+static/images/
+**/*.min.css
+**/*.min.js
+
+# Environments / dependencies
+venv/
+migrations/

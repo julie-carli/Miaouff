@@ -56,6 +56,16 @@ instance/
 Thumbs.db
 
 # ============================
-# Testing
+# Testing & tooling caches
 # ============================
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ============================
+# Flask server-side sessions (must not be versioned)
+# ============================
+flask_session/

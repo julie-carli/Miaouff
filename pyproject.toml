@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311"]
+extend-exclude = '''
+/(
+    venv
+  | migrations
+  | flask_session
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+skip = ["venv", "migrations", "flask_session"]
