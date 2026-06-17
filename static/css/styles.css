@@ -1231,8 +1231,9 @@ img {
     padding: 0.2rem 0.65rem;
     border-radius: var(--radius-pill);
     white-space: nowrap;
-    /* Fixed width keeps all badge+description pairs aligned */
-    width: 7rem;
+    /* Minimum width keeps short badges aligned; longer labels expand the pill */
+    min-width: 7rem;
+    box-sizing: border-box;
     text-align: center;
     flex-shrink: 0;
     margin-top: 0.1rem;
@@ -1623,6 +1624,18 @@ img {
     .contact-card {
         padding: 1.25rem 1rem;
     }
+}
+
+/* Fallback shown only when the embedded form cannot load */
+.contact-fallback {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.contact-link {
+    color: var(--color-coral);
+    font-weight: 600;
 }
 
 /* ============================================================
@@ -3825,7 +3838,8 @@ img {
 
 .product-detail-img-wrapper {
     overflow: hidden;
-    aspect-ratio: 1 / 1;
+    /* Stretch to the full card height so the image fills it like the pet page */
+    align-self: stretch;
 }
 
 .product-detail-img {
@@ -7384,8 +7398,9 @@ img {
     padding: 0.2rem 0.65rem;
     border-radius: var(--radius-pill);
     white-space: nowrap;
-    /* Fixed width keeps all badge+description pairs aligned */
-    width: 7rem;
+    /* Minimum width keeps short badges aligned; longer labels expand the pill */
+    min-width: 7rem;
+    box-sizing: border-box;
     text-align: center;
     flex-shrink: 0;
     margin-top: 0.1rem;
@@ -7775,6 +7790,18 @@ img {
     .contact-card {
         padding: 1.25rem 1rem;
     }
+}
+
+/* Fallback shown only when the embedded form cannot load */
+.contact-fallback {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.contact-link {
+    color: var(--color-coral);
+    font-weight: 600;
 }
 
 /* ============================================================

@@ -21,6 +21,14 @@
             marginwidth="0"
             title="Formulaire de contact Miaouff">
         </iframe>
+
+        <!-- Fallback if the embedded form cannot load (JS disabled or script blocked) -->
+        <noscript>
+            <p class="contact-fallback">
+                Le formulaire nécessite JavaScript. Vous pouvez aussi nous écrire à
+                <a href="mailto:contact@miaouff.fr" class="contact-link">contact@miaouff.fr</a>.
+            </p>
+        </noscript>
     </div>
 
 </section>
@@ -47,3 +55,4 @@
 </script>
 
 {% endblock %}
+

@@ -63,7 +63,7 @@ def _register_static_cache_busting(app):
 CSP = (
     "default-src 'self'; "
     "script-src 'self' 'unsafe-inline' https://js.stripe.com "
-    "https://cdnjs.cloudflare.com "
+    "https://cdnjs.cloudflare.com https://tally.so "
     "https://www.googletagmanager.com https://www.google-analytics.com; "
     "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
     "https://fonts.googleapis.com; "
@@ -71,7 +71,8 @@ CSP = (
     "img-src 'self' data: https://*.tile.openstreetmap.org "
     "https://www.google-analytics.com; "
     "connect-src 'self' https://api.stripe.com https://www.google-analytics.com; "
-    "frame-src https://js.stripe.com https://hooks.stripe.com; "
+    "frame-src https://js.stripe.com https://hooks.stripe.com "
+    "https://tally.so; "
     "object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
 )
 
