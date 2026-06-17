@@ -1,7 +1,7 @@
 # 🐾 Miaouff
 
 Miaouff est un site web dédié aux animaux de compagnie. Il permet aux utilisateurs de consulter des animaux disponibles à l'adoption, d'accéder à une boutique en ligne, de lire des articles de blog, de jouer à des mini-jeux thématiques et de s'informer via un glossaire des espèces animales.
-
+ 
 ---
 
 ## 🗂️ Stack technique
