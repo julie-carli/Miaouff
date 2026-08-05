@@ -6,8 +6,11 @@
 <!-- ========== HERO — fullscreen video with CTA ========== -->
 <section class="hero">
     <div class="hero-video-wrapper">
-        <video autoplay loop muted playsinline preload="auto" class="hero-video">
+        <video autoplay loop muted playsinline preload="auto" class="hero-video"
+               aria-label="Vidéo de présentation de l'association Miaouff">
             <source src="{{ url_for('static', filename='videos/website-home.mp4') }}" type="video/mp4">
+            <!-- Fallback text if the browser does not support the video element -->
+            <p>Votre navigateur ne supporte pas la lecture vidéo.</p>
         </video>
         <!-- Gradient overlay: dark at bottom so text stays readable -->
         <div class="hero-overlay"></div>

@@ -5531,25 +5531,6 @@ img {
    18. SHELTERS PAGE
    ============================================================ */
 
-/* Hero banner */
-.shelters-hero {
-    background: linear-gradient(90deg, var(--color-coral), var(--color-peach));
-    padding: 4rem 2.5rem;
-    text-align: center;
-}
-
-.shelters-hero-title {
-    font-family: var(--font-heading);
-    font-size: var(--size-h1);
-    font-weight: 700;
-    color: var(--color-white);
-    margin-bottom: 0.5rem;
-}
-
-.shelters-hero-sub {
-    font-size: var(--size-body);
-    color: rgba(255, 255, 255, 0.88);
-}
 
 /* Shelter list */
 .shelters-list {
@@ -5755,12 +5736,7 @@ img {
    18. SHELTERS LIST PAGE
    ============================================================ */
 
-/* Hero */
-.shelters-hero {
-    background: linear-gradient(135deg, var(--color-coral) 0%, var(--color-peach) 100%);
-    padding: 5rem 2.5rem 4rem;
-    text-align: center;
-}
+
 
 .shelters-hero-eyebrow {
     font-family: var(--font-heading);
