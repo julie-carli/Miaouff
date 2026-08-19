@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import secrets
+
 from flask import current_app
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,6 +11,9 @@ from models.models import User, db
 # Reset tokens are signed (no server-side storage) and valid for one hour.
 RESET_TOKEN_MAX_AGE = 3600
 _RESET_SALT = "password-reset"
+
+# Reserved domain used to neutralise the email of an anonymised account.
+ANONYMIZED_EMAIL_DOMAIN = "compte-supprime.invalid"
 
 
 def register_user(email: str, password: str) -> tuple[bool, str]:
@@ -89,3 +94,38 @@ def reset_password(email: str, new_password: str) -> tuple[bool, str]:
     user.password = generate_password_hash(new_password, method="pbkdf2:sha256")
     db.session.commit()
     return True, "Mot de passe modifié avec succès !"
+
+
+def delete_account(user: User) -> str:
+    """
+    Erase a user account at their own request.
+
+    An account without any order is removed from the database. An account
+    linked to orders is anonymised instead: invoices must be kept ten years
+    (Code de commerce, art. L123-22), which the RGPD allows as an exception
+    to the right to erasure. In both cases no personal data is left and the
+    account can no longer be used to log in.
+
+    Returns "deleted" or "anonymized".
+    """
+    if user.orders:
+        user.first_name = None
+        user.last_name = None
+        user.birth_date = None
+        user.phone = None
+        user.address_number = None
+        user.street_name = None
+        user.address_complement = None
+        user.postal_code = None
+        user.city = None
+        user.country = None
+        user.email = f"utilisateur-{user.user_id}@{ANONYMIZED_EMAIL_DOMAIN}"
+        user.password = generate_password_hash(
+            secrets.token_urlsafe(32), method="pbkdf2:sha256"
+        )
+        db.session.commit()
+        return "anonymized"
+
+    db.session.delete(user)
+    db.session.commit()
+    return "deleted"

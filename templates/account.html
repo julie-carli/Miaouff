@@ -161,7 +161,12 @@
 
     </div>
 
-    <a href="{{ url_for('auth.logout') }}" class="account-logout-btn">Se déconnecter</a>
+    <div class="account-footer-actions">
+        <a href="{{ url_for('auth.logout') }}" class="account-logout-btn">Se déconnecter</a>
+        <a href="{{ url_for('auth.delete_account') }}" class="account-delete-link">
+            Supprimer mon compte
+        </a>
+    </div>
 
 </main>
 

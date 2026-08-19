@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer mon compte — Miaouff{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+   Account deletion — confirmation step (RGPD right to erasure)
+   ============================================================ -->
+<main class="address-page">
+
+    <div class="address-card">
+        <h1 class="checkout-title">Supprimer mon compte</h1>
+
+        <p class="delete-account-intro">
+            Cette action est définitive. Votre compte sera fermé et vous
+            n'aurez plus accès à votre espace client.
+        </p>
+
+        <div class="delete-account-notice">
+            <h2 class="delete-account-notice-title">Ce qui sera supprimé</h2>
+            <ul class="delete-account-list">
+                <li>Vos informations personnelles (nom, prénom, date de naissance)</li>
+                <li>Votre adresse et votre numéro de téléphone</li>
+                <li>Votre adresse e-mail et votre mot de passe</li>
+            </ul>
+
+            {% if order_count %}
+            <h2 class="delete-account-notice-title">Ce qui sera conservé</h2>
+            <p class="delete-account-text">
+                Vous avez {{ order_count }} commande{{ 's' if order_count > 1 }} chez
+                nous. Les factures correspondantes sont conservées 10 ans, comme
+                la loi l'impose, mais elles ne contiendront plus aucune de vos
+                données personnelles.
+            </p>
+            {% endif %}
+
+            <p class="delete-account-text">
+                Pour en savoir plus, consultez notre
+                <a href="{{ url_for('main.privacy_policy') }}" class="privacy-link">politique de confidentialité</a>.
+            </p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.delete_account') }}" class="address-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="address-field">
+                <label for="password">Confirmez votre mot de passe</label>
+                <input type="password" id="password" name="password"
+                       autocomplete="current-password" required>
+            </div>
+
+            <label class="delete-account-checkbox">
+                <input type="checkbox" name="confirm" value="1" required>
+                <span>Je comprends que la suppression de mon compte est définitive.</span>
+            </label>
+
+            <button type="submit" class="delete-account-btn">
+                Supprimer définitivement mon compte
+            </button>
+        </form>
+
+        <a href="{{ url_for('auth.account') }}" class="product-detail-back" style="margin-top:1rem;display:block;">
+            ← Retour au compte
+        </a>
+    </div>
+
+</main>
+
+{% endblock %}

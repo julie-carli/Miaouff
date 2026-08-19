@@ -9604,7 +9604,7 @@ img {
 .account-logout-btn {
     display: block;
     width: fit-content;
-    margin: 2rem auto 0;
+    margin: 0 auto;
     font-family: var(--font-heading);
     font-size: var(--size-sm);
     font-weight: 700;
@@ -9624,6 +9624,109 @@ img {
     background: #fdecea;
     color: #a33;
     border-color: #e55;
+}
+
+/* ---- Footer actions: logout + account deletion ---- */
+.account-footer-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.account-delete-link {
+    font-family: var(--font-heading);
+    font-size: var(--size-xs);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 0.25rem;
+    transition: color var(--transition-fast);
+}
+
+.account-delete-link:hover {
+    color: #a33;
+}
+
+/* ---- Account deletion page ---- */
+.delete-account-intro {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.delete-account-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: var(--color-light-bg);
+    border: 1.5px solid var(--color-border);
+    border-left: 4px solid #e55;
+    border-radius: var(--radius-md);
+}
+
+.delete-account-notice-title {
+    font-family: var(--font-heading);
+    font-size: var(--size-sm);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.delete-account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-left: 1.1rem;
+    list-style: disc;
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+}
+
+.delete-account-text {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+}
+
+.delete-account-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: var(--size-sm);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.delete-account-checkbox input {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.2rem;
+    accent-color: #e55;
+    flex-shrink: 0;
+}
+
+.delete-account-btn {
+    align-self: center;
+    margin-top: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: var(--size-sm);
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    color: #a33;
+    background: #fdecea;
+    border: 1.5px solid #e55;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.delete-account-btn:hover {
+    background: #e55;
+    color: var(--color-white);
 }
 
 /* ---- Order detail SAV block ---- */

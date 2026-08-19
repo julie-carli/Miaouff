@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+  <body style="font-family: Arial, sans-serif; color: #3a3030; line-height: 1.6;">
+    <h2 style="color: #e66a4a;">Votre compte a été supprimé</h2>
+    <p>Bonjour{% if user.first_name %} {{ user.first_name }}{% endif %},</p>
+    <p>
+      Votre compte Miaouff vient d'être supprimé à votre demande. Vos données
+      personnelles ont été effacées de nos systèmes et vous ne pouvez plus
+      vous connecter avec cette adresse.
+    </p>
+    <p style="font-size: 13px; color: #6b5d5a;">
+      Si vous avez déjà passé commande, les factures correspondantes sont
+      conservées 10 ans pour répondre à nos obligations comptables, sans vos
+      données personnelles.
+    </p>
+    <p style="font-size: 13px; color: #6b5d5a;">
+      Si vous n'êtes pas à l'origine de cette demande, écrivez-nous à
+      <a href="mailto:contact@miaouff.fr">contact@miaouff.fr</a>.
+    </p>
+    <p>Merci d'avoir fait un bout de chemin avec nous,<br />L'équipe Miaouff 🐾</p>
+  </body>
+</html>

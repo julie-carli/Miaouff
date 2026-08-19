@@ -7,6 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
@@ -15,7 +16,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from extensions import limiter, mail
 from models.models import User, db
-from services.auth_service import authenticate_user, generate_reset_token, register_user
+from services.auth_service import authenticate_user
+from services.auth_service import delete_account as erase_account
+from services.auth_service import generate_reset_token, register_user
 from services.auth_service import reset_password as do_reset_password
 from services.auth_service import verify_reset_token
 
@@ -106,6 +109,61 @@ def change_password():
     db.session.commit()
     flash("Mot de passe modifié avec succès.", "success")
     return redirect(url_for("auth.account"))
+
+
+def _send_account_deleted_email(user):
+    """Confirm to the user that their account has been closed."""
+    msg = Message("Votre compte Miaouff a été supprimé", recipients=[user.email])
+    msg.html = render_template("emails/account_deleted_email.html", user=user)
+    mail.send(msg)
+
+
+@auth_bp.route("/delete_account", methods=["GET", "POST"])
+@limiter.limit("5 per hour", methods=["POST"])
+@login_required
+def delete_account():
+    """Let the user close their account themselves (RGPD, right to erasure)."""
+    user = User.query.get(current_user.user_id)
+
+    if request.method == "POST":
+        # The last administrator is kept so the back office stays reachable.
+        if user.role == "admin" and User.query.filter_by(role="admin").count() == 1:
+            flash(
+                "Vous êtes le seul administrateur du site : nommez un autre "
+                "administrateur avant de supprimer ce compte.",
+                "danger",
+            )
+            return redirect(url_for("auth.account"))
+
+        if not request.form.get("confirm"):
+            flash("Veuillez confirmer la suppression en cochant la case.", "danger")
+            return redirect(url_for("auth.delete_account"))
+
+        if not check_password_hash(user.password, request.form.get("password") or ""):
+            flash("Mot de passe incorrect.", "danger")
+            return redirect(url_for("auth.delete_account"))
+
+        # Sent first, while the address is still known.
+        try:
+            _send_account_deleted_email(user)
+        except Exception as e:  # noqa: BLE001
+            current_app.logger.warning("Account deletion email failed: %s", e)
+
+        outcome = erase_account(user)
+        logout_user()
+        session.clear()
+
+        if outcome == "anonymized":
+            flash(
+                "Votre compte a été supprimé. Vos factures sont conservées "
+                "sans vos données personnelles, comme la loi l'exige.",
+                "success",
+            )
+        else:
+            flash("Votre compte et vos données ont été supprimés.", "success")
+        return redirect(url_for("main.home"))
+
+    return render_template("delete_account.html", order_count=len(user.orders))
 
 
 @auth_bp.route("/logout")
